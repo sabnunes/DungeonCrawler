@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Dungeon_01.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|solutionrelative:Dungeon_01.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dungeon_01.cpp",
+              "DocumentMoniker": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Dungeon_01.cpp",
+              "RelativeDocumentMoniker": "Dungeon_01.cpp",
+              "ToolTip": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Dungeon_01.cpp",
+              "RelativeToolTip": "Dungeon_01.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-05T20:45:33.702Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
