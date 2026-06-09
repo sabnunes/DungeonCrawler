@@ -1,0 +1,214 @@
+RUNESCAPE ROGUELIKE DUNGEON (C++)
+
+GOAL:
+Build vertically. Each step should produce something playable before moving on.
+
+====================================================
+PHASE 1 — CORE LOOP
+====================================================
+
+[ ] Create project structure
+[ ] Create:
+
+main()
+while(running)
+{
+    input()
+    update()
+    render()
+}
+
+[ ] Program can start and exit cleanly
+
+SUCCESS CONDITION:
+You have a running program with a functioning game loop
+
+
+====================================================
+PHASE 2 — WORLD REPRESENTATION
+====================================================
+
+[ ] Create GridMap representation
+[ ] Decide:
+- What represents walls?
+- What represents floors?
+- How map data is stored?
+[ ] Create small static test map
+[ ] Render map to terminal
+
+SUCCESS CONDITION:
+Dungeon appears in console
+
+
+====================================================
+PHASE 3 — PLAYER EXISTENCE
+====================================================
+
+[ ] Create player data
+- position
+- stats (minimal)
+[ ] Spawn player onto map
+[ ] Render player symbol
+
+SUCCESS CONDITION:
+Player appears inside dungeon
+
+
+====================================================
+PHASE 4 — PLAYER MOVEMENT
+====================================================
+
+[ ] Read keyboard input
+[ ] Move player
+[ ] Prevent walking through walls
+[ ] Re-render after movement
+
+SUCCESS CONDITION:
+Player can move around map
+
+
+====================================================
+PHASE 5 — ENEMIES
+====================================================
+
+[ ] Create enemy representation
+[ ] Spawn enemy
+[ ] Render enemy
+[ ] Basic enemy movement
+
+SUCCESS CONDITION:
+Enemies exist and update
+
+
+====================================================
+PHASE 6 — COLLISION + INTERACTION
+====================================================
+
+[ ] Detect player touching enemy
+[ ] Prevent overlapping if desired
+[ ] Trigger interactions
+
+SUCCESS CONDITION:
+Entities can interact
+
+
+====================================================
+PHASE 7 — COMBAT
+====================================================
+
+[ ] Create combat rules
+[ ] Add health
+[ ] Add damage
+[ ] Enemy death
+[ ] Player death
+
+SUCCESS CONDITION:
+Combat loop works
+
+
+====================================================
+PHASE 8 — ITEMS / INVENTORY
+====================================================
+
+[ ] Create item representation
+[ ] Add pickup system
+[ ] Add inventory storage
+[ ] Allow item usage/equip
+
+SUCCESS CONDITION:
+Items persist and function
+
+
+====================================================
+PHASE 9 — MULTIPLE ROOMS / FLOORS
+====================================================
+
+[ ] Create dungeon generation
+
+OR
+
+[ ] Create floor loading
+[ ] Add transitions
+
+SUCCESS CONDITION:
+Game extends beyond one room
+
+
+====================================================
+PHASE 10 — CLEANUP / SYSTEMIZATION
+====================================================
+
+Review architecture:
+
+[ ] Separate data from systems
+[ ] Remove duplicated logic
+[ ] Simplify ownership
+[ ] Improve performance bottlenecks
+[ ] Refactor only AFTER working systems exist
+
+SUCCESS CONDITION:
+Codebase remains maintainable
+
+
+====================================================
+POTENTIAL SYSTEMS TO CREATE
+====================================================
+
+Core:
+
+- GameLoop
+- GameState
+- InputHandler
+
+World:
+
+- GridMap
+- Tile
+- Position
+
+Entities:
+
+- Player
+- Enemy
+- Weapon
+- Item
+
+Systems:
+
+- MovementSystem
+- CombatSystem
+- InventorySystem
+- RenderSystem
+
+Shared Data:
+
+- Stats
+- Health
+- Damage
+- Position
+
+
+====================================================
+OPTIONAL TEMPLATE CANDIDATES
+====================================================
+
+Good Candidates:
+
+- Grid<T>
+- Inventory<T>
+
+Avoid Early:
+
+- Enemy<T>
+- Player<T>
+- Weapon<T>
+
+====================================================
+RULES
+====================================================
+
+1. Build vertical slices
+2. Do not build systems that are unused
+3. Refactor AFTER functionality exists
+4. Keep each phase playable
+5. Finish one box before adding more boxes

@@ -3,8 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Dungeon_01.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|solutionrelative:Dungeon_01.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Game.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|solutionrelative:Game.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Position2D.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|solutionrelative:Position2D.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Player.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|solutionrelative:Player.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Player.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|solutionrelative:Player.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Game.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|solutionrelative:Game.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|solutionrelative:Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\GridMap.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|solutionrelative:GridMap.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\GridMap.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{02FD2E25-2C26-4FD4-BE59-DAAF24E2057F}|Dungeon_01.vcxproj|solutionrelative:GridMap.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,7 +42,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -22,13 +50,104 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Position2D.h",
+              "DocumentMoniker": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Position2D.h",
+              "RelativeDocumentMoniker": "Position2D.h",
+              "ToolTip": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Position2D.h",
+              "RelativeToolTip": "Position2D.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-06-09T17:36:21.821Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Player.h",
+              "DocumentMoniker": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Player.h",
+              "RelativeDocumentMoniker": "Player.h",
+              "ToolTip": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Player.h",
+              "RelativeToolTip": "Player.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-06-08T22:22:08.98Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Player.cpp",
+              "DocumentMoniker": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Player.cpp",
+              "RelativeDocumentMoniker": "Player.cpp",
+              "ToolTip": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Player.cpp",
+              "RelativeToolTip": "Player.cpp",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAqwCIAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-08T22:22:13.32Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "GridMap.h",
+              "DocumentMoniker": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\GridMap.h",
+              "RelativeDocumentMoniker": "GridMap.h",
+              "ToolTip": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\GridMap.h",
+              "RelativeToolTip": "GridMap.h",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABIAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-06-06T18:11:07.467Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "GridMap.cpp",
+              "DocumentMoniker": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\GridMap.cpp",
+              "RelativeDocumentMoniker": "GridMap.cpp",
+              "ToolTip": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\GridMap.cpp",
+              "RelativeToolTip": "GridMap.cpp",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAABAAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-06T18:11:12.498Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Game.h",
+              "DocumentMoniker": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Game.h",
+              "RelativeDocumentMoniker": "Game.h",
+              "ToolTip": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Game.h",
+              "RelativeToolTip": "Game.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-06-06T17:32:43.609Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Dungeon_01.cpp",
-              "DocumentMoniker": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Dungeon_01.cpp",
-              "RelativeDocumentMoniker": "Dungeon_01.cpp",
-              "ToolTip": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Dungeon_01.cpp",
-              "RelativeToolTip": "Dungeon_01.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAdAAAAAAAAAA==",
+              "Title": "Game.cpp",
+              "DocumentMoniker": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Game.cpp",
+              "RelativeDocumentMoniker": "Game.cpp",
+              "ToolTip": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Game.cpp*",
+              "RelativeToolTip": "Game.cpp*",
+              "ViewState": "AgIAADwAAAAAAAAAAAAqwEgAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-06T17:32:53.869Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Main.cpp",
+              "DocumentMoniker": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Main.cpp",
+              "RelativeDocumentMoniker": "Main.cpp",
+              "ToolTip": "C:\\Users\\sabrinanunes\\Downloads\\Dungeon_01\\Main.cpp",
+              "RelativeToolTip": "Main.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-06-05T20:45:33.702Z",
               "EditorCaption": ""
