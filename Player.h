@@ -1,6 +1,5 @@
 // Player class declaration
 #pragma once
-#include <string>
 #include "Position2D.h"
 
 // class Player definition
@@ -23,10 +22,10 @@ public:
 
 private:
 	// player attributes for position and representation on the map
-	int positionX = 20; // player's x-coordinate position (starting at 1 to avoid wall)
-	int positionY = 8; // player's y-coordinate position (starting at 1 to avoid wall)
+	int positionX = 1; // player's x-coordinate position (starting at 1 to avoid wall)
+	int positionY =	1; // player's y-coordinate position (starting at 1 to avoid wall)
 
-	char icon = '8'; // representation of the player on the map
+	char icon = 'P'; // representation of the player on the map
 
 	// player attributes for combat and other mechanics
 	int health = 100; // player's health

@@ -10,11 +10,19 @@ Game::Game()
 {
 	map.initialize();// initialize the map
 
-	Position2D spawnPos; // create a structure to hold the spawn position coordinates
-	spawnPos = generateSpawnPos(); // generate a random spawn position for the player
+	Position2D spawnPos_Player; // create a structure to hold the spawn position coordinates for the player
+	Position2D spawnPos_Enemy; // create a structure to hold the spawn position coordinates for the enemy
 
-	// Set the player's position to the generated spawn position
-	player.setPosition(spawnPos.x, spawnPos.y);
+	do
+	{
+		spawnPos_Player = generateSpawnPos(); // generate a random spawn position for the player
+		spawnPos_Enemy = generateSpawnPos(); // generate a random spawn position for the enemy
+	} while (spawnPos_Player == spawnPos_Enemy); // regenerate if player and enemy spawn positions are identical to avoid overlap
+
+	// Set the player and enemy's position to the generated spawn position
+	player.setPosition(spawnPos_Player.x, spawnPos_Player.y);
+	enemy.setPosition(spawnPos_Enemy.x, spawnPos_Enemy.y);
+
 
 } // end Game constructor
 
@@ -22,24 +30,69 @@ Game::Game()
 void Game::run()
 {
 	cout << "Welcome to DUNGEON CRAWLER" << endl;
-	printf("Use WASD keys to move, Q to quit.\n\n");
+	cout << "Use WASD keys to move, Q to quit.\n" << endl;
+
+	//cout << "Menu :\n1. Start Game\n2. Quit\nEnter your choice: ";
 
 	running = true; // set running flag to true to start the game loop
 
 	while (running)
 	{
-		input();
 		update();
 		render();
+		input();
 	}
+
+	cout << "\nThanks for playing!" << endl;
 } // end function run
 
 // Get player input and process it, e.g., move player position, update health, etc
-void Game::input() const
+void Game::input()
 {
-	string input;
+	// Prompt the user for input
+	char input;
 	cout << "Enter input: ";
 	cin >> input;
+
+	// Convert input to lowercase for case-insensitive processing
+	input = tolower(input);
+
+	// Process and verify input for movement and quitting
+	switch(input)
+	{
+		case 'w':
+		case 'p':
+			// Move player up y--
+			cout << "Move up\n";
+			move(0, -1);
+			break;
+		case 'a':
+		case 'l':
+			// Move player left x--
+			cout << "Move left\n";
+			move(-1, 0);
+			break;
+		case 's':
+		case ';':
+			// Move player down y++
+			cout << "Move down\n";
+			move(0, 1);
+			break;
+		case 'd':
+		case '\'':
+			// Move player right x++
+			cout << "Move right\n";
+			move(1, 0);
+			break;
+		case 'q':
+		case '[':
+			// Quit the game
+			running = false;
+			break;
+		default:
+			cout << "Invalid input. Please use WASD keys to move, Q to quit." << endl;
+			break;
+	}
 }
 
 // Update game state based on input and other factors, e.g., move enemies, check for collisions, update health, etc., 
@@ -52,7 +105,7 @@ void Game::update() const
 // Render game state to the screen,	display player health, inventory, etc., display game world, enemies, etc.
 void Game::render() const
 {
-	printf("\nDUNGEON CRAWLER\n\n");
+	//printf("\nDUNGEON CRAWLER\n\n"); // top toolbar with game title and stats
 
 	// Render the grid map with the player icon
 	//map.print(); // debugging: print the map to the console
@@ -62,6 +115,10 @@ void Game::render() const
 			if (player.getPosition() == Position2D{ x, y })
 			{
 				cout << player.getIcon(); // print player icon if player is at this coordinate
+			}
+			else if (enemy.getPosition() == Position2D{ x, y })
+			{
+				cout << enemy.getIcon(); // print enemy icon if enemy is at this coordinate
 			}
 			else
 			{
@@ -94,4 +151,19 @@ Position2D Game::generateSpawnPos()
 	} while (!map.isWalkable(pos.x, pos.y));
 
 	return pos; // return the generated spawn position coordinates
+}
+
+void Game::move(int x, int y)
+{
+	Position2D pos = player.getPosition();
+
+	// check if the tile above the player is walkable before moving)
+	if (map.isWalkable(pos.x + x, pos.y + y)) 
+	{
+		player.setPosition(pos.x + x, pos.y + y);
+	}
+	else // if the tile is not walkable, print a message indicating the player cannot move in that direction
+	{
+		cout << "Cannot move " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ", tile is not walkable.\n";
+	}
 }

@@ -41,6 +41,160 @@ Dungeon appears in console
 
 
 ====================================================
+
+PHASE 2 STEPS
+
+STEP 1 — DEFINE THE PURPOSE OF THE MAP SYSTEM
+[ ] Decide what the map must support in Phase 2 only:
+    - Static dungeon display (no generation yet)
+    - Player positioning support (later)
+    - Simple collision basis (later)
+
+SUCCESS CHECK:
+You can clearly state what the map does and does NOT do yet
+
+
+====================================================
+
+STEP 2 — CHOOSE BASIC MAP CONVENTIONS
+[ ] Define symbolic meaning for tiles:
+    - Wall tile (blocks movement)
+    - Floor tile (walkable space)
+    - Optional: Player/Enemy markers (visual only at this stage)
+
+SUCCESS CHECK:
+You have a written “legend” for map symbols
+
+
+====================================================
+
+STEP 3 — DECIDE MAP DATA STRUCTURE
+[ ] Choose how the grid is stored conceptually:
+    - 2D grid (rows and columns)
+    - Fixed size or flexible size (decide early)
+    - How each tile is represented internally
+
+SUCCESS CHECK:
+You can explain how you access a tile by position (x, y)
+
+
+====================================================
+
+STEP 4 — CREATE A STATIC TEST MAP DESIGN
+[ ] Design a small sample dungeon layout:
+    - Simple rectangle or room
+    - Include walls around edges
+    - Include some internal structure (optional)
+
+SUCCESS CHECK:
+You can visualize the dungeon on paper before coding
+
+
+====================================================
+
+STEP 5 — IMPLEMENT MAP INITIALIZATION LOGIC
+[ ] Ensure map is populated at program start:
+    - Map exists when game starts
+    - Map has consistent, repeatable layout
+    - No randomness yet
+
+SUCCESS CHECK:
+Every run produces the same dungeon layout
+
+
+====================================================
+
+STEP 6 — DEFINE MAP ACCESS RULES
+[ ] Decide how other systems will interact with the map:
+    - How movement checks if a tile is walkable
+    - How to query tile type at a position
+    - Boundaries (out-of-range handling rules)
+
+SUCCESS CHECK:
+You can describe how movement will later ask “can I move here?”
+
+
+====================================================
+
+STEP 7 — RENDER MAP TO TERMINAL
+[ ] Display grid in console:
+    - Each tile corresponds to a visible character
+    - Output reflects full map state
+    - Map is redrawn every frame (even if static)
+
+SUCCESS CHECK:
+You see a full dungeon layout printed in the terminal
+
+
+====================================================
+
+STEP 8 — VERIFY CONSISTENCY WITH GAME LOOP
+[ ] Ensure map rendering integrates with loop:
+    - Map prints every render cycle
+    - No flickering logic issues (basic stability only)
+
+SUCCESS CHECK:
+Map consistently appears during repeated game loop cycles
+
+
+====================================================
+
+
+		Map storage
+			tile data
+
+			because : the dungeon must exist somewhere
+		
+		Dimensions
+			width
+			height
+
+			because :
+			systems need boundaries
+			rendering needs size
+			movement needs bounds
+
+		Potentially :
+			number of rows
+			number of columns
+
+			depending on design.
+
+		Functions(very likely)
+			Ask: "What actions are directly about map ownership?"
+
+			Examples :
+			Initialization
+			create map
+			initialize map
+			load map
+
+			because map owns creation.
+
+			Querying
+			what tile is here ?
+			is this position valid ?
+			is this tile walkable ?
+
+			because other systems need information.
+
+			Modification
+			change tile
+			place object
+			update tile
+
+			maybe later.
+
+PHASE 2 COMPLETION CRITERIA
+You are done when:
+
+[ ] A fixed dungeon exists in memory
+[ ] It can be displayed in the terminal
+[ ] Tile meaning (wall/floor) is defined
+[ ] Map can be queried conceptually by position
+[ ] Render step consistently shows same layout each loop
+
+====================================================
 PHASE 3 — PLAYER EXISTENCE
 ====================================================
 
@@ -52,6 +206,148 @@ PHASE 3 — PLAYER EXISTENCE
 
 SUCCESS CONDITION:
 Player appears inside dungeon
+
+====================================================
+
+PHASE 3 STEPS
+
+STEP 1 — Decide Player Responsibilities
+
+Ask:
+"What information must exist for a player to exist?"
+Keep only essentials.
+
+Player data
+↓
+Spawn player
+↓
+Renderer can display player
+
+SUCCESS:
+You know what Player owns
+
+
+====================================================
+
+STEP 2 — Create Minimal Player Data
+
+Add only:
+[ ] Position
+[ ] Health (minimal)
+[ ] Alive state (optional)
+
+DO NOT add:
+[ ] movement logic
+[ ] combat logic
+[ ] inventory
+[ ] equipment
+
+SUCCESS:
+Player object can exist in memory
+
+
+====================================================
+
+STEP 3 — Decide Coordinate Ownership
+
+Determine:
+[ ] Does Player store coordinates?
+OR
+[ ] Does GridMap store player location?
+
+Recommended:
+Player owns position
+GridMap owns tiles
+
+SUCCESS:
+Clear ownership exists
+
+
+====================================================
+
+STEP 4 — Create Spawn Behavior
+
+Define:
+[ ] Starting coordinate
+[ ] Ensure spawn location is valid
+[ ] Place player into world state
+
+Questions:
+- fixed spawn?
+- random spawn later?
+
+SUCCESS:
+Player has starting position
+
+for every row
+    for every column
+        ask:
+        Is player at this coordinate?
+        yes:
+            print player
+        no:
+            get tile
+            convert tile to symbol
+            print symbol
+newline
+
+====================================================
+
+STEP 5 — Integrate Player Into Game Ownership
+
+Game should own:
+
+[ ] GridMap
+[ ] Player
+
+Reason:
+These persist across frames
+
+SUCCESS:
+Player survives loop iterations
+
+
+====================================================
+
+STEP 6 — Update Rendering Logic
+
+Renderer should ask:
+
+[ ] Is player here?
+
+If yes:
+Render player symbol
+Else:
+Render map tile
+
+SUCCESS:
+Player visible on map
+
+
+====================================================
+
+STEP 7 — Verify Rendering Cases
+
+Test:
+
+[ ] Player inside room
+[ ] Player not inside wall
+[ ] Player symbol appears only once
+[ ] Player remains visible every frame
+
+SUCCESS:
+Player consistently visible
+
+
+====================================================
+
+PHASE 3 COMPLETE WHEN:
+
+[ ] Player object exists
+[ ] Player has position
+[ ] Player spawns successfully
+[ ] Player renders on map
+[ ] Player persists between frames
 
 
 ====================================================
@@ -66,6 +362,38 @@ PHASE 4 — PLAYER MOVEMENT
 SUCCESS CONDITION:
 Player can move around map
 
+====================================================
+
+PHASE 4 STEPS
+
+Initial Scope:
+[ ] Support W A S D
+[ ] Support Q to quit
+[ ] One tile per command
+[ ] Prevent movement into walls
+[ ] Re-render after movement
+
+No movement class - A Movement class would make sense when you have:
+Player
+Enemy
+Projectile
+NPC
+Pathfinding
+Knockback
+Teleportation
+
+About W2D3 (up 2, right 3; x: +3, y: -2):
+Next step:
+w3
+a5
+s2
+
+Then:
+w2a5d3
+
+About hitting walls: 
+step at wall vs continue once wall is hit 
+-> finalize multi-step commands first
 
 ====================================================
 PHASE 5 — ENEMIES
@@ -153,6 +481,16 @@ Codebase remains maintainable
 ====================================================
 POTENTIAL SYSTEMS TO CREATE
 ====================================================
+
+Areas of expansion:
+Menu options
+Player type selection
+Procedural map
+Levels with increased difficulty
+Clear console so we don't scroll to infinity
+Multimove input interpretation so it doesn't scroll 20 times for 20 actions
+Enemy types
+Entity class above character above player and enemy
 
 Core:
 
