@@ -25,8 +25,13 @@ class Game
 		Position2D generateSpawnPos(); // returns a random spawn position
 
 		void input();   // get player input and process it
-		void move(int x, int y); // move the player to a new position if it's valid and walkable
+		void movePlayer(int x, int y); // move the player to a new position if it's valid and walkable
 		void update() const;  // update game state based on input and other factors
 		void render() const;  // render game state to the screen
 
+		bool isEnemyAdjacent(); // check if the enemy is in an adjacent tile to the player
+
+		void playerAttacksEnemy(); // process player attacking the enemy
+		//void enemyAttacksPlayer(); // process enemy attacking the player
+		//bool entityOccupiesPosition(); // check if player and an entity occupy the same position 
 };

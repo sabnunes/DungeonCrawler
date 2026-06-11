@@ -491,6 +491,10 @@ Clear console so we don't scroll to infinity
 Multimove input interpretation so it doesn't scroll 20 times for 20 actions
 Enemy types
 Entity class above character above player and enemy
+"miss" or "wasted attack" mechanic in the future where attacking without an enemy nearby has consequences (e.g., lose health, alert enemy, etc.)
+"ranged attack" mechanic where player can attack enemies from a distance but with reduced damage or accuracy
+
+
 
 Core:
 

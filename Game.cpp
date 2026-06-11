@@ -63,26 +63,26 @@ void Game::input()
 		case 'w':
 		case 'p':
 			// Move player up y--
-			cout << "Move up\n";
-			move(0, -1);
+			movePlayer(0, -1);
 			break;
 		case 'a':
 		case 'l':
 			// Move player left x--
-			cout << "Move left\n";
-			move(-1, 0);
+			movePlayer(-1, 0);
 			break;
 		case 's':
 		case ';':
-			// Move player down y++
-			cout << "Move down\n";
-			move(0, 1);
+			movePlayer(0, 1);
 			break;
 		case 'd':
 		case '\'':
 			// Move player right x++
-			cout << "Move right\n";
-			move(1, 0);
+			movePlayer(1, 0);
+			break;
+		case 'x':
+		case '.':
+			// Attack the enemy if they are in an adjacent tile (check for enemy position relative to player position)
+			playerAttacksEnemy();
 			break;
 		case 'q':
 		case '[':
@@ -90,7 +90,7 @@ void Game::input()
 			running = false;
 			break;
 		default:
-			cout << "Invalid input. Please use WASD keys to move, Q to quit." << endl;
+			cout << "Invalid input. Use WASD keys to move, Q to quit." << endl;
 			break;
 	}
 }
@@ -131,15 +131,17 @@ void Game::render() const
 		player.getHealth(), player.getStrength(), player.getDefense(), player.getPosition().x, player.getPosition().y);
 }
 
+
+
 // Generate a random valid walkable coordinate and assign it to the player
 Position2D Game::generateSpawnPos()
 {
 	random_device rd; // Obtain a random seed from the hardware
 	mt19937 gen(rd()); // Initialize the standard Mersenne Twister engine with the seed
-	
+
 	// Define the inclusive range [] for x and y; exclude walls
-	uniform_int_distribution<int> rangeX(1, map.getWidth() - 2); 
-	uniform_int_distribution<int> rangeY(1, map.getHeight() - 2); 
+	uniform_int_distribution<int> rangeX(1, map.getWidth() - 2);
+	uniform_int_distribution<int> rangeY(1, map.getHeight() - 2);
 
 	Position2D pos; // create a structure to hold the spawn position coordinates
 
@@ -153,17 +155,89 @@ Position2D Game::generateSpawnPos()
 	return pos; // return the generated spawn position coordinates
 }
 
-void Game::move(int x, int y)
+// Move the player to a new position if it's valid and walkable, check for enemy collision, and print appropriate messages
+void Game::movePlayer(int x, int y)
 {
 	Position2D pos = player.getPosition();
+	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
 
-	// check if the tile above the player is walkable before moving)
-	if (map.isWalkable(pos.x + x, pos.y + y)) 
+	// check if the tile above the player is walkable before moving
+	if (map.isWalkable(newPos.x, newPos.y) && !(newPos == enemy.getPosition()))
 	{
-		player.setPosition(pos.x + x, pos.y + y);
+		player.setPosition(newPos.x, newPos.y);
+		cout << "Moved " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ". ";
+		if (isEnemyAdjacent())
+		{
+			cout << "Enemy nearby! Use X to attack.";
+		}
+		cout << endl;
+	}
+	else if (newPos == enemy.getPosition()) // check if the player is trying to move into the enemy's position
+	{
+		cout << "Cannot move there. Use X to attack or WASD to move.\n";
 	}
 	else // if the tile is not walkable, print a message indicating the player cannot move in that direction
 	{
 		cout << "Cannot move " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ", tile is not walkable.\n";
 	}
 }
+
+// Check if the enemy is in an adjacent tile to the player (including diagonals)
+bool Game::isEnemyAdjacent()
+{
+	// check:
+	// x:-1 y:-1 upper left
+	// x:-1 y: 0 left
+	// x:-1 y:+1 lower left
+	// x: 0 y:-1 up
+	// x: 0 y:+1 down
+	// x:+1 y:-1 upper right
+	// x:+1 y: 0 right
+	// x:+1 y:+1 lower right
+
+	// get player and enemy positions
+	Position2D playerPos = player.getPosition();
+	Position2D enemyPos = enemy.getPosition();
+
+	// Check all adjacent positions around the player for the enemy's position
+	for (int x = -1; x <= 1; x++) {
+		for (int y = -1; y <= 1; y++) 
+		{
+			if (Position2D{ playerPos.x + x, playerPos.y + y } == enemyPos) 
+			{
+				return true; // Enemy is adjacent to the player
+			}
+		}
+	}
+
+	return false;
+}
+
+void Game::playerAttacksEnemy()
+{
+	cout << "Attack enemy\n";
+	// Implement attack logic here
+	if (isEnemyAdjacent())
+	{
+		// attack enemy
+		enemy.setHealth(enemy.getHealth() - player.getStrength());
+		cout << "Attack successful. ";
+		if (enemy.getHealth() <= 0)
+		{
+			cout << "Enemy defeated!\n";
+			// handle enemy defeat (e.g., remove from map, drop loot, etc.)
+		}
+		else
+		{
+			cout << "Enemy HP: " << enemy.getHealth() << "\n";
+		}
+	}
+	else
+	{
+		cout << "No enemy in range. Invalid move.\n";
+	}
+}
+
+//void Game::enemyAttacksPlayer()
+//{
+//}
