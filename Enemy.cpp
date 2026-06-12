@@ -56,3 +56,9 @@ int Enemy::getDefense() const
 {
 	return defense;
 }
+
+// Check if the enemy is alive (health > 0)
+bool Enemy::isAlive() const
+{
+	return getHealth() > 0;
+}

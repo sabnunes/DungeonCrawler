@@ -14,6 +14,7 @@ public:
 	int getHealth() const; // get enemy's health
 	int getStrength() const; // get enemy's strength
 	int getDefense() const; // get enemy's defense
+	bool isAlive() const; // check if the enemy is alive or defeated
 
 	// get functions for enemy attributes (e.g., health, position)
 	void setPosition(int x, int y); // set enemy's x-coordinate position
@@ -25,10 +26,10 @@ private:
 	int positionX = 1; // enemy's x-coordinate position (starting at 1 to avoid wall)
 	int positionY = 1; // enemy's y-coordinate position (starting at 1 to avoid wall)
 
-	char icon = 'E'; // representation of the enemy on the map
+	const char icon = 'E'; // representation of the enemy on the map
 
 	// enemy attributes for combat and other mechanics
-	int health = 10; // enemy's health
+	int health = 5; // enemy's health
 	int strength = 1; // enemy's strength (for combat calculations)
 	int defense = 0; // enemy's defense (for combat calculations)
 

@@ -396,29 +396,26 @@ step at wall vs continue once wall is hit
 -> finalize multi-step commands first
 
 ====================================================
-PHASE 5 — ENEMIES
+PHASE 5 — ENEMIES PHASE 6 — COLLISION + INTERACTION
 ====================================================
 
 [ ] Create enemy representation
 [ ] Spawn enemy
 [ ] Render enemy
-[ ] Basic enemy movement
 
 SUCCESS CONDITION:
 Enemies exist and update
 
-
-====================================================
-PHASE 6 — COLLISION + INTERACTION
-====================================================
-
 [ ] Detect player touching enemy
 [ ] Prevent overlapping if desired
-[ ] Trigger interactions
 
 SUCCESS CONDITION:
 Entities can interact
 
+[ ] Basic enemy movement
+[ ] Trigger interactions
+
+The next interesting learning opportunities are enemy behavior, turn systems, inventory, loot, or introducing multiple enemies. Those are the features that will reveal whether your current architecture scales.
 
 ====================================================
 PHASE 7 — COMBAT

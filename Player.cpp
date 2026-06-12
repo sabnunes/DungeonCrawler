@@ -45,6 +45,13 @@ void Player::setHealth(int newHealth)
 	}
 }
 
+// Set player's strength
+void Player::setStrength(int newStrength)
+{
+	strength = newStrength;
+}
+
+
 // Get player's strength
 int Player::getStrength() const
 {
@@ -55,4 +62,10 @@ int Player::getStrength() const
 int Player::getDefense() const
 {
 	return defense;
+}
+
+// Check if the player is alive (health > 0)
+bool Player::isAlive() const
+{
+	return getHealth() > 0;
 }

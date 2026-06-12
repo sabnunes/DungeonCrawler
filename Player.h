@@ -14,10 +14,13 @@ public:
 	int getHealth() const; // get player's health
 	int getStrength() const; // get player's strength
 	int getDefense() const; // get player's defense
+	bool isAlive() const; // check if the player is alive or defeated
 
 	// get functions for player attributes (e.g., health, position)
 	void setPosition(int x, int y); // set player's x-coordinate position
 	void setHealth(int newHealth); // set player's health
+	void setStrength(int newStrength); // set player's strength
+	//void setDefense(int newDefense); // set player's defense
 
 
 private:
@@ -25,7 +28,7 @@ private:
 	int positionX = 1; // player's x-coordinate position (starting at 1 to avoid wall)
 	int positionY =	1; // player's y-coordinate position (starting at 1 to avoid wall)
 
-	char icon = 'P'; // representation of the player on the map
+	const char icon = 'P'; // representation of the player on the map
 
 	// player attributes for combat and other mechanics
 	int health = 100; // player's health
