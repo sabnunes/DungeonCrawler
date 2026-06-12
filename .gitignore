@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+*.pdb
+*.tlog
+*.json
+*.sqlite
+*.ipch
+*.json
+*.db
+/.vs
+/Dungeon_01
+*.sln
+*.vcxproj
+/.github
