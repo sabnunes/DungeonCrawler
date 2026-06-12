@@ -412,7 +412,7 @@ Enemies exist and update
 SUCCESS CONDITION:
 Entities can interact
 
-[ ] Basic enemy movement
+[ ] Basic enemy movement LEFT OFF HERE
 [ ] Trigger interactions
 
 The next interesting learning opportunities are enemy behavior, turn systems, inventory, loot, or introducing multiple enemies. Those are the features that will reveal whether your current architecture scales.
@@ -490,6 +490,22 @@ Enemy types
 Entity class above character above player and enemy
 "miss" or "wasted attack" mechanic in the future where attacking without an enemy nearby has consequences (e.g., lose health, alert enemy, etc.)
 "ranged attack" mechanic where player can attack enemies from a distance but with reduced damage or accuracy
+
+attack enemy with direction
+change multiple RNG to single RNG
+enemy movement patterns
+Player and Enemy inherit from Character
+
+message log or event system for
+Moved left
+Moved right
+Cannot move
+Enemy nearby
+Attack successful
+Enemy defeated
+Picked up sword
+Inventory full
+to replace cout
 
 
 
