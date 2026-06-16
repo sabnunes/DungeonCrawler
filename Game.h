@@ -26,11 +26,10 @@ class Game
 
 		void input();			// get player input and process it
 		void update();			// update game state based on input and other factors
-		void render() const;	// render game state to the screen
+		void render();	// render game state to the screen
 		
-		int enemyMoveCounter = 0; // counter to track enemy movement pattern and behavior
-		void movePlayer(int x, int y);	// move the player to a new position if it's valid and walkable
-		void moveEnemy();	// move the player to a new position if it's valid and walkable
+		void playerMove(int x, int y);	// move the player to a new position if it's valid and walkable
+		void enemyMove();	// move the player to a new position if it's valid and walkable
 
 		bool isEnemyAdjacentToPlayer(); // check if the enemy is in an adjacent tile to the player
 
@@ -38,4 +37,8 @@ class Game
 		void enemyAttack();		// process enemy attacking the player
 		//int calculateDamage(int attackerStrength, int defenderDefense); // calculate damage dealt based on attacker strength and defender defense
 
+		int enemyStunnedTurnsCount = 1; // counter to track enemy stunned state
+		bool playerTurn = 1; // 1 if player turn, 0 if enemy turn
+
+		const int ENEMY_STUNNED_TURNS = 1; // counter to track enemy stunned state
 };

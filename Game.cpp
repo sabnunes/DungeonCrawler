@@ -29,18 +29,22 @@ Game::Game()
 // run the game: welcome message, process main game loop (input, update, render)
 void Game::run()
 {
-	cout << "Welcome to DUNGEON CRAWLER" << endl;
-	cout << "Use WASD keys to move, Q to quit.\n" << endl;
-
+	cout << "Welcome to DUNGEON CRAWLER\n" << endl;
 	//cout << "Menu :\n1. Start Game\n2. Quit\nEnter your choice: ";
 
 	running = true; // set running flag to true to start the game loop
 
 	while (running)
 	{
-		update();
 		render();
-		input();
+		if (playerTurn)
+		{
+			input();
+		}
+		else if (!playerTurn)
+		{
+			update();
+		}
 	}
 
 	cout << "\nThanks for playing!" << endl;
@@ -57,42 +61,46 @@ void Game::input()
 	// Convert input to lowercase for case-insensitive processing
 	input = tolower(input);
 
-	// Process and verify input for movement and quitting
-	switch(input)
+	if (playerTurn)
 	{
-		case 'w':
-		case 'p':
-			// Move player up y--
-			movePlayer(0, -1);
-			break;
-		case 'a':
-		case 'l':
-			// Move player left x--
-			movePlayer(-1, 0);
-			break;
-		case 's':
-		case ';':
-			// Move player down y++
-			movePlayer(0, 1);
-			break;
-		case 'd':
-		case '\'':
-			// Move player right x++
-			movePlayer(1, 0);
-			break;
-		case 'x':
-		case '.':
-			// Attack the enemy if they are in an adjacent tile (check for enemy position relative to player position)
-			playerAttack();
-			break;
-		case 'q':
-		case '[':
-			// Quit the game
-			running = false;
-			break;
-		default:
-			cout << "Invalid input. Use WASD keys to move, Q to quit." << endl;
-			break;
+		// Process and verify input for movement and quitting
+		switch(input)
+		{
+			case 'w':
+			case 'p':
+				// Move player up y--
+				playerMove(0, -1);
+				break;
+			case 'a':
+			case 'l':
+				// Move player left x--
+				playerMove(-1, 0);
+				break;
+			case 's':
+			case ';':
+				// Move player down y++
+				playerMove(0, 1);
+				break;
+			case 'd':
+			case '\'':
+				// Move player right x++
+				playerMove(1, 0);
+				break;
+			case 'x':
+			case '.':
+				// Attack the enemy if they are in an adjacent tile (check for enemy position relative to player position)
+				playerAttack();
+				break;
+			case 'q':
+			case '[':
+				// Quit the game
+				running = false;
+				break;
+			default:
+				cout << "Invalid input. Use WASD keys to move, Q to quit." << endl;
+				break;
+		}
+		playerTurn = 0;
 	}
 }
 
@@ -109,18 +117,39 @@ void Game::update()
 	//Projectile movement
 	//Loot despawning
 
-	if (enemy.isAlive())
+
+	if (!enemy.isAlive())
 	{
-		moveEnemy();
-		//enemyAttack();
-		//isEnemyAdjacentToPlayer();
+		return;
 	}
+
+	if (isEnemyAdjacentToPlayer())
+	{
+		enemyAttack();
+	}
+	else
+	{
+		enemyMove();
+	}
+	puts(""); // New line after update for better readability
+	playerTurn = 1;
 }
 
 // Render game state to the screen,	display player health, inventory, etc., display game world, enemies, etc.
-void Game::render() const
+void Game::render()
 {
-	//printf("\nDUNGEON CRAWLER\n\n"); // top toolbar with game title and stats
+	if (playerTurn)
+	{
+		//printf("\nDUNGEON CRAWLER\n\n"); // top toolbar with game title and stats
+		printf("Player | HP: %3d | STR: %2d | DEF: %2d | POS: %2d,%2d\n", 
+			player.getHealth(), player.getStrength(), player.getDefense(), player.getPosition().x, player.getPosition().y);
+		if (enemy.isAlive())
+		{
+			printf("Enemy  | HP: %3d | STR: %2d | DEF: %2d | POS: %2d,%2d\n",
+				enemy.getHealth(), enemy.getStrength(), enemy.getDefense(), enemy.getPosition().x, enemy.getPosition().y);
+		}
+		puts(""); // New line after stats
+	}
 
 	// Render the grid map with the player icon
 	//map.print(); // debugging: print the map to the console
@@ -142,8 +171,16 @@ void Game::render() const
 		}
 		puts(""); // New line after each row
 	}
-	printf("Player Stats | HP: %d | STR: %d | DEF: %d | POS: %d,%d\n\n", 
-		player.getHealth(), player.getStrength(), player.getDefense(), player.getPosition().x, player.getPosition().y);
+
+	if (playerTurn)
+	{
+		printf("\nYour turn. Use WASD to move, X to attack, Q to quit.\n");
+		printf("Enemy nearby? %s\n\n", isEnemyAdjacentToPlayer() ? "Yes" : "No");
+	}
+	else
+	{
+		printf("\nEnemy turn.\n");
+	}
 }
 
 
@@ -170,7 +207,7 @@ Position2D Game::generateSpawnPos()
 }
 
 // Move the player to a new position if it's valid and walkable, check for enemy collision
-void Game::movePlayer(int x, int y)
+void Game::playerMove(int x, int y)
 {
 	Position2D pos = player.getPosition();
 	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
@@ -180,10 +217,10 @@ void Game::movePlayer(int x, int y)
 	{
 		player.setPosition(newPos.x, newPos.y);
 		cout << "Moved " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ". ";
-		if (enemy.isAlive() && isEnemyAdjacentToPlayer())
+		/*if (enemy.isAlive() && isEnemyAdjacentToPlayer())
 		{
 			cout << "Enemy nearby! Use X to attack.";
-		}
+		}*/
 		cout << endl;
 	}
 	else if (enemy.isAlive() && newPos == enemy.getPosition()) // don't move if player is trying to move into the enemy's position
@@ -197,7 +234,7 @@ void Game::movePlayer(int x, int y)
 }
 
 // Enemy movement behavior and pattern
-void Game::moveEnemy()
+void Game::enemyMove()
 {
 	//enemy behavior
 	// idle for 2 turns
@@ -211,33 +248,41 @@ void Game::moveEnemy()
 	// random movement
 	// chance of no movement
 
-	Position2D pos = enemy.getPosition();
-	Position2D newPos = enemy.getPosition();
-
-	if (enemyMoveCounter <= 2)
+	if (enemyStunnedTurnsCount <= ENEMY_STUNNED_TURNS)
 	{
-		// idle for 2 turns
-		//cout << "Enemy is idle: " << enemyMoveCounter << "\n";
-		enemyMoveCounter++;
+		enemyStunnedTurnsCount++;
 		return;
 	}
 	else
 	{
-		newPos.x--;
+		random_device randNumGen; // Obtain a random seed from the hardware
+		mt19937 randEngine(randNumGen()); // Initialize the standard Mersenne Twister engine with the seed
 
-		if (map.isWalkable(newPos.x, newPos.y) && !(newPos == player.getPosition()))
+		// Define the inclusive range [] for x and y;
+		uniform_int_distribution<int> range(-1, 1);
+
+		Position2D pos; // create a structure to hold the spawn position coordinates
+
+		// Generate random x and y coordinates for the spawn position, regenerate if not walkable
+		do
 		{
-			enemy.setPosition(newPos.x, newPos.y);
+			pos.x = enemy.getPosition().x + range(randEngine);
+			pos.y = enemy.getPosition().y + range(randEngine);
+		} while (!map.isWalkable(pos.x, pos.y));
+
+		if (!(pos == player.getPosition()))
+		{
+			enemy.setPosition(pos.x, pos.y);
 			cout << "Enemy moved.";
 			cout << endl;
-}
-		else if (newPos == player.getPosition()) // check if the player is trying to move into the enemy's position
+		}
+		else if (pos == player.getPosition()) // check if the enemy is trying to move into the player's position
 		{
 			cout << "Enemy cannot move there - overlaps with player.\n";
 		}
 		else
 		{
-			cout << "Enemy cannot move left.\n";
+			cout << "Enemy cannot move.\n";
 		}
 	}
 }
@@ -276,14 +321,15 @@ bool Game::isEnemyAdjacentToPlayer()
 // Player attacks enemy, enemy loses life if attack successful, check for enemy defeat
 void Game::playerAttack()
 {
-	cout << "Attack enemy\n";
+	cout << "Attack enemy.\n";
 	// Implement attack logic here
 	if (isEnemyAdjacentToPlayer() && enemy.isAlive())
 	{
 		// player attacks enemy
 		enemy.setHealth(enemy.getHealth() - player.getStrength());
-		enemyMoveCounter = 0; // reset enemy movement pattern if attacked
+		enemyStunnedTurnsCount = 0; // reset enemy movement pattern if attacked
 		cout << "Attack successful. ";
+
 		if (enemy.getHealth() <= 0)
 		{
 			cout << "Enemy defeated! Strength increased +1.\n";
@@ -292,8 +338,9 @@ void Game::playerAttack()
 		}
 		else
 		{
-			cout << "Enemy HP: " << enemy.getHealth() << "\n";
+			cout << "Enemy lost " << player.getStrength() << " HP.\n";
 		}
+		cout << "Enemy preparing counterattack.\n";
 	}
 	else
 	{
@@ -304,22 +351,21 @@ void Game::playerAttack()
 // Enemy attacks player, player loses life if attack successful, check for player defeat
 void Game::enemyAttack()
 {
-	cout << "Enemy attack\n";
+	cout << "Enemy attack.\n";
 
 	if (isEnemyAdjacentToPlayer())
 	{
 		// enemy attacks player
 		player.setHealth(player.getHealth() - enemy.getStrength());
-		cout << "Attack successful. ";
+		cout << "Enemy attack successful. You lost " << enemy.getStrength() << " HP.\n";
 		if (player.getHealth() <= 0)
 		{
 			cout << "You died!\n";
 			// handle player defeat (game over, reset game)
 		}
 	}
-	else
+	else if (!isEnemyAdjacentToPlayer())
 	{
-		cout << "No player in range. Invalid move.\n";
+		cout << "You have evaded the enemy's attack.\n";
 	}
-
 }
