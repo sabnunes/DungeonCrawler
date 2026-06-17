@@ -29,7 +29,7 @@ private:
 	const char icon = 'E'; // representation of the enemy on the map
 
 	// enemy attributes for combat and other mechanics
-	int health = 5; // enemy's health
+	int health = 4; // enemy's health
 	int strength = 1; // enemy's strength (for combat calculations)
 	int defense = 0; // enemy's defense (for combat calculations)
 

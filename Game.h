@@ -31,7 +31,7 @@ class Game
 		void playerMove(int x, int y);	// move the player to a new position if it's valid and walkable
 		void enemyMove();	// move the player to a new position if it's valid and walkable
 
-		bool isEnemyAdjacentToPlayer(); // check if the enemy is in an adjacent tile to the player
+		bool isEnemyAdjacentToPlayer() const; // check if the enemy is in an adjacent tile to the player
 
 		void playerAttack();	// process player attacking the enemy
 		void enemyAttack();		// process enemy attacking the player

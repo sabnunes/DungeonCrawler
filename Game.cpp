@@ -37,17 +37,21 @@ void Game::run()
 	while (running)
 	{
 		render();
-		if (playerTurn)
+		if (player.isAlive() && playerTurn)
 		{
 			input();
 		}
-		else if (!playerTurn)
+		else if (enemy.isAlive() && !playerTurn)
 		{
 			update();
 		}
+		else
+		{
+			printf("%s\n", player.isAlive() ? "You've defeated all enemies! You win!" : "You are dead. Game over.");
+			running = 0;
+		}
 	}
-
-	cout << "\nThanks for playing!" << endl;
+	cout << "Thanks for playing!" << endl;
 } // end function run
 
 // Get player input and process it, e.g., move player position, update health, etc
@@ -138,25 +142,24 @@ void Game::update()
 // Render game state to the screen,	display player health, inventory, etc., display game world, enemies, etc.
 void Game::render()
 {
-	if (playerTurn)
+	//printf("\nDUNGEON CRAWLER\n\n"); // top toolbar with game title and stats
+	
+	// Print player and enemy stats
+	printf("Player | HP: %3d | STR: %2d | DEF: %2d | POS: %2d,%2d\n", 
+		player.getHealth(), player.getStrength(), player.getDefense(), player.getPosition().x, player.getPosition().y);
+	if (enemy.isAlive())
 	{
-		//printf("\nDUNGEON CRAWLER\n\n"); // top toolbar with game title and stats
-		printf("Player | HP: %3d | STR: %2d | DEF: %2d | POS: %2d,%2d\n", 
-			player.getHealth(), player.getStrength(), player.getDefense(), player.getPosition().x, player.getPosition().y);
-		if (enemy.isAlive())
-		{
-			printf("Enemy  | HP: %3d | STR: %2d | DEF: %2d | POS: %2d,%2d\n",
-				enemy.getHealth(), enemy.getStrength(), enemy.getDefense(), enemy.getPosition().x, enemy.getPosition().y);
-		}
-		puts(""); // New line after stats
+		printf("Enemy  | HP: %3d | STR: %2d | DEF: %2d | POS: %2d,%2d\n",
+			enemy.getHealth(), enemy.getStrength(), enemy.getDefense(), enemy.getPosition().x, enemy.getPosition().y);
 	}
+	puts(""); // New line after stats
 
 	// Render the grid map with the player icon
 	//map.print(); // debugging: print the map to the console
 	for (int y = 0; y < map.getHeight(); y++)
 	{
 		for (int x = 0; x < map.getWidth(); x++) {
-			if (player.getPosition() == Position2D{ x, y })
+			if (player.getPosition() == Position2D{ x, y } && player.isAlive())
 			{
 				cout << player.getIcon(); // print player icon if player is at this coordinate
 			}
@@ -172,15 +175,12 @@ void Game::render()
 		puts(""); // New line after each row
 	}
 
-	if (playerTurn)
+	if (player.isAlive() && enemy.isAlive())
 	{
-		printf("\nYour turn. Use WASD to move, X to attack, Q to quit.\n");
-		printf("Enemy nearby? %s\n\n", isEnemyAdjacentToPlayer() ? "Yes" : "No");
+		printf("\n%s\n", playerTurn ? "Your turn. Use WASD to move, X to attack, Q to quit." : "Enemy turn.");
+		printf("Enemy adjacent to player? %s\n", isEnemyAdjacentToPlayer() ? "Yes" : "No");
 	}
-	else
-	{
-		printf("\nEnemy turn.\n");
-	}
+	puts("");
 }
 
 
@@ -263,22 +263,27 @@ void Game::enemyMove()
 
 		Position2D pos; // create a structure to hold the spawn position coordinates
 
+		// x and y coordinate variables
+		int x = 0;
+		int y = 0;
+
 		// Generate random x and y coordinates for the spawn position, regenerate if not walkable
 		do
 		{
-			pos.x = enemy.getPosition().x + range(randEngine);
-			pos.y = enemy.getPosition().y + range(randEngine);
-		} while (!map.isWalkable(pos.x, pos.y));
+			x = range(randEngine);
+			y = range(randEngine);
+			pos.x = enemy.getPosition().x + x;
+			pos.y = enemy.getPosition().y + y;
+		} while (!map.isWalkable(pos.x, pos.y) || (x == 0 && y == 0));
 
 		if (!(pos == player.getPosition()))
 		{
 			enemy.setPosition(pos.x, pos.y);
-			cout << "Enemy moved.";
-			cout << endl;
+			printf("Enemy moved %s.\n", x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up")));
 		}
 		else if (pos == player.getPosition()) // check if the enemy is trying to move into the player's position
 		{
-			cout << "Enemy cannot move there - overlaps with player.\n";
+			cout << "Enemy attempted move, but cannot move there - overlaps with player.\n";
 		}
 		else
 		{
@@ -288,7 +293,7 @@ void Game::enemyMove()
 }
 
 // Check if the enemy and player are in adjacent tiles (including diagonals)
-bool Game::isEnemyAdjacentToPlayer()
+bool Game::isEnemyAdjacentToPlayer() const
 {
 	// check:
 	// x:-1 y:-1 upper left
@@ -332,15 +337,15 @@ void Game::playerAttack()
 
 		if (enemy.getHealth() <= 0)
 		{
-			cout << "Enemy defeated! Strength increased +1.\n";
+			cout << "Enemy is dead! Strength increased +1.\n";
 			player.setStrength(player.getStrength()+1); // increase player strength as a reward for defeating the enemy
 			// handle enemy defeat drop loot etc
 		}
 		else
 		{
 			cout << "Enemy lost " << player.getStrength() << " HP.\n";
+			cout << "Enemy preparing counterattack.\n";
 		}
-		cout << "Enemy preparing counterattack.\n";
 	}
 	else
 	{

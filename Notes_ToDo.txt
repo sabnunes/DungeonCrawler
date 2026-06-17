@@ -412,7 +412,7 @@ Enemies exist and update
 SUCCESS CONDITION:
 Entities can interact
 
-[ ] Basic enemy movement LEFT OFF HERE
+[ ] Basic enemy movement
 [ ] Trigger interactions
 
 The next interesting learning opportunities are enemy behavior, turn systems, inventory, loot, or introducing multiple enemies. Those are the features that will reveal whether your current architecture scales.
@@ -425,7 +425,8 @@ PHASE 7 — COMBAT
 [ ] Add health
 [ ] Add damage
 [ ] Enemy death
-[ ] Player death
+[ ] Player death HERE NOW
+
 
 SUCCESS CONDITION:
 Combat loop works
@@ -506,6 +507,9 @@ Enemy defeated
 Picked up sword
 Inventory full
 to replace cout
+
+incl. multiple enemies?
+incl. levels - ea. level increases num of e
 
 
 
