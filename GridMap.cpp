@@ -99,6 +99,6 @@ void GridMap::print() const
 				break;
 			}
 		}
-		puts(""); // New line after each row
+		cout << endl; // New line after each row
 	}
 }

@@ -433,7 +433,7 @@ Combat loop works
 
 
 ====================================================
-PHASE 8 — ITEMS / INVENTORY
+PHASE 8 — ITEMS / INVENTORY -- LEFT OFF HERE
 ====================================================
 
 [ ] Create item representation
@@ -509,9 +509,14 @@ Inventory full
 to replace cout
 
 incl. multiple enemies?
+vector<Enemy> enemies;
+isAnyEnemyAdjacentToPlayer()
+findAdjacentEnemy()
+
+enemy variations: doe (attack pattern none, move pattern, moves away unless cornered, defense 0, gives +1 str to player), rock (attack: none, move: none, insta death upon attack due to pulling a muscle and no healthcare nearby)
 incl. levels - ea. level increases num of e
 
-
+making the enemy's behavior interesting (patrol, chase, flee when damaged, etc.)
 
 Core:
 

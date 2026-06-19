@@ -2,6 +2,8 @@
 #include <iostream>
 #include "Player.h"
 
+using namespace std;
+
 // Constructor
 Player::Player()
 {
@@ -49,6 +51,32 @@ void Player::setHealth(int newHealth)
 void Player::setStrength(int newStrength)
 {
 	strength = newStrength;
+}
+
+int Player::getInventorySize() const
+{
+	return (int) inventory.size();
+}
+
+void Player::printInventory() const
+{
+	if (inventory.size() > 0)
+	{
+		for (const Item& item : inventory)
+		{
+			cout << item.getName() << " ";
+		}
+	}
+	else
+	{
+		cout << "none";
+	}
+	cout << endl; // empty line
+}
+
+void Player::addItem(const Item &item)
+{
+	inventory.push_back(item);
 }
 
 

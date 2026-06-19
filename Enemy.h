@@ -9,7 +9,7 @@ public:
 	explicit Enemy(); // default constructor
 
 	// set functions for enemy attributes (e.g., health, position)
-	Position2D getPosition() const; // get enemy's x-coordinate position
+	Position2D getPosition() const; // get enemy's position
 	char getIcon() const; // get enemy's icon
 	int getHealth() const; // get enemy's health
 	int getStrength() const; // get enemy's strength
@@ -17,7 +17,7 @@ public:
 	bool isAlive() const; // check if the enemy is alive or defeated
 
 	// get functions for enemy attributes (e.g., health, position)
-	void setPosition(int x, int y); // set enemy's x-coordinate position
+	void setPosition(int x, int y); // set enemy's position
 	void setHealth(int newHealth); // set enemy's health
 
 

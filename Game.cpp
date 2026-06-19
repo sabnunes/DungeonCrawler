@@ -7,24 +7,80 @@ using namespace std;
 
 // Constructor
 Game::Game()
+	: m_engine(std::random_device{}()) // Initialize the standard Mersenne Twister engine with the seed
 {
-	map.initialize();// initialize the map
-
-	Position2D spawnPos_Player; // create a structure to hold the spawn position coordinates for the player
-	Position2D spawnPos_Enemy; // create a structure to hold the spawn position coordinates for the enemy
-
-	do
-	{
-		spawnPos_Player = generateSpawnPos(); // generate a random spawn position for the player
-		spawnPos_Enemy = generateSpawnPos(); // generate a random spawn position for the enemy
-	} while (spawnPos_Player == spawnPos_Enemy); // regenerate if player and enemy spawn positions are identical to avoid overlap
-
-	// Set the player and enemy's position to the generated spawn position
-	player.setPosition(spawnPos_Player.x, spawnPos_Player.y);
-	enemy.setPosition(spawnPos_Enemy.x, spawnPos_Enemy.y);
+	//cout << "[DEBUG] Initializing map..." << endl;
+	map.initialize();	// initializes the map
+	//cout << "[DEBUG] Spawning elements..." << endl;
+	initWorld();		// initializes player, enemies, items
+	//cout << "[DEBUG] Constructor finished successfully!" << endl;
 
 
 } // end Game constructor
+
+// Initializes player, enemies, and items
+void Game::initWorld()
+{
+	spawnPlayer();	// Spawns player
+	spawnEnemies();	// Spawns enemies
+	spawnItems();	// Spawns items
+}
+
+// Spawns player
+void Game::spawnPlayer()
+{
+	Position2D spawnPos; 						// Create Position2D for player
+	spawnPos = generateSpawnPos();				// Generate spawn position for player
+	player.setPosition(spawnPos.x, spawnPos.y);	// Set player position to generated spawn position
+}
+
+// Spawns enemies
+void Game::spawnEnemies()
+{
+	// NEXT STEPS
+	// later becomes for ea. enemies in enemies
+	// spawn enemy
+
+	// Create Position2D for enemy
+	Position2D spawnPos;
+
+	// Generate spawn position for enemy until position not equal to player position
+	do
+	{
+		spawnPos = generateSpawnPos();
+	} while (isOccupied(spawnPos));
+
+	// Set enemy position to generated spawn position
+	enemy.setPosition(spawnPos.x, spawnPos.y);
+}
+
+// Spawns items
+void Game::spawnItems()
+{
+	worldItems.clear();
+
+	// Spawn all items
+	for (int i = 0; i < ITEM_COUNT; i++)
+	{
+		// New item
+		Item item;
+
+		// Create Position2D for item
+		Position2D spawnPos;
+
+		// Generate spawn position for item until position not equal to player or enemy position
+		do
+		{
+			spawnPos = generateSpawnPos();
+		} while (isOccupied(spawnPos));
+
+		// Set item position to generated spawn position
+		item.setPosition(spawnPos.x, spawnPos.y);
+
+		// Add item to world items
+		worldItems.push_back(item);
+	}
+}
 
 // run the game: welcome message, process main game loop (input, update, render)
 void Game::run()
@@ -100,8 +156,11 @@ void Game::input()
 				// Quit the game
 				running = false;
 				break;
+			case 'e':
+				playerPickUpItem();
+				break;
 			default:
-				cout << "Invalid input. Use WASD keys to move, Q to quit." << endl;
+				cout << "Invalid input. Use WASD keys to move, Q to quit.\n" << endl;
 				break;
 		}
 		playerTurn = 0;
@@ -135,60 +194,88 @@ void Game::update()
 	{
 		enemyMove();
 	}
-	puts(""); // New line after update for better readability
+
+	cout << endl; // empty line
 	playerTurn = 1;
 }
 
 // Render game state to the screen,	display player health, inventory, etc., display game world, enemies, etc.
 void Game::render()
 {
-	//printf("\nDUNGEON CRAWLER\n\n"); // top toolbar with game title and stats
-	
 	// Print player and enemy stats
-	printf("Player | HP: %3d | STR: %2d | DEF: %2d | POS: %2d,%2d\n", 
-		player.getHealth(), player.getStrength(), player.getDefense(), player.getPosition().x, player.getPosition().y);
+	printf("Player %3d HP  %2d STR  %2d DEF  LOOT: ", 
+		player.getHealth(), player.getStrength(), player.getDefense());
+	player.printInventory();
 	if (enemy.isAlive())
 	{
-		printf("Enemy  | HP: %3d | STR: %2d | DEF: %2d | POS: %2d,%2d\n",
-			enemy.getHealth(), enemy.getStrength(), enemy.getDefense(), enemy.getPosition().x, enemy.getPosition().y);
+		printf("Enemy  %3d HP  %2d STR  %2d DEF\n",
+			enemy.getHealth(), enemy.getStrength(), enemy.getDefense());
 	}
-	puts(""); // New line after stats
+	cout << endl; // New line after stats
 
 	// Render the grid map with the player icon
 	//map.print(); // debugging: print the map to the console
 	for (int y = 0; y < map.getHeight(); y++)
 	{
 		for (int x = 0; x < map.getWidth(); x++) {
+			// PLAYER
 			if (player.getPosition() == Position2D{ x, y } && player.isAlive())
 			{
 				cout << player.getIcon(); // print player icon if player is at this coordinate
 			}
+			// ENEMY
 			else if (enemy.getPosition() == Position2D{ x, y } && enemy.isAlive())
 			{
 				cout << enemy.getIcon(); // print enemy icon if enemy is at this coordinate
 			}
 			else
 			{
-				cout << map.getTileIcon(x, y); // print tile icon for the current tile
+				// ITEM SEARCH
+				bool itemDrawn = false;
+
+				for (Item &item : worldItems)
+				{
+					if (!item.isCollected() &&
+						item.getPosition() == Position2D{ x, y })
+					{
+						cout << item.getIcon();
+						itemDrawn = true;
+						break;
+					}
+				}
+
+				// TILE
+				if (!itemDrawn)
+				{
+					cout << map.getTileIcon(x, y);
+				}
+
 			}
 		}
-		puts(""); // New line after each row
+		cout << endl; // New line after each row
 	}
 
 	if (player.isAlive() && enemy.isAlive())
 	{
-		printf("\n%s\n", playerTurn ? "Your turn. Use WASD to move, X to attack, Q to quit." : "Enemy turn.");
-		printf("Enemy adjacent to player? %s\n", isEnemyAdjacentToPlayer() ? "Yes" : "No");
+		printf("\n%s\n", playerTurn ? "Your turn. Use WASD to move or Q to quit." : "Enemy turn.");
+		printf("Enemy adjacent to player? %s.%s\n", 
+			isEnemyAdjacentToPlayer() ? "Yes" : "No", isEnemyAdjacentToPlayer() && playerTurn ? " Use X to attack." : "");
+		
+		for (Item item : worldItems)
+		{
+			if (player.getPosition() == item.getPosition() && playerTurn && !item.isCollected())
+			{
+				cout << "Stumbled on item: " << item.getName() << "." << " Use E to equip/pick up.\n";
+			}
+		}
 	}
-	puts("");
+	cout << endl;
 }
 
 
-// Generate a random valid walkable coordinate and assign it to the player
+// Generate a random walkable coordinate and assign it to the player
 Position2D Game::generateSpawnPos()
 {
-	random_device randNumGen; // Obtain a random seed from the hardware
-	mt19937 randEngine(randNumGen()); // Initialize the standard Mersenne Twister engine with the seed
 
 	// Define the inclusive range [] for x and y; exclude walls
 	uniform_int_distribution<int> rangeX(1, map.getWidth() - 2);
@@ -199,8 +286,8 @@ Position2D Game::generateSpawnPos()
 	// Generate random x and y coordinates for the spawn position, regenerate if not walkable
 	do
 	{
-		pos.x = rangeX(randEngine);
-		pos.y = rangeY(randEngine);
+		pos.x = rangeX(m_engine);
+		pos.y = rangeY(m_engine);
 	} while (!map.isWalkable(pos.x, pos.y));
 
 	return pos; // return the generated spawn position coordinates
@@ -216,12 +303,7 @@ void Game::playerMove(int x, int y)
 	if (map.isWalkable(newPos.x, newPos.y) && (!enemy.isAlive() || !(newPos == enemy.getPosition())))
 	{
 		player.setPosition(newPos.x, newPos.y);
-		cout << "Moved " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ". ";
-		/*if (enemy.isAlive() && isEnemyAdjacentToPlayer())
-		{
-			cout << "Enemy nearby! Use X to attack.";
-		}*/
-		cout << endl;
+		cout << "You moved " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ". " << endl;
 	}
 	else if (enemy.isAlive() && newPos == enemy.getPosition()) // don't move if player is trying to move into the enemy's position
 	{
@@ -231,6 +313,7 @@ void Game::playerMove(int x, int y)
 	{
 		cout << "Cannot move " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ", tile is not walkable.\n";
 	}
+	cout << endl; // empty line
 }
 
 // Enemy movement behavior and pattern
@@ -251,13 +334,11 @@ void Game::enemyMove()
 	if (enemyStunnedTurnsCount <= ENEMY_STUNNED_TURNS)
 	{
 		enemyStunnedTurnsCount++;
+		cout << "Enemy gathering its senses." << endl;
 		return;
 	}
 	else
 	{
-		random_device randNumGen; // Obtain a random seed from the hardware
-		mt19937 randEngine(randNumGen()); // Initialize the standard Mersenne Twister engine with the seed
-
 		// Define the inclusive range [] for x and y;
 		uniform_int_distribution<int> range(-1, 1);
 
@@ -270,24 +351,31 @@ void Game::enemyMove()
 		// Generate random x and y coordinates for the spawn position, regenerate if not walkable
 		do
 		{
-			x = range(randEngine);
-			y = range(randEngine);
+			x = range(m_engine);
+			y = range(m_engine);
 			pos.x = enemy.getPosition().x + x;
 			pos.y = enemy.getPosition().y + y;
 		} while (!map.isWalkable(pos.x, pos.y) || (x == 0 && y == 0));
 
-		if (!(pos == player.getPosition()))
+		bool blockedByItem = false;
+
+		for (const Item &item : worldItems)
+		{
+			if (!item.isCollected() && item.getPosition() == pos)
+			{
+				blockedByItem = true;
+				break;
+			}
+		}
+
+		if (!(pos == player.getPosition()) && !blockedByItem)
 		{
 			enemy.setPosition(pos.x, pos.y);
 			printf("Enemy moved %s.\n", x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up")));
 		}
-		else if (pos == player.getPosition()) // check if the enemy is trying to move into the player's position
+		else if (pos == player.getPosition() || blockedByItem) 
 		{
-			cout << "Enemy attempted move, but cannot move there - overlaps with player.\n";
-		}
-		else
-		{
-			cout << "Enemy cannot move.\n";
+			cout << "Enemy attempted move, but cannot move there!\n";
 		}
 	}
 }
@@ -313,7 +401,7 @@ bool Game::isEnemyAdjacentToPlayer() const
 	for (int x = -1; x <= 1; x++) {
 		for (int y = -1; y <= 1; y++) 
 		{
-			if (Position2D{ playerPos.x + x, playerPos.y + y } == enemyPos) 
+			if (!(x==0 && y==0) && Position2D{ playerPos.x + x, playerPos.y + y } == enemyPos) 
 			{
 				return true; // Enemy is adjacent to the player
 			}
@@ -373,4 +461,69 @@ void Game::enemyAttack()
 	{
 		cout << "You have evaded the enemy's attack.\n";
 	}
+}
+
+// Marks item as picked up if player overlaps same position as item
+void Game::playerPickUpItem()
+{
+	bool worldItemsExist = false;
+
+	for (Item& item : worldItems)
+	{
+		if (item.getPosition() == player.getPosition() && !item.isCollected())
+		{
+			// give player +10 HP
+			player.setHealth(player.getHealth() + 10);
+			cout << item.getName() << " acquired. You've gained 10 HP!\n";
+			item.collect();
+			return;
+		}
+
+		if (!item.isCollected())
+		{
+			worldItemsExist = true;
+		}
+	}
+
+	if (worldItemsExist)
+	{
+		cout << "To pick up an existing item, you must travel to its location.\n";
+	}
+	else
+	{
+		cout << "No items exist.\n";
+	}
+	cout << endl; // empty line
+}
+
+bool Game::isOccupied(const Position2D &pos) const
+{
+	// Map
+	if (!map.isWalkable(pos.x, pos.y))
+	{
+		return true;
+	}
+
+	// Player
+	if (pos == player.getPosition())
+	{
+		return true;
+	}
+
+	// Enemies
+	if (pos == enemy.getPosition())
+	{
+		return true;
+	}
+	
+	// Items
+	for (const Item& item : worldItems)
+	{
+		if (item.getPosition() == pos)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

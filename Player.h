@@ -1,6 +1,8 @@
 // Player class declaration
 #pragma once
+#include <vector>
 #include "Position2D.h"
+#include "Item.h"
 
 // class Player definition
 class Player
@@ -8,20 +10,23 @@ class Player
 public:
 	explicit Player(); // default constructor
 
-	// set functions for player attributes (e.g., health, position)
-	Position2D getPosition() const; // get player's x-coordinate position
+	// get functions for player attributes (e.g., health, position)
+	Position2D getPosition() const; // get player's position
 	char getIcon() const; // get player's icon
 	int getHealth() const; // get player's health
 	int getStrength() const; // get player's strength
 	int getDefense() const; // get player's defense
 	bool isAlive() const; // check if the player is alive or defeated
 
-	// get functions for player attributes (e.g., health, position)
-	void setPosition(int x, int y); // set player's x-coordinate position
+	// set functions for player attributes (e.g., health, position)
+	void setPosition(int x, int y); // set player's position
 	void setHealth(int newHealth); // set player's health
 	void setStrength(int newStrength); // set player's strength
 	//void setDefense(int newDefense); // set player's defense
 
+	int getInventorySize() const;
+	void printInventory() const;
+	void addItem(const Item &item);
 
 private:
 	// player attributes for position and representation on the map
@@ -34,5 +39,7 @@ private:
 	int health = 5; // player's health
 	int strength = 1; // player's strength (for combat calculations)
 	int defense = 0; // player's defense (for combat calculations)
+	
+	std::vector<Item> inventory; // loot storage
 };
 
