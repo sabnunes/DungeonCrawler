@@ -5,9 +5,9 @@ enum class TileType
 {
 	Wall,
 	Floor,
-	Water
+	Water,
+	Rock
 };
-
 
 // class GridMap definition
 class GridMap
@@ -27,13 +27,11 @@ public:
 	bool isValidPosition(int x, int y) const; // check if a position is within map bounds
 	bool isWalkable(int x, int y) const; // check if a tile is walkable (e.g., not a wall)
 
-	void print() const; // print the map to the console for debugging purposes
-
 private:
 	// used for map dimensions and tile storage: system boundaries, rendering size, movement bounds
 	static const int START_POS_X = 0; // minimum x-coordinate start position of the map
 	static const int START_POS_Y = 0; // minimum y-coordinate start position of the map
-	static const int WIDTH = 6; // fixed width of the map (49 aligns with player stats)
+	static const int WIDTH = 10; // fixed width of the map (49 aligns with player stats)
 	static const int HEIGHT = 6; // fixed height of the map
 
 	TileType tiles[WIDTH][HEIGHT]; // 2D array to hold tile data

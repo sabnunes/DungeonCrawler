@@ -75,30 +75,3 @@ bool GridMap::isWalkable(int x, int y) const
 {
 	return isValidPosition(x, y) && getTile(x, y) != TileType::Wall && getTile(x, y) != TileType::Water;
 }
-
-// TEMP Print the map to the console for debugging purposes
-void GridMap::print() const
-{
-	for (int y = START_POS_Y; y < HEIGHT; y++)
-	{
-		for (int x = START_POS_X; x < WIDTH; x++)
-		{
-			switch (tiles[x][y]) 
-			{
-			case TileType::Wall:
-				cout << "X"; // Wall
-				break;
-			case TileType::Floor:
-				cout << " "; // Floor
-				break;
-			case TileType::Water:
-				cout << "~"; // Water
-				break;
-			default:
-				cout << "?"; // Unknown tile type
-				break;
-			}
-		}
-		cout << endl; // New line after each row
-	}
-}

@@ -8,8 +8,17 @@ enum class ItemType
 {
 	HealthPotion,
 	StrengthPotion,
-	Sword,
+	DefensePotion,
+	//Sword,
+	//Shield
+	/* Future item ideas
+	Sword
 	Shield
+	Key
+	Gold
+	Quest Item
+	Bow
+	Helmet*/
 };
 
 // Item class definition
@@ -18,11 +27,14 @@ class Item
 public:
 	explicit Item(); // default constructor
 
+
+	ItemType getType() const; // get items' type
 	Position2D getPosition() const; // get item's position
-	char getIcon() const; // get item's icon
 	std::string getName() const; // get item's name
+	char getIcon() const; // get item's icon
 	bool isCollected() const; // returns if item is collected
 
+	void setType(ItemType newType); // set item's type
 	void setPosition(int x, int y); // set item's position
 	void collect(); // collect item
 
@@ -31,10 +43,7 @@ private:
 	int positionX = 1; // item's x-coordinate position (starting at 1 to avoid wall)
 	int positionY = 1; // item's y-coordinate position (starting at 1 to avoid wall)
 
-	const char icon = 'I'; // representation of the item on the map
-	const std::string name = "Health Potion"; // item name
-    bool collected = false; // boolean that represents if item is collected
-
-
+	ItemType type = ItemType::HealthPotion;
+	bool collected = false; // boolean that represents if item is collected
 };
 

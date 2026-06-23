@@ -8,6 +8,11 @@ Item::Item()
 
 } // end Item constructor
 
+ItemType Item::getType() const
+{
+	return type;
+}
+
 // Get item's position
 Position2D Item::getPosition() const
 {
@@ -17,22 +22,15 @@ Position2D Item::getPosition() const
 	return pos;
 }
 
-// Get item's char icon
-char Item::getIcon() const
-{
-	return icon;
-}
-
-// Get item's name
-std::string Item::getName() const
-{
-	return name;
-}
-
 // Returns if item is collected
 bool Item::isCollected() const
 {
 	return collected;
+}
+
+void Item::setType(ItemType newType)
+{
+	type = newType;
 }
 
 // Set item's position
@@ -49,24 +47,37 @@ void Item::collect()
 }
 
 
+// Get the character representation of the item
+char Item::getIcon() const
+{
+	switch (type)
+	{
+	case ItemType::HealthPotion:
+		return 'H'; 
+	case ItemType::StrengthPotion:
+		return 'S'; 
+	case ItemType::DefensePotion:
+		return 'D'; 
+	//case Item::Sword:
+	//	return '\\';
+	//case Item::Shield:
+	//	return '(';
+	default:
+		return '?'; 
+	}
+}
 
-
-//// Get the item type at a specific position
-//ItemType Item::getItem(int x, int y) const
-//{
-//	return ItemType::HealthPotion;
-//}
-//
-//// Get the character representation of the item at a specific position
-//char Item::getItemIcon(string name) const
-//{
-//	switch (1)
-//	{
-//	case Item::HealthPotion:
-//		return 'X'; 
-//	case Item::Floor:
-//		return ' '; 
-//	default:
-//		return '?'; 
-//	}
-//}
+std::string Item::getName() const
+{
+	switch (type)
+	{
+	case ItemType::HealthPotion:
+		return "Health Potion";
+	case ItemType::StrengthPotion:
+		return "Strength Potion";
+	case ItemType::DefensePotion:
+		return "Defense Potion";
+	default:
+		return "Error: unknown item type name";
+	}
+}

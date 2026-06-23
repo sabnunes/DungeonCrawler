@@ -22,11 +22,13 @@ public:
 	void setPosition(int x, int y); // set player's position
 	void setHealth(int newHealth); // set player's health
 	void setStrength(int newStrength); // set player's strength
-	//void setDefense(int newDefense); // set player's defense
+	void setDefense(int newDefense); // set player's defense
 
 	int getInventorySize() const;
+	void addInventoryItem(const Item &item);
+	Item getInventoryItem() const;
+	void useInventoryItem();
 	void printInventory() const;
-	void addItem(const Item &item);
 
 private:
 	// player attributes for position and representation on the map

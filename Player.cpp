@@ -53,11 +53,19 @@ void Player::setStrength(int newStrength)
 	strength = newStrength;
 }
 
+// Set player's defense
+void Player::setDefense(int newDefense)
+{
+	defense = newDefense;
+}
+
+// Returns player inventory size
 int Player::getInventorySize() const
 {
 	return (int) inventory.size();
 }
 
+// Prints player's inventory items
 void Player::printInventory() const
 {
 	if (inventory.size() > 0)
@@ -74,11 +82,23 @@ void Player::printInventory() const
 	cout << endl; // empty line
 }
 
-void Player::addItem(const Item &item)
+// Adds item to player inventory
+void Player::addInventoryItem(const Item &item)
 {
 	inventory.push_back(item);
 }
 
+// Returns last item in player inventory
+Item Player::getInventoryItem() const
+{
+	return inventory.back();
+}
+
+// Removes last item from player's inventory
+void Player::useInventoryItem()
+{
+	inventory.pop_back(); // removes last only
+}
 
 // Get player's strength
 int Player::getStrength() const

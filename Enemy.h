@@ -2,35 +2,49 @@
 #pragma once
 #include "Position2D.h"
 
+enum class EnemyType
+{
+	Slime,
+	Leopard,
+	Doe
+	/* 
+	Scorpion,
+	Skeleton
+	*/
+};
+
 // class Enemy definition
 class Enemy
 {
 public:
 	explicit Enemy(); // default constructor
+	explicit Enemy(EnemyType t); // default constructor
 
 	// set functions for enemy attributes (e.g., health, position)
-	Position2D getPosition() const; // get enemy's position
-	char getIcon() const; // get enemy's icon
-	int getHealth() const; // get enemy's health
-	int getStrength() const; // get enemy's strength
-	int getDefense() const; // get enemy's defense
-	bool isAlive() const; // check if the enemy is alive or defeated
+	EnemyType getType() const;		// returns enemy type
+	Position2D getPosition() const; // returns enemy position
+	std::string getName() const;	// returns enemy name
+	char getIcon() const;			// returns enemy icon
+	int getHealth() const;			// returns enemy health
+	int getStrength() const;		// returns enemy strength
+	int getDefense() const;			// returns enemy defense
+	bool isAlive() const;			// returns if enemy is alive or dead
 
 	// get functions for enemy attributes (e.g., health, position)
-	void setPosition(int x, int y); // set enemy's position
-	void setHealth(int newHealth); // set enemy's health
-
+	void setPosition(int x, int y);		// set enemy position
+	void setHealth(int newHealth);		// set enemy health
 
 private:
 	// enemy attributes for position and representation on the map
-	int positionX = 1; // enemy's x-coordinate position (starting at 1 to avoid wall)
-	int positionY = 1; // enemy's y-coordinate position (starting at 1 to avoid wall)
-
-	const char icon = 'E'; // representation of the enemy on the map
+	EnemyType type = EnemyType::Slime; // enemy type
+	int positionX = 1;			// enemy x-coordinate position (starting at 1 to avoid wall)
+	int positionY = 1;			// enemy y-coordinate position (starting at 1 to avoid wall)
+	char icon = 'E';			// representation of the enemy on the map
+	std::string name = "Enemy";	// enemy name
 
 	// enemy attributes for combat and other mechanics
-	int health = 4; // enemy's health
-	int strength = 1; // enemy's strength (for combat calculations)
-	int defense = 0; // enemy's defense (for combat calculations)
+	int health = 1;		// enemy health
+	int strength = 0;	// enemy strength (for combat calculations)
+	int defense = 0;	// enemy defense (for combat calculations)
 
 };

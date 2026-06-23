@@ -1,11 +1,58 @@
 // Member-function definitions for the Enemy class
 #include <iostream>
 #include "Enemy.h"
+using namespace std;
 
 // Constructor
 Enemy::Enemy()
 {
-} // end Enemy constructor	
+
+}
+
+// Constructor
+Enemy::Enemy(EnemyType t)
+{
+	switch (t)
+	{
+	case EnemyType::Slime:
+		health = 3;
+		strength = 1;
+		defense = 0;
+		icon = 's';
+		name = "Slime";
+		type = EnemyType::Slime;
+		break;
+
+	case EnemyType::Leopard:
+		health = 10;
+		strength = 3;
+		defense = 0;
+		icon = 'l';
+		name = "Leopard";
+		type = EnemyType::Leopard;
+		break;
+
+	case EnemyType::Doe:
+		health = 2;
+		strength = 0;
+		defense = 0;
+		icon = 'd';
+		name = "Doe";
+		type = EnemyType::Doe;
+		break;
+	}
+} // end Enemy constructors	
+
+
+EnemyType Enemy::getType() const
+{
+	return type;
+}
+
+std::string Enemy::getName() const
+{
+	return name;
+}
 
 // Get enemy's health
 int Enemy::getHealth() const
@@ -22,11 +69,12 @@ Position2D Enemy::getPosition() const
 	return pos;
 }
 
-// Get enemy's char icon
+// Get enemy char icon
 char Enemy::getIcon() const
 {
 	return icon;
 }
+
 
 // Set enemy's position
 void Enemy::setPosition(int x, int y)
