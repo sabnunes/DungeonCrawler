@@ -38,7 +38,7 @@ private:
 	const char icon = 'P'; // representation of the player on the map
 
 	// player attributes for combat and other mechanics
-	int health = 5; // player's health
+	int health = 15; // player's health
 	int strength = 1; // player's strength (for combat calculations)
 	int defense = 0; // player's defense (for combat calculations)
 	

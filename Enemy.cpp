@@ -26,7 +26,7 @@ Enemy::Enemy(EnemyType t)
 	case EnemyType::Leopard:
 		health = 10;
 		strength = 3;
-		defense = 0;
+		defense = 1;
 		icon = 'l';
 		name = "Leopard";
 		type = EnemyType::Leopard;
@@ -93,6 +93,11 @@ void Enemy::setHealth(int newHealth)
 	}
 }
 
+void Enemy::setStunnedState(bool state)
+{
+	isStunned = state;
+}
+
 // Get enemy's strength
 int Enemy::getStrength() const
 {
@@ -109,4 +114,9 @@ int Enemy::getDefense() const
 bool Enemy::isAlive() const
 {
 	return getHealth() > 0;
+}
+
+bool Enemy::getStunnedState() const
+{
+	return isStunned;
 }

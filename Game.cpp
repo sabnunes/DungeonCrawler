@@ -18,12 +18,46 @@ Game::Game()
 
 } // end Game constructor
 
+
+void Game::printLegend()
+{
+	cout << "Legend" << endl;
+	printf("%-10s  %-10s  %-10s\n", "CONTROLS", "ENEMIES", "LOOT");
+	printf("%-10s  %-10s  %-10s\n", "W up", "s Slime", "H HP+10");
+	printf("%-10s  %-10s  %-10s\n", "A left", "l Leopard", "S STR++");
+	printf("%-10s  %-10s  %-10s\n", "S down", "d Doe", "D DEF++");
+	printf("%-10s  %-10s  %-10s\n", "D right", "", "");
+	printf("%-10s  %-10s  %-10s\n", "X attack", "", "");
+	printf("%-10s  %-10s  %-10s\n", "U use loot", "", "");
+	printf("%-10s  %-10s  %-10s\n", "Q quit", "", "");
+	cout << endl;
+}
+
 // Initializes player, enemies, and items
 void Game::initWorld()
 {
+	cout << "Welcome to DUNGEON CRAWLER\n" << endl;
+	//cout << "Menu :\n1. Start Game\n2. Quit\nEnter your choice: ";
+	printLegend();
+
 	spawnPlayer();	// Spawns player
-	spawnEnemies();	// Spawns enemies
-	spawnItems();	// Spawns items
+	nextLevel();
+}
+
+void Game::nextLevel()
+{
+	currentLevel++;
+
+	// Print level
+	cout << "LEVEL " << currentLevel << endl;
+	cout << endl; // empty line
+
+	//resetLevelState();
+	playerTurn = true;
+	enemies.clear();
+
+	spawnEnemies();
+	spawnItems();
 }
 
 // Spawns player
@@ -34,32 +68,62 @@ void Game::spawnPlayer()
 	player.setPosition(spawnPos.x, spawnPos.y);	// Set player position to generated spawn position
 }
 
-// Spawns enemies
 void Game::spawnEnemies()
 {
-	enemies.clear();
-
-	// Spawn all enemies
-	for (int i = 0; i < ENEMY_COUNT; i++)
+	switch (currentLevel)
 	{
-		// New enemy
-		Enemy enemy(EnemyType::Doe);
+	case 1:
+		spawnEnemy(EnemyType::Slime);
+		break;
 
-		// Create Position2D
-		Position2D spawnPos;
+	case 2:
+		spawnEnemy(EnemyType::Slime);
+		spawnEnemy(EnemyType::Slime);
+		break;
 
-		// Generate spawn position until position not equal to player or existing enemy position
-		do
-		{
-			spawnPos = generateSpawnPos();
-		} while (isOccupied(spawnPos));
-
-		// Set item position to generated spawn position
-		enemy.setPosition(spawnPos.x, spawnPos.y);
-
-		// Add item to world items
-		enemies.push_back(enemy);
+	case 3:
+		spawnEnemy(EnemyType::Slime);
+		spawnEnemy(EnemyType::Slime);
+		spawnEnemy(EnemyType::Leopard);
+		break;
+	case 4:
+		spawnEnemy(EnemyType::Doe);
+		break;
+	case 5:
+		spawnEnemy(EnemyType::Slime);
+		spawnEnemy(EnemyType::Slime);
+		spawnEnemy(EnemyType::Slime);
+		spawnEnemy(EnemyType::Leopard);
+		spawnEnemy(EnemyType::Leopard);
+		spawnEnemy(EnemyType::Doe);
+		break;
+	default:
+		cout << "ERROR : no more enemy combinations to spawn" << endl;
 	}
+}
+
+
+
+// Spawns enemies
+void Game::spawnEnemy(EnemyType type)
+{
+	// New enemy
+	Enemy enemy(type);
+
+	// Create Position2D
+	Position2D spawnPos;
+	
+	// Generate spawn position until position not equal to player or existing enemy position
+	do
+	{
+		spawnPos = generateSpawnPos();
+	} while (isOccupied(spawnPos));
+
+	// Set item position to generated spawn position
+	enemy.setPosition(spawnPos.x, spawnPos.y);
+
+	// Add item to world items
+	enemies.push_back(enemy);
 }
 
 // Spawns items
@@ -67,10 +131,12 @@ void Game::spawnItems()
 {
 	worldItems.clear();
 
+	itemCount = currentLevel == 1 ? 0 : 1 + currentLevel / 2;
+
 	uniform_int_distribution<int> itemTypeRange(ITEM_TYPE_RANGE_MIN, ITEM_TYPE_RANGE_MAX);
 
 	// Spawn all items
-	for (int i = 0; i < ITEM_COUNT; i++)
+	for (int i = 0; i < itemCount; i++)
 	{
 		// New item
 		Item item;
@@ -100,8 +166,6 @@ void Game::spawnItems()
 // run the game: welcome message, process main game loop (input, update, render)
 void Game::run()
 {
-	cout << "Welcome to DUNGEON CRAWLER\n" << endl;
-	//cout << "Menu :\n1. Start Game\n2. Quit\nEnter your choice: ";
 
 	running = true; // set running flag to true to start the game loop
 
@@ -114,12 +178,20 @@ void Game::run()
 		}
 		else if (areEnemiesAlive() && !playerTurn)
 		{
-			update();
+			updateEnemies();
 		}
 		else
 		{
-			cout << (player.isAlive() ? "You've defeated all enemies! You win!" : "You are dead. Game over.") << endl;
-			running = 0;
+			if (player.isAlive() && currentLevel < MAX_LEVEL)
+			{
+				cout << "You've defeated all enemies! NEXT LEVEL!" << endl;
+				nextLevel();
+			}
+			else
+			{
+				cout << (player.isAlive() ? "You've defeated all enemies! You win!" : "You are dead. Game over.") << endl;
+				running = 0;
+			}
 		}
 	}
 	cout << "Thanks for playing!" << endl;
@@ -180,7 +252,7 @@ void Game::input()
 }
 
 // Update game state based on input and other factors, e.g., move enemies, check for collisions, update health, etc.
-void Game::update()
+void Game::updateEnemies()
 {
 	// exit if no enemies alive
 	if (!areEnemiesAlive())
@@ -190,13 +262,16 @@ void Game::update()
 
 	for (Enemy& enemy : enemies)
 	{
-		if (isEnemyAdjacentToPlayer(enemy))
+		if (enemy.isAlive())
 		{
-			enemyAttack(enemy);
-		}
-		else
-		{
-			enemyMove(enemy);
+			if (isLiveEnemyAdjacentToPlayer(enemy))
+			{
+				enemyAttack(enemy);
+			}
+			else
+			{
+				enemyMove(enemy);
+			}
 		}
 	}	
 
@@ -208,9 +283,15 @@ void Game::update()
 void Game::render()
 {
 	// Print player and enemy stats
-	printf("Player  %3d HP  %2d STR  %2d DEF  LOOT: ", 
+	printf("Player  %3d HP  %2d STR  %2d DEF", 
 		player.getHealth(), player.getStrength(), player.getDefense());
-	player.printInventory();
+	if (playerTurn && player.getInventorySize() > 0)
+	{
+		cout << "  LOOT ";
+		player.printInventory();
+	}
+	cout << endl;
+
 	for (const Enemy& enemy : enemies)
 	{
 		if (enemy.isAlive())
@@ -266,7 +347,6 @@ void Game::render()
 					{
 						cout << map.getTileIcon(x, y);
 					}
-
 				}
 			}
 		}
@@ -276,9 +356,11 @@ void Game::render()
 	if (player.isAlive() && areEnemiesAlive())
 	{
 		printf("\n%s\n", playerTurn ? "Your turn. Use WASD to move or Q to quit." : "Enemy turn.");
-		printf("Enemy adjacent to player? %s.%s\n", 
-			isAnyEnemyAdjacentToPlayer() ? "Yes" : "No", isAnyEnemyAdjacentToPlayer() && playerTurn ? " Use X to attack." : "");
-		
+		if (areAnyLiveEnemyAdjacentToPlayer())
+		{
+			cout << "Enemy adjacent to player." << (playerTurn ? " Use X to attack!" : "") << endl;
+		}
+
 		for (const Item &item : worldItems)
 		{
 			if (player.getPosition() == item.getPosition() && playerTurn && !item.isCollected())
@@ -354,9 +436,9 @@ void Game::enemyMove(Enemy& enemy)
 	// chance of no movement
 
 	// STUNED/IDLE LOGIC
-	if (enemyStunnedTurnsCount <= ENEMY_STUNNED_TURNS)
+	if (enemy.getStunnedState() == true)
 	{
-		enemyStunnedTurnsCount++;
+		enemy.setStunnedState(false);
 		cout << enemy.getName() << " gathering its senses." << endl;
 		return;
 	}
@@ -490,7 +572,7 @@ void Game::enemyMove(Enemy& enemy)
 }
 
 // Check if the enemy and player are in adjacent tiles (including diagonals)
-bool Game::isEnemyAdjacentToPlayer(Enemy enemy) const
+bool Game::isLiveEnemyAdjacentToPlayer(const Enemy &enemy) const
 {
 	 /* check:
 	 x:-1 y:-1 upper left
@@ -509,7 +591,7 @@ bool Game::isEnemyAdjacentToPlayer(Enemy enemy) const
 	for (int x = -1; x <= 1; x++) {
 		for (int y = -1; y <= 1; y++) 
 		{
-			if (!(x == 0 && y == 0) && Position2D{ playerPos.x + x, playerPos.y + y } == enemy.getPosition())
+			if (!(x == 0 && y == 0) && enemy.isAlive() && Position2D{ playerPos.x + x, playerPos.y + y } == enemy.getPosition())
 			{
 				return true; // Enemy is adjacent to the player
 			}
@@ -519,7 +601,7 @@ bool Game::isEnemyAdjacentToPlayer(Enemy enemy) const
 	return false;
 }
 
-bool Game::isAnyEnemyAdjacentToPlayer() const
+bool Game::areAnyLiveEnemyAdjacentToPlayer() const
 {
 	for (const Enemy& enemy : enemies)
 	{
@@ -530,7 +612,7 @@ bool Game::isAnyEnemyAdjacentToPlayer() const
 		for (int x = -1; x <= 1; x++) {
 			for (int y = -1; y <= 1; y++)
 			{
-				if (!(x == 0 && y == 0) && Position2D { playerPos.x + x, playerPos.y + y } == enemy.getPosition())
+				if (!(x == 0 && y == 0) && enemy.isAlive() && Position2D { playerPos.x + x, playerPos.y + y } == enemy.getPosition())
 				{
 					return true; // Enemy is adjacent to the player
 				}
@@ -546,15 +628,15 @@ void Game::playerAttack()
 {
 	cout << "Attack enemy." << endl;
 	// Implement attack logic here
-	if (areEnemiesAlive() && isAnyEnemyAdjacentToPlayer())
+	if (areEnemiesAlive() && areAnyLiveEnemyAdjacentToPlayer())
 	{
 		for (Enemy& enemy : enemies)
 		{
-			if (isEnemyAdjacentToPlayer(enemy))
+			if (enemy.isAlive() && isLiveEnemyAdjacentToPlayer(enemy))
 			{
 				// player attacks enemy
-				enemy.setHealth(enemy.getHealth() - player.getStrength());
-				enemyStunnedTurnsCount = 0; // reset enemy movement pattern if attacked
+				enemy.setHealth(enemy.getHealth() - abs(player.getStrength()-enemy.getDefense()));
+				enemy.setStunnedState(false); // reset enemy movement pattern if attacked
 				cout << "Attack successful. ";
 
 				if (enemy.getHealth() <= 0)
@@ -578,14 +660,14 @@ void Game::playerAttack()
 }
 
 // Enemy attacks player, player loses life if attack successful, check for player defeat
-void Game::enemyAttack(Enemy enemy)
+void Game::enemyAttack(const Enemy &enemy)
 {
 	cout << enemy.getName() << " attacked you!" << endl;
 
-	if (player.getHealth() > player.getHealth() - enemy.getStrength())
+	if (player.getDefense() <= enemy.getStrength())
 	{
 		// enemy attacks player
-		player.setHealth(player.getHealth() - enemy.getStrength());
+		player.setHealth(player.getHealth() - abs(enemy.getStrength()-player.getDefense()));
 		cout << enemy.getName() << " attack successful. You lost " << enemy.getStrength() << " HP." << endl;
 		if (player.getHealth() <= 0)
 		{

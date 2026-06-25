@@ -29,10 +29,12 @@ public:
 	int getStrength() const;		// returns enemy strength
 	int getDefense() const;			// returns enemy defense
 	bool isAlive() const;			// returns if enemy is alive or dead
+	bool getStunnedState() const;	// returns if enemy is stunned
 
 	// get functions for enemy attributes (e.g., health, position)
 	void setPosition(int x, int y);		// set enemy position
 	void setHealth(int newHealth);		// set enemy health
+	void setStunnedState(bool state);	// set enemy stunned state
 
 private:
 	// enemy attributes for position and representation on the map
@@ -47,4 +49,5 @@ private:
 	int strength = 0;	// enemy strength (for combat calculations)
 	int defense = 0;	// enemy defense (for combat calculations)
 
+	bool isStunned = true;
 };

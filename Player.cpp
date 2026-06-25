@@ -70,16 +70,17 @@ void Player::printInventory() const
 {
 	if (inventory.size() > 0)
 	{
-		for (const Item& item : inventory)
+		for (size_t i = 0; i < inventory.size() -1; i++)
 		{
-			cout << item.getName() << " ";
+			cout << inventory[0].getName() << ", ";
 		}
+
+		cout << inventory[inventory.size()-1].getName();
 	}
 	else
 	{
 		cout << "none";
 	}
-	cout << endl; // empty line
 }
 
 // Adds item to player inventory
