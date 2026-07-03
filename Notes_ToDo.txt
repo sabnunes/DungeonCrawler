@@ -488,18 +488,15 @@ Areas of expansion:
 Menu options
 Player type selection
 Procedural map
-Levels with increased difficulty
 Clear console so we don't scroll to infinity
 Multimove input interpretation so it doesn't scroll 20 times for 20 actions
-Enemy types
 Entity class above character above player and enemy
 "miss" or "wasted attack" mechanic in the future where attacking without an enemy nearby has consequences (e.g., lose health, alert enemy, etc.)
 "ranged attack" mechanic where player can attack enemies from a distance but with reduced damage or accuracy
 
 attack enemy with direction
-change multiple RNG to single RNG
-enemy movement patterns
 Player and Enemy inherit from Character
+improve doe corner
 
 message log or event system for
 Moved left
@@ -514,6 +511,8 @@ to replace cout
 
 enemy variations: rock (attack: none, move: none, insta death upon attack due to pulling a muscle and no healthcare nearby)
 incl. levels - ea. level increases num of e
+
+grid tile type: Lava for mines
 
 making the enemy's behavior interesting (patrol, chase, flee when damaged, etc.)
 

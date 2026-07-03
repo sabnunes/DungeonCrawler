@@ -1,0 +1,277 @@
+map generation
+CombatSystem
+LevelDefinition / LevelBuilder 
+SpawnSystem
+AISystem
+ConsoleRenderer
+
+combat system: A cleaner design:
+calculateDamage(attackerStats, defenderStats)
+applyDamage(entity, damage)
+resolveDeath(entity)
+This does not need to be fancy. But the rules should live in one place.
+
+enemyAI or behavior functions
+Enemy AI currently lives inside Game::enemyMove() with a switch on EnemyType.
+This is okay for three enemies, but it becomes messy quickly.
+Current AI issues:
+possibleMoves is created but mostly unused.
+Leopard movement always chooses either 1 or -1; it does not handle “same x” or “same y” cleanly.
+Doe movement has the same issue.
+Movement fallback is ad hoc.
+The code mixes behavior selection, movement validation, collision handling, and text output.
+A better design is to separate:
+Enemy type -> desired move
+Movement system -> validates move
+Game/UI -> reports result
+You do not need inheritance yet. For this project, inheritance for every enemy type would probably be overengineering right now.
+Good middle-ground options:
+Option A: switch-based behavior functions
+Keep EnemyType, but move behavior into functions:
+chooseSlimeMove()
+chooseLeopardMove()
+chooseDoeMove()
+This is simple and appropriate.
+Option B: behavior enum or strategy object
+Later, you can separate “enemy stats” from “enemy behavior.”
+Example concept:
+Slime:
+  stats: low health
+  behavior: random walk
+Leopard:
+  stats: high attack
+  behavior: chase player
+Doe:
+  stats: weak
+  behavior: flee player
+That becomes more data-driven and extensible.
+
+
+positionX and positionY separately
+Player, Enemy, and Item all store:
+int positionX;
+int positionY;
+But you already have Position2D.
+Use the abstraction you created. The current design duplicates the concept of a position across multiple classes.
+Better direction:
+Player has a Position2D
+Enemy has a Position2D
+Item has a Position2D
+
+Be careful returning objects by value vs reference
+Player::getInventoryItem() returns an Item by value:
+Item getInventoryItem() const;
+Then in Game::playerUseItem():
+const Item& item = player.getInventoryItem();
+That binds a reference to a temporary copy. It is technically okay for the lifetime of the reference in that scope, but it is misleading.
+A reviewer may ask:
+“Did the author intend to return a reference? Do they understand object lifetimes here?”
+Better options:
+Return const Item& if the item is guaranteed to exist.
+Return std::optional<Item> if it may not exist.
+Create a method like useLastInventoryItem() that safely handles empty inventory.
+
+Do not mix printf and std::cout
+You currently use both C-style printf and C++ streams.
+This is not fatal, but it looks inconsistent. Since this is a C++ portfolio project, prefer one style.
+For simple console formatting, std::cout is fine. If you want aligned formatting in modern C++, consider <iomanip>.
+
+Fix tolower
+This warning appeared after temporarily removing the Lava compile error:
+input = tolower(input);
+tolower returns an int, and it should be used carefully with character conversion.
+This is small, but warning-clean builds matter. Use <cctype> and cast intentionally, or handle accepted uppercase inputs directly.
+
+you may want a more explicit state model:
+GameState:
+  MainMenu
+  PlayerTurn
+  EnemyTurn
+  LevelComplete
+  GameOver
+  Victory
+
+enemyAI needs tightening: If the player and enemy have the same x-coordinate, the enemy moves left by default. That is not logically correct.
+helper concept: directionToTarget: returns -1, 0, or 1 for each axis
+
+Coupling is currently too high
+Game knows too much about everything:
+Enemy internals
+Item effects
+Map walkability
+Inventory behavior
+Rendering details
+Combat formulas
+Spawn rules
+This is the main long-term risk.
+The better direction is:
+Game orchestrates.
+Systems do specific work.
+Entities store state.
+Map answers spatial questions.
+Renderer displays state.
+That does not mean you need a huge architecture. It means you need cleaner boundaries.
+
+Cohesion is mixed
+Some classes are cohesive:
+Item
+Mostly cohesive. It knows item type, icon, name, position, collected state.
+Enemy
+Mostly okay, but enemy behavior is outside the class. That is not necessarily bad.
+Player
+Mostly okay, but inventory printing should not be inside Player.
+Why?
+Because Player should know what it owns, not how to format itself for the console UI. A future renderer should be able to display the inventory differently without changing gameplay state.
+
+Rendering should eventually be separated
+Game::render() does a lot:
+Prints player stats
+Prints enemy stats
+Draws map
+Draws player
+Draws enemies
+Draws items
+Prints prompts
+Prints contextual hints
+This is fine for now, but it is a natural future extraction.
+A ConsoleRenderer would increase portfolio value because it shows separation between simulation and presentation.
+Important: do this after fixing combat/spawning/AI, not before.
+
+A memorable dungeon crawler needs questions like:
+Should I fight or avoid?
+Should I use my potion now or save it?
+Can I lure the enemy into terrain?
+Can I predict enemy movement?
+Can I risk low health for a reward?
+The most portfolio-valuable addition would be one deeply polished tactical system, not five shallow features.
+Examples:
+High-value mechanic
+Enemies have readable behavior patterns:
+Slime moves randomly.
+Leopard chases aggressively.
+Doe flees and drops healing.
+Skeleton patrols.
+Scorpion poisons if adjacent for two turns.
+Then terrain interacts with behavior:
+Water blocks most enemies.
+Trees block line of sight.
+Rocks create chokepoints.
+
+7. Must-have vs nice-to-have vs overengineering
+Must-have
+These should happen before adding more gameplay:
+Project compiles from clean checkout.
+Add a build system, preferably simple CMake.
+Fix header self-sufficiency.
+Remove dead/commented future-code from active files.
+Split Game responsibilities.
+Fix combat formula.
+Make RNG seedable for deterministic testing.
+Add at least a few unit tests for combat, movement, and map walkability.
+Add a README explaining architecture and controls.
+Make level themes actually implemented or remove claims that they exist.
+
+Nice-to-have
+These would improve the project after the basics are stable:
+CombatSystem
+SpawnSystem
+ConsoleRenderer
+LevelDefinition
+Stats struct shared by player/enemies
+Seeded random generation
+Basic pathfinding or distance-based AI
+Simple event/message log
+Save/load for high score or run summary
+Architecture diagram in README
+
+Compile with warnings enabled.
+Remove or move large future-design comments out of .cpp files.
+Add a minimal README.
+
+Then write tests for the movement decisions.
+This would be memorable because it shows gameplay programming and systems thinking.
+
+Second-best option: deterministic procedural level generation
+Let the user enter a seed:
+Seed: 12345
+Then the map, enemies, and items are reproducible.
+This is excellent for a systems/performance-minded portfolio because it shows you understand debugging procedural content.
+
+Third-best option: clean event log architecture
+Instead of systems printing directly, they emit results:
+PlayerMoved
+AttackResolved
+EnemyDefeated
+ItemCollected
+LevelCompleted
+Then the console renderer displays those results.
+This would make the architecture feel much more professional without adding flashy technology.
+
+12. Prioritized roadmap to interview-worthy
+Phase 1: Build hygiene
+Goal: make the project safe to review.
+Tasks:
+Compile with warnings enabled.
+Remove or move large future-design comments out of .cpp files.
+Add a minimal README.
+Outcome:
+Reviewer can build and run immediately.
+
+Phase 2: Correctness pass
+Goal: fix current gameplay bugs.
+Tasks:
+Fix inventory printing.
+Fix combat damage formula.
+Fix chase/flee direction when x or y is equal.
+Make Position2D default-safe.
+Remove unused variables like enemyStunnedTurnsCount.
+Make item usage/inventory access safe.
+Outcome:
+The game behaves correctly at the current feature level.
+
+Phase 3: First architecture refactor
+Goal: reduce Game size.
+Extract:
+CombatSystem
+LevelDefinition
+SpawnSystem
+Do not extract everything at once.
+Outcome:
+Game orchestrates instead of doing every detail.
+
+Phase 4: Testable systems
+Goal: show professional engineering habits.
+Add tests for:
+Position2D equality
+Damage calculation
+Map walkability
+Inventory behavior
+Enemy movement decisions
+Spawn validity
+Outcome:
+The project demonstrates reliability, not just features.
+
+Phase 5: AI polish
+Goal: make the gameplay system memorable.
+Tasks:
+Cleanly define enemy behaviors.
+Make behavior predictable enough for players to learn.
+Add one or two terrain interactions.
+Add comments explaining design intent, not obvious code mechanics.
+Outcome:
+The game has a tactical identity.
+
+Phase 6: Presentation polish
+Goal: make the repo portfolio-ready.
+Tasks:
+README with screenshots.
+Architecture diagram.
+“Design decisions” section.
+“What I learned” section.
+“Future work” section that clearly separates planned work from implemented work.
+
+how to refactor combat damage into one shared combat rule? 
+how to unit test combat without running the whole game?
+elaborate on explicit matters for constructors that can be used for implicit conversions. A default constructor takes no arguments, so explicit does not add meaningful protection. and why explicit Enemy(EnemyType type); is good
+what does this mean: But the state model is becoming too implicit?
+what do you mean by helper concept: directionToTarget: returns -1, 0, or 1 for each axis
