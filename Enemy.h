@@ -19,7 +19,7 @@ class Enemy
 {
 public:
 	Enemy(); // default constructor
-	Enemy(EnemyType t); // constructor with enemy type
+	explicit Enemy(EnemyType t); // constructor with enemy type
 
 	// set functions for enemy attributes (e.g., health, position)
 	EnemyType getType() const;		// returns enemy type

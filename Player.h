@@ -8,7 +8,7 @@
 class Player
 {
 public:
-	explicit Player(); // default constructor
+	Player(); // default constructor
 
 	// get functions for player attributes (e.g., health, position)
 	Position2D getPosition() const; // get player's position

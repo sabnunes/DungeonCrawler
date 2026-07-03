@@ -25,7 +25,7 @@ enum class ItemType
 class Item
 {
 public:
-	explicit Item(); // default constructor
+	Item(); // default constructor
 
 
 	ItemType getType() const; // get items' type
