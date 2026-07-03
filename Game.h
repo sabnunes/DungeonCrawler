@@ -1,6 +1,6 @@
 // Game class declaration
 #pragma once 
-
+#include <vector>
 #include <string>
 #include <random>
 #include "Position2D.h"
@@ -13,14 +13,14 @@
 class Game
 {
 	public:
-		explicit Game();	// default constructor
+		Game();	// default constructor
 		void run();			// runs the game
 
 	private:
-		bool running = 0;	// flag to control game loop
+		bool running = false;	// flag to control game loop
 
 		void printLegend();
-		void initWorld();
+		void initLevel();
 		void nextLevel();
 
 		void input();			// get player input and process it
@@ -58,7 +58,7 @@ class Game
 		int currentLevel = 0;	// level number
 		int itemCount = 0;		// number of items to spawn
 
-		bool playerTurn = 1;			// 1 if player turn, 0 if enemy turn
+		bool playerTurn = true;			// 1 if player turn, 0 if enemy turn
 		int enemyStunnedTurnsCount = 1; // counter to track enemy stunned state
 
 		const int MAX_LEVEL = 5;			// max level

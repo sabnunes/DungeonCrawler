@@ -1,12 +1,16 @@
 // GridMap class declaration
 #pragma once // prevent multiple inclusions of header
+#include <random>
 
 enum class TileType
 {
 	Wall,
 	Floor,
 	Water,
+	Tree,
+	Grass,
 	Rock
+	//Lava
 };
 
 // class GridMap definition
@@ -16,7 +20,9 @@ public:
 	explicit GridMap(); // default constructor
 
 	// functions to create and initialize the map
-	void initialize(); // initialize the map with default tile types
+	void initialize(int level); // initialize the map with default tile types
+	void generateLevelBorders(); // initialize the map with default tile types
+	void applyLevelTheme(int level); // initialize the map with default tile types
 
 	// Getters and functions to query the map	
 	int getWidth() const; // get the width of the map
@@ -31,8 +37,14 @@ private:
 	// used for map dimensions and tile storage: system boundaries, rendering size, movement bounds
 	static const int START_POS_X = 0; // minimum x-coordinate start position of the map
 	static const int START_POS_Y = 0; // minimum y-coordinate start position of the map
-	static const int WIDTH = 15; // fixed width of the map (49 aligns with player stats)
-	static const int HEIGHT = 8; // fixed height of the map
+	static const int WIDTH = 30; // fixed width of the map (49 aligns with player stats)
+	static const int HEIGHT = 10; // fixed height of the map
 
 	TileType tiles[WIDTH][HEIGHT]; // 2D array to hold tile data
+
+	std::mt19937 m_engine;	// Obtain a random seed from the hardware
+
+	void copyTiles(TileType sourceTiles[WIDTH][HEIGHT], TileType destTiles[WIDTH][HEIGHT]);
+
+	void growGrass(int percentChance); // generate grass patches on the map
 };

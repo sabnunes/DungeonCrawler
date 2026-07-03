@@ -9,13 +9,11 @@ using namespace std;
 Game::Game()
 	: m_engine(std::random_device{}()) // Initialize the standard Mersenne Twister engine with the seed
 {
-	//cout << "[DEBUG] Initializing map..." << endl;
-	map.initialize();	// initializes the map
-	//cout << "[DEBUG] Spawning elements..." << endl;
-	initWorld();		// initializes player, enemies, items
-	//cout << "[DEBUG] Constructor finished successfully!" << endl;
+	cout << "Welcome to DUNGEON CRAWLER\n" << endl;
+	//cout << "Menu :\n1. Start Game\n2. Quit ";
+	printLegend();
 
-
+	nextLevel();	
 } // end Game constructor
 
 
@@ -27,42 +25,61 @@ void Game::printLegend()
 	printf("%-10s  %-10s  %-10s\n", "A left", "l Leopard", "S STR++");
 	printf("%-10s  %-10s  %-10s\n", "S down", "d Doe", "D DEF++");
 	printf("%-10s  %-10s  %-10s\n", "D right", "", "");
-	printf("%-10s  %-10s  %-10s\n", "X attack", "", "");
-	printf("%-10s  %-10s  %-10s\n", "U use loot", "", "");
-	printf("%-10s  %-10s  %-10s\n", "Q quit", "", "");
+	printf("%-10s  %-10s  %-10s\n", "X attack", "ENVIRONMENT", "");
+	printf("%-10s  %-10s  %-10s\n", "U use loot", "^ tree", "~ water");
+	printf("%-10s  %-10s  %-10s\n", "Q quit", ", grass", "o rock");
 	cout << endl;
 }
 
-// Initializes player, enemies, and items
-void Game::initWorld()
-{
-	cout << "Welcome to DUNGEON CRAWLER\n" << endl;
-	//cout << "Menu :\n1. Start Game\n2. Quit\nEnter your choice: ";
-	printLegend();
-
-	spawnPlayer();	// Spawns player
-	nextLevel();
-}
-
+// Increments level to next level and triggers level intialization
 void Game::nextLevel()
 {
 	currentLevel++;
 
+	initLevel();
+}
+
+// Initializes player, enemies, and items
+void Game::initLevel()
+{
+	map.initialize(currentLevel);	// initializes the map
+
 	// Print level
-	cout << "LEVEL " << currentLevel << endl;
+	cout << "\nLEVEL " << currentLevel << " ";
+
+	// Print level name based on current level
+	switch (currentLevel)
+	{
+		case 1:
+			cout << "- The First Clearing" << endl;
+			break;
+		case 2:
+			cout << "- The Boulder's Rest" << endl;
+			break;
+		case 3:
+			cout << "- The Lost Woods" << endl;
+			break;
+		case 4:
+			cout << "- The Sunken Pass" << endl;
+			break;
+		case 5:
+			cout << "- The Ancient Grove" << endl;
+			break;
+		default:
+			cout << "unknown level" << endl;
+			break;
+	}
 	cout << endl; // empty line
 
-	//resetLevelState();
-	playerTurn = true;
-	enemies.clear();
-
-	spawnEnemies();
-	spawnItems();
+	spawnPlayer();	// Spawns player
+	spawnEnemies();	// Spawns enemies
+	spawnItems();	// Spawns items
 }
 
 // Spawns player
 void Game::spawnPlayer()
 {
+	playerTurn = true;
 	Position2D spawnPos; 						// Create Position2D for player
 	spawnPos = generateSpawnPos();				// Generate spawn position for player
 	player.setPosition(spawnPos.x, spawnPos.y);	// Set player position to generated spawn position
@@ -70,6 +87,8 @@ void Game::spawnPlayer()
 
 void Game::spawnEnemies()
 {
+	enemies.clear();
+
 	switch (currentLevel)
 	{
 	case 1:
@@ -101,8 +120,6 @@ void Game::spawnEnemies()
 		cout << "ERROR : no more enemy combinations to spawn" << endl;
 	}
 }
-
-
 
 // Spawns enemies
 void Game::spawnEnemy(EnemyType type)
@@ -634,8 +651,8 @@ void Game::playerAttack()
 		{
 			if (enemy.isAlive() && isLiveEnemyAdjacentToPlayer(enemy))
 			{
-				// player attacks enemy
-				enemy.setHealth(enemy.getHealth() - abs(player.getStrength()-enemy.getDefense()));
+				// player attacks enemy max
+				enemy.setHealth(enemy.getHealth() - max(1,player.getStrength()-enemy.getDefense()));
 				enemy.setStunnedState(false); // reset enemy movement pattern if attacked
 				cout << "Attack successful. ";
 
@@ -667,8 +684,8 @@ void Game::enemyAttack(const Enemy &enemy)
 	if (player.getDefense() <= enemy.getStrength())
 	{
 		// enemy attacks player
-		player.setHealth(player.getHealth() - abs(enemy.getStrength()-player.getDefense()));
-		cout << enemy.getName() << " attack successful. You lost " << enemy.getStrength() << " HP." << endl;
+		player.setHealth(player.getHealth() - (enemy.getStrength()-player.getDefense()));
+		cout << enemy.getName() << " attack successful. You lost " << enemy.getStrength()-player.getDefense() << " HP." << endl;
 		if (player.getHealth() <= 0)
 		{
 			cout << "You died!" << endl;

@@ -1,5 +1,6 @@
 // Enemy class declaration
 #pragma once
+#include <string>
 #include "Position2D.h"
 
 enum class EnemyType
@@ -17,8 +18,8 @@ enum class EnemyType
 class Enemy
 {
 public:
-	explicit Enemy(); // default constructor
-	explicit Enemy(EnemyType t); // default constructor
+	Enemy(); // default constructor
+	Enemy(EnemyType t); // constructor with enemy type
 
 	// set functions for enemy attributes (e.g., health, position)
 	EnemyType getType() const;		// returns enemy type

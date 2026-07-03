@@ -72,7 +72,7 @@ void Player::printInventory() const
 	{
 		for (size_t i = 0; i < inventory.size() -1; i++)
 		{
-			cout << inventory[0].getName() << ", ";
+			cout << inventory[i].getName() << ", ";
 		}
 
 		cout << inventory[inventory.size()-1].getName();
