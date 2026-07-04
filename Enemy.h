@@ -8,10 +8,6 @@ enum class EnemyType
 	Slime,
 	Leopard,
 	Doe
-	/* 
-	Scorpion,
-	Skeleton
-	*/
 };
 
 // class Enemy definition

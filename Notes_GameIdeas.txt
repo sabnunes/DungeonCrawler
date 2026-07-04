@@ -1,0 +1,195 @@
+DEMONSTRATE
+Programming fundamentals
+classes
+memory management
+data structures
+algorithms
+state management
+
+Game systems thinking
+entities
+combat systems
+inventories
+map representation
+game loops
+
+Architecture
+separating systems cleanly
+extensibility
+code organization
+
+Problem solving
+handling complexity
+debugging
+making interacting systems work together
+
+QC
+Are systems separated cleanly?
+Can you add new enemies easily?
+Can you extend inventory without rewriting everything?
+Are responsibilities separated?
+
+TESTS
+OOP
+architecture
+maintainability
+scalability
+clean code
+
+EXAMPLE
+###########
+#@....G...#
+#...##....#
+#....T....#
+###########
+
+HP: 20/20
+Gold: 13
+
+Commands:
+WASD = move
+I = inventory
+A = attack
+
+# = wall
+. = floor
+@ = player
+G = goblin
+T = treasure
+
+COMPLEXITY
+Minimum version
+Console application
+2D dungeon grid
+Player movement
+Enemies
+Combat
+Win / lose conditions
+
+Better version
+Multiple rooms/floors
+Inventory system
+Items/weapons
+Enemy AI
+Procedural generation
+Save/load
+
+"This person could join my team" version
+Clean architecture
+Systems separated properly
+Data-driven content
+Unit tests
+Easy to add new enemies/items
+Good use of OOP and STL
+
+enemy ideas
+scorpion (stuns on 2nd time standing near it but very deadly)
+skeleton (patrols)
+
+item ideas
+Sword
+Shield
+Key
+Gold
+Quest Item
+Bow
+Helmet
+	//case Item::Sword:
+	//	return '\\';
+	//case Item::Shield:
+	//	return '(';
+
+/*
+Theme: method (simplified icons)     
+
+Level 1 — Open Woodland
+Purpose : Teach movement and combat.
+Mostly open. Few obstacles.
+##############################
+#............................#
+#....^.......................#
+#.............O..............#
+#............................#
+#..........^.................#
+#......................O.....#
+#............................#
+#....O...............^.......#
+##############################
+
+Level 2 — Rocky Meadow
+Purpose : Introduce pathing around obstacles.
+Rocks create pockets.
+More tactical movement.
+Slimes become harder to avoid.
+##############################
+#....O......O...............##
+#.................O..........#
+#..O.............O...........#
+#........O...................#
+#..............O.............#
+#..O..................O......#
+#........O...................#
+#.....O.............O........#
+##############################
+Level 3 — Dense Forest
+
+Purpose : Limited movement.
+
+Trees begin creating corridors.
+
+##############################
+#^^^^.....^^^^^^......^^^^^^^#
+#^^^.......^^^^....^^....^^^^#
+#^^^^..^^..^^^^....^^....^^^^#
+#^^^^..^^........^^^^^^..^^^^#
+#^^^^^^....^^^^^^....^^..^^^^#
+#^^^^^^....^^^^^^....^^..^^^^#
+#^^....^^^^^^....^^^^^^....^^#
+#^^^^^^....^^^^^^....^^^^^^..#
+##############################
+
+This level feels completely different despite using only one new obstacle.
+
+Level 4 — Riverlands
+
+Purpose : Force route planning.
+
+Water divides the map.
+
+##############################
+#........~~~~~~............^.#
+#....O...~~~~~~....O.........#
+#........~~~~~~..............#
+#========~~~~~~==============#
+#........~~~~~~..............#
+#...^....~~~~~~......O.......#
+#........~~~~~~..............#
+#........~~~~~~.......^......#
+##############################
+
+(You could later replace = with bridges.)
+
+Level 5 — Sacred Grove
+
+Purpose : Combination of every obstacle.
+
+The player has to navigate around forests, rocks, and water simultaneously.
+
+##############################
+#^^^^^^.....~~~~....O.......##
+#^^..^^.....~~~~.............#
+#^^..^^^^........^^^^^^......#
+#....^^^^..O.....^^^^^^......#
+#..............O......^^^^...#
+#~~~~~~~....^^^^^^....^^^^...#
+#~~~~~~~....^^..^^...........#
+#....O.......^^..^^.....O....#
+##############################
+Difficulty progression
+Level	Main Feature	Challenge
+1	Open field	Learn controls
+2	Rocks	Navigation
+3	Trees	Tight corridors
+4	Water	Route planning
+5	Mixed terrain	Uses everything learned
+*/

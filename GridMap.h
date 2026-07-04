@@ -10,14 +10,13 @@ enum class TileType
 	Tree,
 	Grass,
 	Rock
-	//Lava
 };
 
 // class GridMap definition
 class GridMap
 {
 public:
-	explicit GridMap(); // default constructor
+	GridMap(); // default constructor
 
 	// functions to create and initialize the map
 	void initialize(int level); // initialize the map with default tile types
@@ -45,6 +44,5 @@ private:
 	std::mt19937 m_engine;	// Obtain a random seed from the hardware
 
 	void copyTiles(TileType sourceTiles[WIDTH][HEIGHT], TileType destTiles[WIDTH][HEIGHT]);
-
 	void growGrass(int percentChance); // generate grass patches on the map
 };

@@ -8,17 +8,7 @@ enum class ItemType
 {
 	HealthPotion,
 	StrengthPotion,
-	DefensePotion,
-	//Sword,
-	//Shield
-	/* Future item ideas
-	Sword
-	Shield
-	Key
-	Gold
-	Quest Item
-	Bow
-	Helmet*/
+	DefensePotion
 };
 
 // Item class definition

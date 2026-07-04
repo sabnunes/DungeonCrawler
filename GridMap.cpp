@@ -42,102 +42,6 @@ void GridMap::applyLevelTheme(int level)
 {
 	std::uniform_int_distribution<int> dist(1, 100);
 
-	/*
-	Theme: method (simplified icons)     
-
-	Level 1 — Open Woodland
-	Purpose : Teach movement and combat.
-	Mostly open. Few obstacles.
-	##############################
-	#............................#
-	#....^.......................#
-	#.............O..............#
-	#............................#
-	#..........^.................#
-	#......................O.....#
-	#............................#
-	#....O...............^.......#
-	##############################
-
-	Level 2 — Rocky Meadow
-	Purpose : Introduce pathing around obstacles.
-	Rocks create pockets.
-	More tactical movement.
-	Slimes become harder to avoid.
-	##############################
-	#....O......O...............##
-	#.................O..........#
-	#..O.............O...........#
-	#........O...................#
-	#..............O.............#
-	#..O..................O......#
-	#........O...................#
-	#.....O.............O........#
-	##############################
-	Level 3 — Dense Forest
-
-	Purpose : Limited movement.
-
-	Trees begin creating corridors.
-
-	##############################
-	#^^^^.....^^^^^^......^^^^^^^#
-	#^^^.......^^^^....^^....^^^^#
-	#^^^^..^^..^^^^....^^....^^^^#
-	#^^^^..^^........^^^^^^..^^^^#
-	#^^^^^^....^^^^^^....^^..^^^^#
-	#^^^^^^....^^^^^^....^^..^^^^#
-	#^^....^^^^^^....^^^^^^....^^#
-	#^^^^^^....^^^^^^....^^^^^^..#
-	##############################
-
-	This level feels completely different despite using only one new obstacle.
-
-	Level 4 — Riverlands
-
-	Purpose : Force route planning.
-
-	Water divides the map.
-
-	##############################
-	#........~~~~~~............^.#
-	#....O...~~~~~~....O.........#
-	#........~~~~~~..............#
-	#========~~~~~~==============#
-	#........~~~~~~..............#
-	#...^....~~~~~~......O.......#
-	#........~~~~~~..............#
-	#........~~~~~~.......^......#
-	##############################
-
-	(You could later replace = with bridges.)
-
-	Level 5 — Sacred Grove
-
-	Purpose : Combination of every obstacle.
-
-	The player has to navigate around forests, rocks, and water simultaneously.
-
-	##############################
-	#^^^^^^.....~~~~....O.......##
-	#^^..^^.....~~~~.............#
-	#^^..^^^^........^^^^^^......#
-	#....^^^^..O.....^^^^^^......#
-	#..............O......^^^^...#
-	#~~~~~~~....^^^^^^....^^^^...#
-	#~~~~~~~....^^..^^...........#
-	#....O.......^^..^^.....O....#
-	##############################
-	Difficulty progression
-	Level	Main Feature	Challenge
-	1	Open field	Learn controls
-	2	Rocks	Navigation
-	3	Trees	Tight corridors
-	4	Water	Route planning
-	5	Mixed terrain	Uses everything learned
-	*/
-
-
 	switch (level)
 	{
 	case 1: // Simple forest
@@ -178,7 +82,6 @@ void GridMap::applyLevelTheme(int level)
 				// Grass seed
 				if (roll == 1) 
 				{
-					// set initial tile to grass
 					tiles[x][y] = TileType::Grass;
 				}
 
@@ -201,9 +104,6 @@ void GridMap::applyLevelTheme(int level)
 		growGrass(35);
 		break;
 	case 3: 
-		// for random group of tiles in walkable
-		// set tile to type
-		// 20% of map but group together
 		break;
 	case 4:
 		break;
@@ -257,8 +157,6 @@ void GridMap::growGrass(int percentChance)
 							if (rollGrow <= percentChance) // chance to grow grass based on parameter
 							{
 								newTiles[newX][newY] = TileType::Grass;
-
-								//cout << "DEBUG: Grass grew at (" << newX << ", " << newY << ") with roll " << rollGrow << " <= " << percentChance << endl;
 							}
 						}
 					}
@@ -318,9 +216,7 @@ char GridMap::getTileIcon(int x, int y) const
 	case TileType::Grass:
 		return ',';
 	case TileType::Rock:
-		return 'o';
-	//case TileType::Lava:
-	//	return 'v';
+		return '0';
 	default:
 		return '?'; // print unknown symbol for unhandled tile types
 	}
@@ -341,5 +237,4 @@ bool GridMap::isWalkable(int x, int y) const
 		&& getTile(x, y) != TileType::Water
 		&& getTile(x, y) != TileType::Tree
 		&& getTile(x, y) != TileType::Rock;
-		//&& getTile(x, y) != TileType::Lava
 }

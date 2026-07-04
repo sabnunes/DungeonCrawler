@@ -10,7 +10,6 @@ Game::Game()
 	: m_engine(std::random_device{}()) // Initialize the standard Mersenne Twister engine with the seed
 {
 	cout << "Welcome to DUNGEON CRAWLER\n" << endl;
-	//cout << "Menu :\n1. Start Game\n2. Quit ";
 	printLegend();
 
 	nextLevel();	
@@ -27,7 +26,7 @@ void Game::printLegend()
 	printf("%-10s  %-10s  %-10s\n", "D right", "", "");
 	printf("%-10s  %-10s  %-10s\n", "X attack", "ENVIRONMENT", "");
 	printf("%-10s  %-10s  %-10s\n", "U use loot", "^ tree", "~ water");
-	printf("%-10s  %-10s  %-10s\n", "Q quit", ", grass", "o rock");
+	printf("%-10s  %-10s  %-10s\n", "Q quit", ", grass", "0 rock");
 	cout << endl;
 }
 
@@ -398,7 +397,6 @@ void Game::render()
 // Generate a random walkable coordinate and assign it to the player
 Position2D Game::generateSpawnPos()
 {
-
 	// Define the inclusive range [] for x and y; exclude walls
 	uniform_int_distribution<int> rangeX(1, map.getWidth() - 2);
 	uniform_int_distribution<int> rangeY(1, map.getHeight() - 2);
@@ -441,17 +439,6 @@ void Game::playerMove(int x, int y)
 // Enemy movement behavior and pattern
 void Game::enemyMove(Enemy& enemy)
 {
-	//enemy behavior ideas
-	// idle for 2 turns
-	// begin movement pattern
-	// if attacked, move away from player, resets idle/movement pattern
-	// movement ideas: 
-	// + pattern
-	// - or | pattern
-	// 4 squares pattern (L,R,D,U)
-	// random movement
-	// chance of no movement
-
 	// STUNED/IDLE LOGIC
 	if (enemy.getStunnedState() == true)
 	{
@@ -459,9 +446,6 @@ void Game::enemyMove(Enemy& enemy)
 		cout << enemy.getName() << " gathering its senses." << endl;
 		return;
 	}
-
-	/*cout << "TYPE CHECK: " << enemy.getName()
-		<< " enum=" << (int)enemy.getType() << endl;*/
 
 	// FIND NEXT POS
 	// x and y coordinate variables
@@ -501,47 +485,7 @@ void Game::enemyMove(Enemy& enemy)
 		y = player.getPosition().y > enemy.getPosition().y ? 1 : -1;
 		break;
 	case EnemyType::Doe:		// Moves away from player
-
 	{
-		/*
-		//calculateDistance();
-
-		double bestDistance = -1.0;
-
-		Position2D current = enemy.getPosition();
-		Position2D bestMove =
-		{
-			enemy.getPosition().x,
-			enemy.getPosition().y
-		};
-
-		for (const Position2D move : possibleMoves)
-		{
-			Position2D possibleMove =
-			{
-				current.x + move.x,
-				current.y + move.y
-			};
-
-			if (isOccupied(possibleMove))
-			{
-				continue;
-			}
-
-			// Manhattan distance
-			double distance = abs(possibleMove.x - player.getPosition().x) + abs(possibleMove.y - player.getPosition().y);
-
-			if (distance > bestDistance)
-			{
-				bestDistance = distance;
-				bestMove = possibleMove;
-			}
-		}
-
-		x = bestMove.x;
-		y = bestMove.y;
-		*/
-
 		x = player.getPosition().x < enemy.getPosition().x ? 1 : -1;
 		y = player.getPosition().y < enemy.getPosition().y ? 1 : -1;
 		break;
@@ -550,7 +494,6 @@ void Game::enemyMove(Enemy& enemy)
 		break;
 	}
 
-	
 	// VAR TO HOLD POS AND NEXT POS
 	Position2D pos = enemy.getPosition();
 	Position2D nextPos = { pos.x + x, pos.y + y };
@@ -591,16 +534,6 @@ void Game::enemyMove(Enemy& enemy)
 // Check if the enemy and player are in adjacent tiles (including diagonals)
 bool Game::isLiveEnemyAdjacentToPlayer(const Enemy &enemy) const
 {
-	 /* check:
-	 x:-1 y:-1 upper left
-	 x:-1 y: 0 left
-	 x:-1 y:+1 lower left
-	 x: 0 y:-1 up
-	 x: 0 y:+1 down
-	 x:+1 y:-1 upper right
-	 x:+1 y: 0 right
-	 x:+1 y:+1 lower right */
-
 	// get player and enemy positions
 	Position2D playerPos = player.getPosition();
 

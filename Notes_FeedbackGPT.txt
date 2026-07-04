@@ -168,7 +168,6 @@ Split Game responsibilities.
 Fix combat formula.
 Make RNG seedable for deterministic testing.
 Add at least a few unit tests for combat, movement, and map walkability.
-Add a README explaining architecture and controls.
 Make level themes actually implemented or remove claims that they exist.
 
 Nice-to-have
@@ -182,11 +181,9 @@ Seeded random generation
 Basic pathfinding or distance-based AI
 Simple event/message log
 Save/load for high score or run summary
-Architecture diagram in README
 
 Compile with warnings enabled.
 Remove or move large future-design comments out of .cpp files.
-Add a minimal README.
 
 Then write tests for the movement decisions.
 This would be memorable because it shows gameplay programming and systems thinking.
@@ -213,7 +210,6 @@ Goal: make the project safe to review.
 Tasks:
 Compile with warnings enabled.
 Remove or move large future-design comments out of .cpp files.
-Add a minimal README.
 Outcome:
 Reviewer can build and run immediately.
 
@@ -264,11 +260,7 @@ The game has a tactical identity.
 Phase 6: Presentation polish
 Goal: make the repo portfolio-ready.
 Tasks:
-README with screenshots.
-Architecture diagram.
-“Design decisions” section.
-“What I learned” section.
-“Future work” section that clearly separates planned work from implemented work.
+README
 
 how to refactor combat damage into one shared combat rule? 
 how to unit test combat without running the whole game?

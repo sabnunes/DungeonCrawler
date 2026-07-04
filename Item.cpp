@@ -58,10 +58,6 @@ char Item::getIcon() const
 		return 'S'; 
 	case ItemType::DefensePotion:
 		return 'D'; 
-	//case Item::Sword:
-	//	return '\\';
-	//case Item::Shield:
-	//	return '(';
 	default:
 		return '?'; 
 	}
