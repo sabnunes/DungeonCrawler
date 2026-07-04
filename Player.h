@@ -1,29 +1,18 @@
 // Player class declaration
 #pragma once
 #include <vector>
-#include "Position2D.h"
+#include "Character.h"
 #include "Item.h"
 
 // class Player definition
-class Player
+class Player : public Character
 {
 public:
 	Player(); // default constructor
 
-	// get functions for player attributes (e.g., health, position)
-	Position2D getPosition() const; // get player's position
-	char getIcon() const; // get player's icon
-	int getHealth() const; // get player's health
-	int getStrength() const; // get player's strength
-	int getDefense() const; // get player's defense
-	bool isAlive() const; // check if the player is alive or defeated
+	char getIcon() const; // Get player's char icon
 
-	// set functions for player attributes (e.g., health, position)
-	void setPosition(int x, int y); // set player's position
-	void setHealth(int newHealth); // set player's health
-	void setStrength(int newStrength); // set player's strength
-	void setDefense(int newDefense); // set player's defense
-
+	// Inventory management functions
 	int getInventorySize() const;
 	void addInventoryItem(const Item &item);
 	Item getInventoryItem() const;
@@ -31,15 +20,8 @@ public:
 	void printInventory() const;
 
 private:
-	// player attributes for position and representation on the map
-	Position2D position = Position2D{ 1, 1 };	// position on the map
-	const char icon = 'P';						// representation on the map
-
-	// player attributes for combat
-	int health = 15;	// player's health
-	int strength = 1;	// player's strength
-	int defense = 0;	// player's defense
-	
-	std::vector<Item> inventory; // loot storage
+	const char icon = 'P';	// representation on the map
+		
+	std::vector<Item> inventory; // inventory storage
 };
 

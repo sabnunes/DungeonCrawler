@@ -81,7 +81,7 @@ void Game::spawnPlayer()
 	playerTurn = true;
 	Position2D spawnPos; 						// Create Position2D for player
 	spawnPos = generateSpawnPos();				// Generate spawn position for player
-	player.setPosition(spawnPos.x, spawnPos.y);	// Set player position to generated spawn position
+	player.setPosition(spawnPos);	// Set player position to generated spawn position
 }
 
 void Game::spawnEnemies()
@@ -422,7 +422,7 @@ void Game::playerMove(int x, int y)
 	// check if the tile is walkable before moving and not occupied by the enemy
 	if (map.isWalkable(newPos.x, newPos.y) && !isOccupiedByEnemy(newPos))
 	{
-		player.setPosition(newPos.x, newPos.y);
+		player.setPosition(Position2D{ newPos.x, newPos.y });
 		cout << "You moved " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ". " << endl;
 	}
 	else if (map.isWalkable(newPos.x, newPos.y) && isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position

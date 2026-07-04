@@ -7,56 +7,17 @@ using namespace std;
 // Constructor
 Player::Player()
 {
+	// player attributes
+	setHealth(15);
+	setStrength(1);
+	setDefense(0);
+
 } // end Player constructor
-
-// Get player's health
-int Player::getHealth() const
-{
-	return health;
-}
-
-// Get player's position
-Position2D Player::getPosition() const
-{
-	Position2D pos;
-	pos.x = position.x;
-	pos.y = position.y;
-	return pos;
-}
 
 // Get player's char icon
 char Player::getIcon() const
 {
 	return icon;
-}
-
-// Set player's position
-void Player::setPosition(int x, int y)
-{
-	position.x = x;
-	position.y = y;
-}
-
-// Get player's x-coordinate position
-void Player::setHealth(int newHealth)
-{
-	health = newHealth;
-	if (health <= 0)
-	{
-		health = 0; // Ensure health does not go below 0
-	}
-}
-
-// Set player's strength
-void Player::setStrength(int newStrength)
-{
-	strength = newStrength;
-}
-
-// Set player's defense
-void Player::setDefense(int newDefense)
-{
-	defense = newDefense;
 }
 
 // Returns player inventory size
@@ -99,22 +60,4 @@ Item Player::getInventoryItem() const
 void Player::useInventoryItem()
 {
 	inventory.pop_back(); // removes last only
-}
-
-// Get player's strength
-int Player::getStrength() const
-{
-	return strength;
-}
-
-// Get player's defense
-int Player::getDefense() const
-{
-	return defense;
-}
-
-// Check if the player is alive (health > 0)
-bool Player::isAlive() const
-{
-	return getHealth() > 0;
 }
