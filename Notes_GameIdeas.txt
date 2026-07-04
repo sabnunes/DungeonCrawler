@@ -102,6 +102,10 @@ Helmet
 /*
 Theme: method (simplified icons)     
 
+menu 
+cout << "Menu :\n1. Start Game\n2. Quit ";
+
+
 Level 1 — Open Woodland
 Purpose : Teach movement and combat.
 Mostly open. Few obstacles.
@@ -131,12 +135,10 @@ Slimes become harder to avoid.
 #........O...................#
 #.....O.............O........#
 ##############################
+
 Level 3 — Dense Forest
-
 Purpose : Limited movement.
-
 Trees begin creating corridors.
-
 ##############################
 #^^^^.....^^^^^^......^^^^^^^#
 #^^^.......^^^^....^^....^^^^#
@@ -147,15 +149,11 @@ Trees begin creating corridors.
 #^^....^^^^^^....^^^^^^....^^#
 #^^^^^^....^^^^^^....^^^^^^..#
 ##############################
-
 This level feels completely different despite using only one new obstacle.
 
 Level 4 — Riverlands
-
 Purpose : Force route planning.
-
 Water divides the map.
-
 ##############################
 #........~~~~~~............^.#
 #....O...~~~~~~....O.........#
@@ -193,3 +191,15 @@ Level	Main Feature	Challenge
 4	Water	Route planning
 5	Mixed terrain	Uses everything learned
 */
+
+enemy movement
+	//enemy behavior ideas
+	// idle for 2 turns
+	// begin movement pattern
+	// if attacked, move away from player, resets idle/movement pattern
+	// movement ideas: 
+	// + pattern
+	// - or | pattern
+	// 4 squares pattern (L,R,D,U)
+	// random movement
+	// chance of no movement

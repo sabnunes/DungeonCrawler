@@ -35,16 +35,16 @@ public:
 
 private:
 	// enemy attributes for position and representation on the map
-	EnemyType type = EnemyType::Slime; // enemy type
-	int positionX = 1;			// enemy x-coordinate position (starting at 1 to avoid wall)
-	int positionY = 1;			// enemy y-coordinate position (starting at 1 to avoid wall)
-	char icon = 'E';			// representation of the enemy on the map
-	std::string name = "Enemy";	// enemy name
+	Position2D position = Position2D{ 1, 1 };	// position on the map
+	EnemyType type = EnemyType::Slime;			// enemy type
+
+	char icon = 'E';			// representation on the map
+	std::string name = "Enemy";	// name
 
 	// enemy attributes for combat and other mechanics
 	int health = 1;		// enemy health
-	int strength = 0;	// enemy strength (for combat calculations)
-	int defense = 0;	// enemy defense (for combat calculations)
+	int strength = 0;	// enemy strength
+	int defense = 0;	// enemy defense
 
 	bool isStunned = true;
 };

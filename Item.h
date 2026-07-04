@@ -17,7 +17,6 @@ class Item
 public:
 	Item(); // default constructor
 
-
 	ItemType getType() const; // get items' type
 	Position2D getPosition() const; // get item's position
 	std::string getName() const; // get item's name
@@ -30,8 +29,7 @@ public:
 
 private:
 	// item attributes for position and representation on the map
-	int positionX = 1; // item's x-coordinate position (starting at 1 to avoid wall)
-	int positionY = 1; // item's y-coordinate position (starting at 1 to avoid wall)
+	Position2D position = Position2D{ 1, 1 };	// position on the map
 
 	ItemType type = ItemType::HealthPotion;
 	bool collected = false; // boolean that represents if item is collected

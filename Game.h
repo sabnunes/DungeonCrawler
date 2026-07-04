@@ -55,7 +55,7 @@ class Game
 		bool isOccupied(const Position2D& pos) const;			// returns if position is occupied by player, enemy, or item
 		bool isOccupiedByEnemy(const Position2D& p) const;		// returns if position is occupied by enemy
 
-		int currentLevel = 4;	// level number
+		int currentLevel = 0;	// level number
 		int itemCount = 0;		// number of items to spawn
 
 		bool playerTurn = true;			// 1 if player turn, 0 if enemy turn

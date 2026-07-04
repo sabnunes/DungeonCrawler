@@ -64,8 +64,8 @@ int Enemy::getHealth() const
 Position2D Enemy::getPosition() const
 {
 	Position2D pos;
-	pos.x = positionX;
-	pos.y = positionY;
+	pos.x = position.x;
+	pos.y = position.y;
 	return pos;
 }
 
@@ -79,8 +79,8 @@ char Enemy::getIcon() const
 // Set enemy's position
 void Enemy::setPosition(int x, int y)
 {
-	positionX = x;
-	positionY = y;
+	position.x = x;
+	position.y = y;
 }
 
 // Get enemy's x-coordinate position

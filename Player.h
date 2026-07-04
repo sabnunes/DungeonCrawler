@@ -32,15 +32,13 @@ public:
 
 private:
 	// player attributes for position and representation on the map
-	int positionX = 1; // player's x-coordinate position (starting at 1 to avoid wall)
-	int positionY =	1; // player's y-coordinate position (starting at 1 to avoid wall)
+	Position2D position = Position2D{ 1, 1 };	// position on the map
+	const char icon = 'P';						// representation on the map
 
-	const char icon = 'P'; // representation of the player on the map
-
-	// player attributes for combat and other mechanics
-	int health = 15; // player's health
-	int strength = 1; // player's strength (for combat calculations)
-	int defense = 0; // player's defense (for combat calculations)
+	// player attributes for combat
+	int health = 15;	// player's health
+	int strength = 1;	// player's strength
+	int defense = 0;	// player's defense
 	
 	std::vector<Item> inventory; // loot storage
 };

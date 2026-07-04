@@ -17,8 +17,8 @@ ItemType Item::getType() const
 Position2D Item::getPosition() const
 {
 	Position2D pos;
-	pos.x = positionX;
-	pos.y = positionY;
+	pos.x = position.x;
+	pos.y = position.y;
 	return pos;
 }
 
@@ -36,8 +36,8 @@ void Item::setType(ItemType newType)
 // Set item's position
 void Item::setPosition(int x, int y)
 {
-	positionX = x;
-	positionY = y;
+	position.x = x;
+	position.y = y;
 }
 
 // Sets collected item to true

@@ -19,8 +19,8 @@ int Player::getHealth() const
 Position2D Player::getPosition() const
 {
 	Position2D pos;
-	pos.x = positionX;
-	pos.y = positionY;
+	pos.x = position.x;
+	pos.y = position.y;
 	return pos;
 }
 
@@ -33,8 +33,8 @@ char Player::getIcon() const
 // Set player's position
 void Player::setPosition(int x, int y)
 {
-	positionX = x;
-	positionY = y;
+	position.x = x;
+	position.y = y;
 }
 
 // Get player's x-coordinate position
