@@ -26,7 +26,7 @@ void Game::printLegend()
 	printf("%-10s  %-10s  %-10s\n", "D right", "", "");
 	printf("%-10s  %-10s  %-10s\n", "X attack", "ENVIRONMENT", "");
 	printf("%-10s  %-10s  %-10s\n", "U use loot", "^ tree", "~ water");
-	printf("%-10s  %-10s  %-10s\n", "Q quit", ", grass", "0 rock");
+	printf("%-10s  %-10s  %-10s\n", "Q quit", ", grass", "* rock");
 	cout << endl;
 }
 

@@ -70,7 +70,9 @@ void GridMap::applyLevelTheme(int level)
 				}
 			}
 		}
-		growGrass(80);
+
+		// Expand grass organically
+		expandTile(70, TileType::Grass);
 		break;
 	case 2: // Rocky Meadow
 		for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
@@ -85,36 +87,197 @@ void GridMap::applyLevelTheme(int level)
 					tiles[x][y] = TileType::Grass;
 				}
 
-				// Tree
-				if (roll == 2 || roll == 3)
-				{
-					tiles[x][y] = TileType::Tree; 
-				}
-
 				// Rock
-				if (roll >= 4 && roll <=9) 
+				if (roll >= 3 && roll <=12) 
 				{
 					tiles[x][y] = TileType::Rock; 
 				}
 			}
 		}
 
-		// Grow grass organically
-		growGrass(80);
-		growGrass(35);
+		// Expand grass organically
+		expandTile(60, TileType::Grass);
+		expandTile(15, TileType::Grass);
 		break;
-	case 3: 
+	case 3: // Dense forest
+	{
+		int halfWidth = (WIDTH - START_POS_X) / 2;
+		int halfHeight = (HEIGHT - START_POS_Y) / 2;
+
+		// Tree
+		// Create a cluster of trees in the center
+		for (int i = -2; i <= 2; i++)
+		{
+			for (int j = -1; j <= 1; j++)
+			{
+				if (abs(i) + abs(j) <= 2)
+				{
+					tiles[halfWidth + i][halfHeight + j] = TileType::Tree;
+				}
+			}
+		}
+
+		// Create a diamond pattern of trees
+		int gap = 2;
+		for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
+		{
+			for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
+			{
+				if (x < halfWidth - gap || x > halfWidth + gap)
+				{
+					tiles[x][y] = TileType::Tree;
+				}
+			}
+
+			if (y < halfHeight)
+			{
+				gap += 3;
+			}
+			else
+			{
+				gap -= 3;
+			}
+		}
+	}
 		break;
-	case 4:
+	case 4: // Riverlands
+	{
+		// Create a river flowing through the map
+		int interval = 0;
+		int riverOffset = 1;
+		const int riverTranslation= 3;
+		const int riverWidth = 6; // Width of the river
+
+		for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
+		{
+			for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
+			{
+				if (y == HEIGHT * 6 / 10)
+				{
+					break;
+				}
+				
+				if (y >= HEIGHT * 7 / 10)
+				{
+					x += 5;
+				}
+
+				if (riverOffset == 0)
+				{
+					riverOffset = 1;
+				}
+				else if (riverOffset == 1)
+				{
+					riverOffset = -1;
+				}
+				else
+				{
+					riverOffset = 0;
+				}
+
+				x = y + x + riverOffset + riverTranslation;
+
+				for (int i = 0; i < riverWidth; i++)
+				{
+					tiles[x][y] = TileType::Water;
+					interval++;
+					x++;
+
+				}
+				if (interval == riverWidth)
+				{
+					interval = 0;
+					break;
+				}
+
+			}
+		}
+		
+		for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
+		{
+			for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
+			{
+				int roll = dist(m_engine);
+				
+				// Tree
+				if (roll == 1 && tiles[x][y] != TileType::Water)
+				{
+					tiles[x][y] = TileType::Tree;
+				}
+
+				// Rock
+				if (roll == 2 && tiles[x][y] != TileType::Water)
+				{
+					tiles[x][y] = TileType::Rock;
+				}
+			}
+		}
+	}
+
 		break;
-	case 5: 
+	case 5: // Sacred Grove (combines all previous themes)
+		for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
+		{
+			for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
+			{
+				int roll = dist(m_engine);
+
+				// Grass
+				if (roll == 1 || roll >= 90)
+				{
+					tiles[x][y] = TileType::Grass;
+				}
+
+				// Tree
+				if (roll == 2)
+				{
+					tiles[x][y] = TileType::Tree;
+				}
+
+				//// Water
+				//if (roll == 3)
+				//{
+				//	tiles[x][y] = TileType::Water;
+				//}
+
+				// Rock
+				if (roll == 4)
+				{
+					tiles[x][y] = TileType::Rock;
+				}
+			}
+		}
+
+		// Create a diamond pattern of trees
+		{
+			int gap = 2;
+			for (int y = START_POS_Y + HEIGHT/2 + 2; y < HEIGHT - 1; y++)
+			{
+				for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
+				{
+					if (x > WIDTH / 2 + gap)
+					{
+						tiles[x][y] = TileType::Water;
+					}
+					else if (x < WIDTH / 2 - gap && y - HEIGHT/2 > 0 )
+					{
+						tiles[x][y - HEIGHT / 2 -1] = TileType::Tree;
+					}
+				}
+				gap-=2;
+			}
+		}
+
+		// Expand tiles organically
+		expandTile(30, TileType::Grass);
+		expandTile(15, TileType::Water);
 		break;
 	default:
 		break;
 	}
 }
 
-void GridMap::growGrass(int percentChance)
+void GridMap::expandTile(int percentChance, TileType tileType)
 {
 	TileType newTiles[WIDTH][HEIGHT];
 
@@ -128,19 +291,19 @@ void GridMap::growGrass(int percentChance)
 	{
 		for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
 		{
-			if (tiles[x][y] != TileType::Grass)
+			if (tiles[x][y] != tileType)
 			{
-				continue; // skip non-grass tiles
+				continue; // skip tiles that already hold the desired tile type
 			}
 
-			// grow grass tiles organically
+			// expand tiles organically
 			for (int dx = -1; dx <= 1; dx++)
 			{
 				for (int dy = -1; dy <= 1; dy++)
 				{
 					if (dx == 0 && dy == 0)
 					{
-						continue; // skip the original tile
+						continue; // skip original tile
 					}
 
 					int newX = x + dx;
@@ -151,12 +314,12 @@ void GridMap::growGrass(int percentChance)
 					{
 						if (tiles[newX][newY] == TileType::Floor)
 						{
-							// Random chance to grow grass
+							// Random chance to expand
 							int rollGrow = dist(m_engine);
 
-							if (rollGrow <= percentChance) // chance to grow grass based on parameter
+							if (rollGrow <= percentChance) // chance to expand tile based on percentage chance
 							{
-								newTiles[newX][newY] = TileType::Grass;
+								newTiles[newX][newY] = tileType;
 							}
 						}
 					}
@@ -216,7 +379,7 @@ char GridMap::getTileIcon(int x, int y) const
 	case TileType::Grass:
 		return ',';
 	case TileType::Rock:
-		return '0';
+		return '*';
 	default:
 		return '?'; // print unknown symbol for unhandled tile types
 	}
