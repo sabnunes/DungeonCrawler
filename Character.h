@@ -1,14 +1,14 @@
 // Character class declaration
 
 #pragma once
-#include "Position2D.h"
+#include "Entity.h"
 
-class Character
+class Character : public Entity
 {
 public:
 	Character(); // default constructor
 
-	// Get and set character attributes (health, strength, defense, position, icon)
+	// Get and set character attributes (health, strength, defense)
     int getHealth() const;
     void setHealth(int health);
 
@@ -18,14 +18,11 @@ public:
     int getDefense() const;
     void setDefense(int defense);
 
-    Position2D getPosition() const;
-    void setPosition(Position2D newPosition);
-
 	bool isAlive() const; // Returns if character is alive (health > 0)
 
-protected:
+private:
     int health = 10;
     int strength = 1;
     int defense = 0;
-    Position2D position = Position2D{ 1, 1 };
+
 };

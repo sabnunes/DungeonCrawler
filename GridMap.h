@@ -1,6 +1,7 @@
 // GridMap class declaration
 #pragma once // prevent multiple inclusions of header
 #include <random>
+#include "Position2D.h"
 
 enum class TileType
 {
@@ -18,7 +19,7 @@ class GridMap
 public:
 	GridMap(); // default constructor
 
-	// functions to create and initialize the map
+	// create and initialize the map
 	void initialize(int level); // initialize the map with default tile types
 	void generateLevelBorders(); // initialize the map with default tile types
 	void applyLevelTheme(int level); // initialize the map with default tile types
@@ -31,6 +32,7 @@ public:
 
 	bool isValidPosition(int x, int y) const; // check if a position is within map bounds
 	bool isWalkable(int x, int y) const; // check if a tile is walkable (e.g., not a wall)
+	bool isWalkable(const Position2D& pos) const; // overloaded fn used in Game class
 
 private:
 	// used for map dimensions and tile storage: system boundaries, rendering size, movement bounds
@@ -44,5 +46,5 @@ private:
 	std::mt19937 m_engine;	// Obtain a random seed from the hardware
 
 	void copyTiles(TileType sourceTiles[WIDTH][HEIGHT], TileType destTiles[WIDTH][HEIGHT]);
-	void expandTile(int percentChance, TileType tileType); // generate grass patches on the map
+	void spreadTile(int percentChance, TileType tileType); // generate grass patches on the map
 };

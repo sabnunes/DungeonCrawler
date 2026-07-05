@@ -79,8 +79,8 @@ void Game::initLevel()
 void Game::spawnPlayer()
 {
 	playerTurn = true;
-	Position2D spawnPos; 						// Create Position2D for player
-	spawnPos = generateSpawnPos();				// Generate spawn position for player
+	Position2D spawnPos;			// Create Position2D for player
+	spawnPos = generateSpawnPos();	// Generate spawn position for player
 	player.setPosition(spawnPos);	// Set player position to generated spawn position
 }
 
@@ -136,7 +136,7 @@ void Game::spawnEnemy(EnemyType type)
 	} while (isOccupied(spawnPos));
 
 	// Set item position to generated spawn position
-	enemy.setPosition(spawnPos.x, spawnPos.y);
+	enemy.setPosition(spawnPos);
 
 	// Add item to world items
 	enemies.push_back(enemy);
@@ -172,7 +172,7 @@ void Game::spawnItems()
 		} while (isOccupied(spawnPos));
 
 		// Set item position to generated spawn position
-		item.setPosition(spawnPos.x, spawnPos.y);
+		item.setPosition(spawnPos);
 
 		// Add item to world items
 		worldItems.push_back(item);
@@ -182,7 +182,6 @@ void Game::spawnItems()
 // run the game: welcome message, process main game loop (input, update, render)
 void Game::run()
 {
-
 	running = true; // set running flag to true to start the game loop
 
 	while (running)
@@ -408,7 +407,7 @@ Position2D Game::generateSpawnPos()
 	{
 		pos.x = rangeX(m_engine);
 		pos.y = rangeY(m_engine);
-	} while (!map.isWalkable(pos.x, pos.y));
+	} while (!map.isWalkable(pos));
 
 	return pos; // return the generated spawn position coordinates
 }
@@ -420,12 +419,12 @@ void Game::playerMove(int x, int y)
 	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
 
 	// check if the tile is walkable before moving and not occupied by the enemy
-	if (map.isWalkable(newPos.x, newPos.y) && !isOccupiedByEnemy(newPos))
+	if (map.isWalkable(newPos) && !isOccupiedByEnemy(newPos))
 	{
 		player.setPosition(Position2D{ newPos.x, newPos.y });
 		cout << "You moved " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ". " << endl;
 	}
-	else if (map.isWalkable(newPos.x, newPos.y) && isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position
+	else if (map.isWalkable(newPos) && isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position
 	{
 		cout << "Cannot move there. Use X to attack or WASD to move." << endl;
 	}
@@ -521,7 +520,7 @@ void Game::enemyMove(Enemy& enemy)
 	// VALIDATE & MOVE TO NEXT POS
 	if (!isOccupied(nextPos))
 	{
-		enemy.setPosition(nextPos.x, nextPos.y);
+		enemy.setPosition(nextPos);
 		printf("%s moved %s.\n", enemy.getName().c_str(), x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up")));
 	}
 	// FAIL MOVE
@@ -699,7 +698,7 @@ void Game::playerUseItem()
 bool Game::isOccupied(const Position2D &pos) const
 {
 	// Map
-	if (!map.isWalkable(pos.x, pos.y))
+	if (!map.isWalkable(pos))
 	{
 		return true;
 	}

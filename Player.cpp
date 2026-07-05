@@ -8,17 +8,13 @@ using namespace std;
 Player::Player()
 {
 	// player attributes
+	setIcon('P');
+	setName("Player");
 	setHealth(15);
 	setStrength(1);
 	setDefense(0);
 
 } // end Player constructor
-
-// Get player's char icon
-char Player::getIcon() const
-{
-	return icon;
-}
 
 // Returns player inventory size
 int Player::getInventorySize() const

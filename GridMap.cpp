@@ -71,8 +71,8 @@ void GridMap::applyLevelTheme(int level)
 			}
 		}
 
-		// Expand grass organically
-		expandTile(70, TileType::Grass);
+		// Spread grass organically
+		spreadTile(70, TileType::Grass);
 		break;
 	case 2: // Rocky Meadow
 		for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
@@ -95,9 +95,9 @@ void GridMap::applyLevelTheme(int level)
 			}
 		}
 
-		// Expand grass organically
-		expandTile(60, TileType::Grass);
-		expandTile(15, TileType::Grass);
+		// Spread grass organically
+		spreadTile(60, TileType::Grass);
+		spreadTile(15, TileType::Grass);
 		break;
 	case 3: // Dense forest
 	{
@@ -268,16 +268,16 @@ void GridMap::applyLevelTheme(int level)
 			}
 		}
 
-		// Expand tiles organically
-		expandTile(30, TileType::Grass);
-		expandTile(15, TileType::Water);
+		// Spread tiles organically
+		spreadTile(30, TileType::Grass);
+		spreadTile(15, TileType::Water);
 		break;
 	default:
 		break;
 	}
 }
 
-void GridMap::expandTile(int percentChance, TileType tileType)
+void GridMap::spreadTile(int percentChance, TileType tileType)
 {
 	TileType newTiles[WIDTH][HEIGHT];
 
@@ -296,7 +296,7 @@ void GridMap::expandTile(int percentChance, TileType tileType)
 				continue; // skip tiles that already hold the desired tile type
 			}
 
-			// expand tiles organically
+			// Spread tiles organically
 			for (int dx = -1; dx <= 1; dx++)
 			{
 				for (int dy = -1; dy <= 1; dy++)
@@ -314,10 +314,10 @@ void GridMap::expandTile(int percentChance, TileType tileType)
 					{
 						if (tiles[newX][newY] == TileType::Floor)
 						{
-							// Random chance to expand
+							// Random chance to spread the tile type to adjacent floor tiles
 							int rollGrow = dist(m_engine);
 
-							if (rollGrow <= percentChance) // chance to expand tile based on percentage chance
+							if (rollGrow <= percentChance) // chance to spread tile based on percentage chance
 							{
 								newTiles[newX][newY] = tileType;
 							}
@@ -400,4 +400,9 @@ bool GridMap::isWalkable(int x, int y) const
 		&& getTile(x, y) != TileType::Water
 		&& getTile(x, y) != TileType::Tree
 		&& getTile(x, y) != TileType::Rock;
+}
+
+bool GridMap::isWalkable(const Position2D& pos) const
+{
+	return isWalkable(pos.x, pos.y);
 }

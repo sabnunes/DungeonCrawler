@@ -1,8 +1,7 @@
 // Item class declaration
 
 #pragma once
-#include <string>
-#include "Position2D.h"
+#include "Entity.h"
 
 enum class ItemType
 {
@@ -12,26 +11,21 @@ enum class ItemType
 };
 
 // Item class definition
-class Item
+class Item : public Entity
 {
 public:
-	Item(); // default constructor
+	Item();						// default constructor
+	explicit Item(ItemType t);	// constructor with item type
 
-	ItemType getType() const; // get items' type
-	Position2D getPosition() const; // get item's position
-	std::string getName() const; // get item's name
-	char getIcon() const; // get item's icon
-	bool isCollected() const; // returns if item is collected
+	ItemType getType() const;		// get item type
+	void setType(ItemType newType); // set item type
 
-	void setType(ItemType newType); // set item's type
-	void setPosition(int x, int y); // set item's position
-	void collect(); // collect item
+	bool isCollected() const;	// returns if item is collected
+	void collect();				// collect item
 
 private:
-	// item attributes for position and representation on the map
-	Position2D position = Position2D{ 1, 1 };	// position on the map
-
 	ItemType type = ItemType::HealthPotion;
+
 	bool collected = false; // boolean that represents if item is collected
 };
 
