@@ -2,6 +2,7 @@
 #include <iostream>
 #include <random>
 #include "Game.h"
+#include "SpawnSystem.h"
 
 using namespace std;
 
@@ -44,6 +45,8 @@ void Game::initLevel()
 	levelDesc = LevelDescription(currentLevel);	// initializes  level parameters
 
 	map.initialize(currentLevel);	// initializes the map
+	
+	playerTurn = true;
 
 	// Print level number and name
 	cout << "\nLEVEL "
@@ -60,7 +63,6 @@ void Game::initLevel()
 // Spawns player
 void Game::spawnPlayer()
 {
-	playerTurn = true;
 	Position2D spawnPos;			// Create Position2D for player
 	spawnPos = generateSpawnPos();	// Generate spawn position for player
 	player.setPosition(spawnPos);	// Set player position to generated spawn position
@@ -76,7 +78,6 @@ void Game::spawnEnemies()
 	}
 }
 
-// Spawns enemies
 void Game::spawnEnemy(EnemyType type)
 {
 	// New enemy
@@ -103,9 +104,9 @@ void Game::spawnItems()
 {
 	worldItems.clear();
 
-	itemCount = levelDesc.getItemCount(levelDesc.getLevel());
+	int itemCount = levelDesc.getItemCount(levelDesc.getLevel());
 
-	uniform_int_distribution<int> itemTypeRange(ITEM_TYPE_RANGE_MIN, ITEM_TYPE_RANGE_MAX);
+	uniform_int_distribution<int> itemTypeRange(0, static_cast<int>(ItemType::count) - 1);
 
 	// Spawn all items
 	for (int i = 0; i < itemCount; i++)
@@ -153,7 +154,7 @@ void Game::run()
 		}
 		else
 		{
-			if (player.isAlive() && currentLevel < MAX_LEVEL)
+			if (player.isAlive() && currentLevel < LevelDescription::MAX_LEVEL)
 			{
 				cout << "You've defeated all enemies! NEXT LEVEL!" << endl;
 				nextLevel();
@@ -347,7 +348,6 @@ void Game::render()
 	}
 	cout << endl;
 }
-
 
 // Generate a random walkable coordinate and assign it to the player
 Position2D Game::generateSpawnPos()

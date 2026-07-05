@@ -11,6 +11,8 @@ public:
     LevelDescription();
     explicit LevelDescription(int levelNum);
 
+    static constexpr int MAX_LEVEL = 5;
+
     int getLevel() const;
     std::string getName() const;
     std::vector<EnemyType> getEnemyTypes() const;

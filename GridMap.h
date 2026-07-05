@@ -36,10 +36,10 @@ public:
 
 private:
 	// used for map dimensions and tile storage: system boundaries, rendering size, movement bounds
-	static const int START_POS_X = 0; // minimum x-coordinate start position of the map
-	static const int START_POS_Y = 0; // minimum y-coordinate start position of the map
-	static const int WIDTH = 31; // fixed width of the map (49 aligns with player stats)
-	static const int HEIGHT = 11; // fixed height of the map
+	static constexpr int START_POS_X = 0; // minimum x-coordinate start position of the map
+	static constexpr int START_POS_Y = 0; // minimum y-coordinate start position of the map
+	static constexpr int WIDTH = 31; // fixed width of the map (49 aligns with player stats)
+	static constexpr int HEIGHT = 11; // fixed height of the map
 
 	TileType tiles[WIDTH][HEIGHT]; // 2D array to hold tile data
 

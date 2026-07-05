@@ -7,7 +7,9 @@ enum class ItemType
 {
 	HealthPotion,
 	StrengthPotion,
-	DefensePotion
+	DefensePotion,
+
+	count // used to get the number of item types
 };
 
 // Item class definition

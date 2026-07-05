@@ -60,13 +60,7 @@ class Game
 		bool isOccupiedByEnemy(const Position2D& p) const;		// returns if position is occupied by enemy
 
 		int currentLevel = 0;	// level number
-		int itemCount = 0;		// number of items to spawn
 
 		bool playerTurn = true;			// 1 if player turn, 0 if enemy turn
 		int enemyStunnedTurnsCount = 1; // counter to track enemy stunned state
-
-		const int MAX_LEVEL = 5;			// max level
-		const int ITEM_TYPE_RANGE_MIN = 0;	// min item type
-		const int ITEM_TYPE_RANGE_MAX = 2;	// max item types range [0-n]
-		const int ENEMY_STUNNED_TURNS = 1;	// counter to track enemy stunned state
 };
