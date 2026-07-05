@@ -1,8 +1,8 @@
 ﻿// Member function definitions for Game class
 #include <iostream>
 #include <random>
+#include <iomanip>
 #include "Game.h"
-#include "SpawnSystem.h"
 
 using namespace std;
 
@@ -16,19 +16,31 @@ Game::Game()
 	nextLevel();	
 } // end Game constructor
 
-
+// Prints the legend for the game, including controls, enemies, and environment obstacles
 void Game::printLegend()
 {
-	cout << "Legend" << endl;
-	printf("%-10s  %-10s  %-10s\n", "CONTROLS", "ENEMIES", "LOOT");
-	printf("%-10s  %-10s  %-10s\n", "W up", "s Slime", "H HP+10");
-	printf("%-10s  %-10s  %-10s\n", "A left", "l Leopard", "S STR++");
-	printf("%-10s  %-10s  %-10s\n", "S down", "d Doe", "D DEF++");
-	printf("%-10s  %-10s  %-10s\n", "D right", "", "");
-	printf("%-10s  %-10s  %-10s\n", "X attack", "ENVIRONMENT", "");
-	printf("%-10s  %-10s  %-10s\n", "U use loot", "^ tree", "~ water");
-	printf("%-10s  %-10s  %-10s\n", "Q quit", ", grass", "* rock");
-	cout << endl;
+	cout << "Legend\n";
+	cout << left;
+
+	auto col = [](const string& text)
+		{
+			cout << setw(12) << text;
+		};
+
+	col("CONTROLS");	col("ENEMIES");		col("LOOT");	cout << "\n";
+
+	col("W up");		col("s Slime");		col("H HP+10"); cout << "\n";
+	col("A left");		col("l Leopard");	col("S STR++"); cout << "\n";
+	col("S down");		col("d Doe");		col("D DEF++"); cout << "\n";
+
+	col("D right");		col("");			col("");        cout << "\n";
+
+	col("X attack");	col("");			col("");		cout << "\n";
+	col("E equip");		col("ENVIRONMENT"); col("");		cout << "\n";
+	col("U use loot");	col("^ tree");		col("~ water"); cout << "\n";
+	col("Q quit");		col(", grass");		col("* rock");	cout << "\n";
+
+	cout << "\n";
 }
 
 // Increments level to next level and triggers level intialization
@@ -111,13 +123,8 @@ void Game::spawnItems()
 	// Spawn all items
 	for (int i = 0; i < itemCount; i++)
 	{
-		// New item
-		Item item;
-
-		// Set item type
-		item.setType(
-			static_cast<ItemType>(itemTypeRange(m_engine))
-		);
+		// New item and sets item type
+		Item item(static_cast<ItemType>(itemTypeRange(m_engine)));
 
 		// Create Position2D for item
 		Position2D spawnPos;
@@ -255,8 +262,10 @@ void Game::updateEnemies()
 void Game::render()
 {
 	// Print player and enemy stats
-	printf("Player  %3d HP  %2d STR  %2d DEF", 
-		player.getHealth(), player.getStrength(), player.getDefense());
+	cout << left << setw(8) << "Player"
+		<< right << setw(3) << player.getHealth() << " HP  "
+		<< setw(2) << player.getStrength() << " STR  "
+		<< setw(2) << player.getDefense() << " DEF";
 	if (playerTurn && player.getInventorySize() > 0)
 	{
 		cout << "  LOOT ";
@@ -268,8 +277,10 @@ void Game::render()
 	{
 		if (enemy.isAlive())
 		{
-			printf("%-7s %3d HP  %2d STR  %2d DEF\n",
-				enemy.getName().c_str(), enemy.getHealth(), enemy.getStrength(), enemy.getDefense());
+			cout << left << setw(8) << enemy.getName()
+				<< right << setw(3) << enemy.getHealth() << " HP  "
+				<< setw(2) << enemy.getStrength() << " STR  "
+				<< setw(2) << enemy.getDefense() << " DEF\n";
 		}
 	}	
 	cout << endl; // empty line
@@ -327,7 +338,8 @@ void Game::render()
 
 	if (player.isAlive() && areEnemiesAlive())
 	{
-		printf("\n%s\n", playerTurn ? "Your turn. Use WASD to move or Q to quit." : "Enemy turn.");
+		std::cout << (playerTurn ? "\nYour turn. Use WASD to move or Q to quit." : "\nEnemy turn.") << endl;
+
 		if (areAnyLiveEnemyAdjacentToPlayer())
 		{
 			cout << "Enemy adjacent to player." << (playerTurn ? " Use X to attack!" : "") << endl;
@@ -477,7 +489,10 @@ void Game::enemyMove(Enemy& enemy)
 	if (!isOccupied(nextPos))
 	{
 		enemy.setPosition(nextPos);
-		printf("%s moved %s.\n", enemy.getName().c_str(), x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up")));
+
+		std::cout << enemy.getName() << " moved "
+			<< (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up")))
+			<< ".\n";
 	}
 	// FAIL MOVE
 	else
