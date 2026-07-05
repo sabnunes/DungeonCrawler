@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include "Item.h"
 #include "CombatSystem.h"
+#include "LevelDescription.h"
 
 // class Game definition
 class Game
@@ -36,9 +37,9 @@ class Game
 		std::mt19937 m_engine;			// Obtain a random seed from the hardware
 		Position2D generateSpawnPos();	// returns a random spawn position
 
+		LevelDescription levelDesc; // levelDesc definition for the current levelDesc
 		GridMap map;	// the game map
 		Player player;	// the player character
-
 		CombatSystem combatSystem;	// combat system for handling attacks and damage
 
 		std::vector<Item> worldItems;	// world items spawned

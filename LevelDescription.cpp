@@ -1,17 +1,17 @@
-// Member function definitions for LevelDefinition class
-#include "LevelDefinition.h"
+// Member function definitions for LevelDescription class
+#include "LevelDescription.h"
 
 // Default constructor
-LevelDefinition::LevelDefinition() 
+LevelDescription::LevelDescription() 
 {
 
 }
 
 // Parameterized constructor
-LevelDefinition::LevelDefinition(int level) 
-	: level(level) 
+LevelDescription::LevelDescription(int levelNum) 
+	: levelNum(levelNum) 
 {
-	switch (level)
+	switch (levelNum)
 	{
 		case 1:
 			name = "- The First Clearing";
@@ -56,12 +56,22 @@ LevelDefinition::LevelDefinition(int level)
 	}
 } // End of constructors
 
-int LevelDefinition::getLevel() const
+int LevelDescription::getLevel() const
 {
-	return level;
+	return levelNum;
 }
 
-int LevelDefinition::getItemCount(const int level) const
+std::string LevelDescription::getName() const
 {
-	return level == 1 ? 0 : 1 + level / 2;
+	return name;
+}
+
+std::vector<EnemyType> LevelDescription::getEnemyTypes() const
+{
+	return enemies;
+}
+
+int LevelDescription::getItemCount(const int levelNum) const
+{
+	return levelNum == 1 ? 0 : 1 + levelNum / 2;
 }

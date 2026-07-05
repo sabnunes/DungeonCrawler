@@ -41,35 +41,16 @@ void Game::nextLevel()
 // Initializes player, enemies, and items
 void Game::initLevel()
 {
+	levelDesc = LevelDescription(currentLevel);	// initializes  level parameters
+
 	map.initialize(currentLevel);	// initializes the map
 
-	// Print level
-	cout << "\nLEVEL " << currentLevel << " ";
-
-	// Print level name based on current level
-	switch (currentLevel)
-	{
-		// REMOVE!!!
-		case 1:
-			cout << "- The First Clearing" << endl;
-			break;
-		case 2:
-			cout << "- The Boulder's Rest" << endl;
-			break;
-		case 3:
-			cout << "- The Lost Woods" << endl;
-			break;
-		case 4:
-			cout << "- The Sunken Pass" << endl;
-			break;
-		case 5:
-			cout << "- The Ancient Grove" << endl;
-			break;
-		default:
-			cout << "unknown level" << endl;
-			break;
-	}
-	cout << endl; // empty line
+	// Print level number and name
+	cout << "\nLEVEL "
+		 << levelDesc.getLevel()
+		 << " "
+	 	 << levelDesc.getName()
+		 << endl << endl;
 
 	spawnPlayer();	// Spawns player
 	spawnEnemies();	// Spawns enemies
@@ -89,36 +70,9 @@ void Game::spawnEnemies()
 {
 	enemies.clear();
 
-	// REMOVE!!!
-	switch (currentLevel)
+	for (EnemyType type : levelDesc.getEnemyTypes())
 	{
-	case 1:
-		spawnEnemy(EnemyType::Slime);
-		break;
-
-	case 2:
-		spawnEnemy(EnemyType::Slime);
-		spawnEnemy(EnemyType::Slime);
-		break;
-
-	case 3:
-		spawnEnemy(EnemyType::Slime);
-		spawnEnemy(EnemyType::Slime);
-		spawnEnemy(EnemyType::Leopard);
-		break;
-	case 4:
-		spawnEnemy(EnemyType::Doe);
-		break;
-	case 5:
-		spawnEnemy(EnemyType::Slime);
-		spawnEnemy(EnemyType::Slime);
-		spawnEnemy(EnemyType::Slime);
-		spawnEnemy(EnemyType::Leopard);
-		spawnEnemy(EnemyType::Leopard);
-		spawnEnemy(EnemyType::Doe);
-		break;
-	default:
-		cout << "ERROR : no more enemy combinations to spawn" << endl;
+		spawnEnemy(type);
 	}
 }
 
@@ -149,7 +103,7 @@ void Game::spawnItems()
 {
 	worldItems.clear();
 
-	itemCount = currentLevel == 1 ? 0 : 1 + currentLevel / 2;
+	itemCount = levelDesc.getItemCount(levelDesc.getLevel());
 
 	uniform_int_distribution<int> itemTypeRange(ITEM_TYPE_RANGE_MIN, ITEM_TYPE_RANGE_MAX);
 
