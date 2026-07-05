@@ -576,49 +576,51 @@ bool Game::areAnyLiveEnemyAdjacentToPlayer() const
 void Game::playerAttack()
 {
 	cout << "Attack enemy." << endl;
-	// Implement attack logic here
-	if (areEnemiesAlive() && areAnyLiveEnemyAdjacentToPlayer())
-	{
-		for (Enemy& enemy : enemies)
-		{
-			if (enemy.isAlive() && isLiveEnemyAdjacentToPlayer(enemy))
-			{
-				// player attacks enemy max
-				enemy.setHealth(enemy.getHealth() - max(1,player.getStrength()-enemy.getDefense()));
-				enemy.setStunnedState(false); // reset enemy movement pattern if attacked
-				cout << "Attack successful. ";
+	bool successfulAttack = false;
 
-				if (enemy.getHealth() <= 0)
-				{
-					cout << enemy.getName() << " is dead! Strength increased +1." << endl;
-					player.setStrength(player.getStrength() + 1); // increase player strength as a reward for defeating the enemy
-					// handle enemy defeat drop loot etc
-				}
-				else
-				{
-					cout << enemy.getName() << " lost " << player.getStrength() << " HP." << endl;
-					cout << enemy.getName() << " preparing counterattack." << endl;
-				}
+	for (Enemy& enemy : enemies)
+	{
+		if (enemy.isAlive() && isLiveEnemyAdjacentToPlayer(enemy))
+		{
+			combatSystem.attack(player, enemy);
+			enemy.setStunnedState(false); // reset enemy movement pattern if attacked
+			cout << "Attack successful. ";
+			successfulAttack = true;
+
+			if (!enemy.isAlive())
+			{
+				cout << enemy.getName() << " is dead! Strength increased +1." << endl;
+				player.setStrength(player.getStrength() + 1); // increase player strength as a reward for defeating the enemy
+			}
+			else
+			{
+				cout << enemy.getName() << " lost " 
+						<< combatSystem.calculateDamage(player, enemy) << " HP." << endl;
+				cout << enemy.getName() << " preparing counterattack." << endl;
 			}
 		}
 	}
-	else
+	
+	if (!successfulAttack)
 	{
-		cout << "No enemy in range. Invalid move." << endl;
+		cout << "No enemy in range." << endl;
 	}
 }
 
 // Enemy attacks player, player loses life if attack successful, check for player defeat
-void Game::enemyAttack(const Enemy &enemy)
+void Game::enemyAttack(Enemy& enemy)
 {
 	cout << enemy.getName() << " attacked you!" << endl;
+	int damage = combatSystem.calculateDamage(enemy, player);
 
-	if (player.getDefense() <= enemy.getStrength())
+	if (damage)
 	{
 		// enemy attacks player
-		player.setHealth(player.getHealth() - (enemy.getStrength()-player.getDefense()));
-		cout << enemy.getName() << " attack successful. You lost " << enemy.getStrength()-player.getDefense() << " HP." << endl;
-		if (player.getHealth() <= 0)
+		combatSystem.attack(enemy, player);
+		cout << enemy.getName() << " attack successful. You lost " 
+			 << damage << " HP." << endl;
+
+		if (!player.isAlive())
 		{
 			cout << "You died!" << endl;
 		}

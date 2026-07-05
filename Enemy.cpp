@@ -39,6 +39,7 @@ Enemy::Enemy(EnemyType t)
 		setHealth(2);
 		setStrength(0);
 		setDefense(0);
+		setMinDamage(0);
 		break;
 	}
 } // end Enemy constructors	

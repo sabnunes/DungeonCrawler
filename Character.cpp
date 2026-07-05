@@ -37,6 +37,16 @@ void Character::setDefense(int d)
 	defense = d;
 }
 
+int Character::getMinDamage() const
+{
+	return minDamage;
+}
+
+void Character::setMinDamage(int d)
+{
+	minDamage = d;
+}
+
 bool Character::isAlive() const
 {
 	return getHealth() > 0;

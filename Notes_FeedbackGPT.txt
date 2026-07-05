@@ -1,14 +1,7 @@
-CombatSystem
 LevelDefinition / LevelBuilder 
 SpawnSystem
 AISystem
 ConsoleRenderer
-
-combat system: A cleaner design:
-calculateDamage(attackerStats, defenderStats)
-applyDamage(entity, damage)
-resolveDeath(entity)
-the rules should live in one place.
 
 enemyAI or behavior functions
 Enemy AI currently lives inside Game::enemyMove() with a switch on EnemyType.
@@ -70,6 +63,27 @@ input = tolower(input);
 tolower returns an int, and it should be used carefully with character conversion.
 This is small, but warning-clean builds matter. Use <cctype> and cast intentionally, or handle accepted uppercase inputs directly.
 
+
+One design change I think you'll appreciate later
+Instead of having attack() return only a bool, consider eventually returning a small result object:
+struct AttackResult
+{
+    int damage;
+    bool defenderDied;
+};
+Then Game could simply do:
+AttackResult result = combatSystem.attack(player, enemy);
+cout << enemy.getName()
+     << " lost "
+     << result.damage
+     << " HP." << endl;
+if (result.defenderDied)
+{
+    cout << enemy.getName() << " died!" << endl;
+}
+As you add mechanics like critical hits, dodges, blocked attacks, or status effects, you can extend AttackResult without changing every caller.
+
+
 you may want a more explicit state model:
 GameState:
   MainMenu
@@ -89,7 +103,6 @@ Item effects
 Map walkability
 Inventory behavior
 Rendering details
-Combat formulas
 Spawn rules
 This is the main long-term risk.
 The better direction is:
@@ -123,7 +136,7 @@ Prints prompts
 Prints contextual hints
 This is fine for now, but it is a natural future extraction.
 A ConsoleRenderer would increase portfolio value because it shows separation between simulation and presentation.
-Important: do this after fixing combat/spawning/AI, not before.
+Important: do this after fixing spawning/AI, not before.
 
 A memorable dungeon crawler needs questions like:
 Should I fight or avoid?
@@ -153,7 +166,6 @@ Add at least a few unit tests for combat, movement, and map walkability.
 Make level themes actually implemented or remove claims that they exist.
 Nice-to-have
 These would improve the project after the basics are stable:
-CombatSystem
 SpawnSystem
 ConsoleRenderer
 LevelDefinition
@@ -192,11 +204,9 @@ Remove or move large future-design comments out of .cpp files.
 Outcome:
 Reviewer can build and run immediately.
 
-Phase 2: Correctness pass
-Goal: fix current gameplay bugs.
+Phase 2: Goal: fix current gameplay bugs.
 Tasks:
 Fix inventory printing.
-Fix combat damage formula.
 Fix chase/flee direction when x or y is equal.
 Remove unused variables like enemyStunnedTurnsCount.
 Make item usage/inventory access safe.
@@ -240,8 +250,8 @@ Goal: make the repo portfolio-ready.
 Tasks:
 README
 
-how to refactor combat damage into one shared combat rule? 
 how to unit test combat without running the whole game?
 elaborate on explicit matters for constructors that can be used for implicit conversions. A default constructor takes no arguments, so explicit does not add meaningful protection. and why explicit Enemy(EnemyType type); is good
 what does this mean: But the state model is becoming too implicit?
 what do you mean by helper concept: directionToTarget: returns -1, 0, or 1 for each axis
+should Inventory effects live in inventory?

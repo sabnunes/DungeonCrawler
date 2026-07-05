@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Item.h"
+#include "CombatSystem.h"
 
 // class Game definition
 class Game
@@ -38,6 +39,8 @@ class Game
 		GridMap map;	// the game map
 		Player player;	// the player character
 
+		CombatSystem combatSystem;	// combat system for handling attacks and damage
+
 		std::vector<Item> worldItems;	// world items spawned
 		std::vector<Enemy> enemies;		// enemies spawns
 		
@@ -46,8 +49,8 @@ class Game
 		void playerPickUpItem();		// marks item as picked up if player overlaps same position as item
 		void playerUseItem();			// consumes item 
 		
-		void enemyMove(Enemy& enemy);			// move the player to a new position if it's valid and walkable
-		void enemyAttack(const Enemy& enemy);	// process enemy attacking the player
+		void enemyMove(Enemy& enemy);		// move the player to a new position if it's valid and walkable
+		void enemyAttack(Enemy& enemy);	// process enemy attacking the player
 
 		bool areEnemiesAlive() const;							// returns if any enemy is alive
 		bool isLiveEnemyAdjacentToPlayer(const Enemy &enemy) const;	// returns if enemy is adjacent to player

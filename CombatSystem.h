@@ -1,6 +1,7 @@
 // CombatSystem class declaration
 
 #pragma once
+#include "Character.h"
 
 /*
 Combat rules are currently duplicated.
@@ -12,13 +13,7 @@ How much damage does attacker deal ?
 Did the defender die ?
 What stat changes happen after defeat ?
 
-But it should not print UI text.That should remain outside or be returned as events / messages.
-
-combat system: A cleaner design:
-calculateDamage(attackerStats, defenderStats)
-applyDamage(entity, damage)
-resolveDeath(entity)
-the rules should live in one place.
+But it should not print UI text.That should remain outside or be returned as events / messages
 */
 
 
@@ -27,14 +22,14 @@ class CombatSystem
 public:
 	CombatSystem(); // default constructor
 
-	//bool attack(Character& attacker, 
-				//Character& defender); // perform an attack from attacker to defender and return if defender is dead
+	bool attack(Character& attacker, 
+				Character& defender); // perform an attack from attacker to defender and return if defender is dead
+	int calculateDamage(const Character& attacker,
+						const Character& defender) const; // calculate damage dealt by attacker to defender
 
 private:
-	//int calculateDamage(const Character& attacker,
-						//const Character& defender) const; // calculate damage dealt by attacker to defender
-	//void applyDamage(Character& defenderint damage) const; // apply damage to defender's health
-	//bool isDead(Character& defender) const; // check if defender is dead and handle death
+	void applyDamage(Character& defender, int damage) const; // apply damage to defender's health
+	bool isDead(Character& defender) const; // check if defender is dead and handle death
 
 };
 

@@ -18,11 +18,15 @@ public:
     int getDefense() const;
     void setDefense(int defense);
 
+	int getMinDamage() const;
+	void setMinDamage(int damage);
+
 	bool isAlive() const; // Returns if character is alive (health > 0)
 
 private:
     int health = 10;
     int strength = 1;
     int defense = 0;
+	int minDamage = 1;
 
 };
