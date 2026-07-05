@@ -234,6 +234,10 @@ Enemy movement decisions
 Spawn validity
 Outcome:
 The project demonstrates reliability, not just features.
+Combat rules are currently duplicated.
+You can unit test combat without running the whole game.
+It shows separation of rules from presentation.
+
 
 Phase 5: AI polish
 Goal: make the gameplay system memorable.
@@ -250,8 +254,11 @@ Goal: make the repo portfolio-ready.
 Tasks:
 README
 
+
+
 how to unit test combat without running the whole game?
 elaborate on explicit matters for constructors that can be used for implicit conversions. A default constructor takes no arguments, so explicit does not add meaningful protection. and why explicit Enemy(EnemyType type); is good
 what does this mean: But the state model is becoming too implicit?
 what do you mean by helper concept: directionToTarget: returns -1, 0, or 1 for each axis
 should Inventory effects live in inventory?
+do I need isDead in combatsystem when isAlive lives in character?

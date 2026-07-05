@@ -9,6 +9,7 @@ Item::Item()
 } // end Item constructor
 
 Item::Item(ItemType t)
+	: type(t)
 {
 	type = t;
 

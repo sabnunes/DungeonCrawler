@@ -11,6 +11,7 @@ Enemy::Enemy()
 
 // Constructor
 Enemy::Enemy(EnemyType t)
+	: type(t)
 {
 	switch (t)
 	{

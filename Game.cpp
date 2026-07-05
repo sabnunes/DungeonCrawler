@@ -49,6 +49,7 @@ void Game::initLevel()
 	// Print level name based on current level
 	switch (currentLevel)
 	{
+		// REMOVE!!!
 		case 1:
 			cout << "- The First Clearing" << endl;
 			break;
@@ -88,6 +89,7 @@ void Game::spawnEnemies()
 {
 	enemies.clear();
 
+	// REMOVE!!!
 	switch (currentLevel)
 	{
 	case 1:
