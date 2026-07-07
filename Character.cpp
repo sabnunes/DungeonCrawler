@@ -15,6 +15,11 @@ int Character::getHealth() const
 void Character::setHealth(int h)
 {
 	health = h;
+
+	if (health < 0)
+	{
+		health = 0;
+	}
 }
 
 int Character::getStrength() const

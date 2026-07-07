@@ -4,13 +4,10 @@
 #include <string>
 #include "GameWorld.h"
 #include "Position2D.h"
-#include "Player.h"
 #include "EnemyBehavior.h"
 #include "CombatSystem.h"
 
 #include <random>
-#include "Enemy.h"
-#include "Item.h"
 
 // class Game definition
 class Game
@@ -33,17 +30,20 @@ class Game
 		void render();			// render game state to the screen
 		
 		GameWorld world;
-		Player player;				// the player character
 		EnemyBehavior enemyBehavior;
 		CombatSystem combatSystem;	// combat system for handling attacks and damage
 		
-		void playerMove(int x, int y);	// move the player to a new position if it's valid and walkable
-		void playerAttack();			// process player attacking the enemy
-		void playerPickUpItem();		// marks item as picked up if player overlaps same position as item
-		void playerUseItem();			// consumes item 
-
 		int currentLevel = 0;	// current level number
 		bool playerTurn = true;	// 1 if player turn, 0 if enemy turn
+		
+		// TO REMOVE - MOVE INTO COMBATSYSTEMS
+		void playerAttack();			// process player attacking the enemy
+
+		// TO REMOVE - MOVED INTO GAMEWORLD
+		Player player;				// the player character
+		void playerMove(int x, int y);	// move the player to a new position if it's valid and walkable
+		void playerPickUpItem();		// marks item as picked up if player overlaps same position as item
+		void playerUseItem();			// consumes item 
 		
 		// TO REMOVE - MOVED INTO GAMEWORLD
 		std::mt19937 m_engine;	// Obtain a random seed from the hardware
@@ -51,12 +51,5 @@ class Game
 		// TO REMOVE - MOVED INTO ENEMYBEHAVIOR
 		void enemyMove(Enemy& enemy);		// movethe player to a new position if it's valid and walkable
 		void enemyAttack(Enemy& enemy);	// process enemy attacking the player
-
-		// TO REMOVE - MOVED INTO GAMEWORLD
-		bool areEnemiesAlive() const;							// returns if any enemy is alive
-		bool isOccupied(const Position2D& pos) const;			// returns if position is occupied by player, enemy, or item
-		bool isOccupiedByEnemy(const Position2D& p) const;		// returns if position is occupied by enemy
-		bool isLiveEnemyAdjacentToPlayer(const Enemy& enemy) const;	// returns if enemy is adjacent to player
-		bool areAnyLiveEnemyAdjacentToPlayer() const;			// returns if any enemy adjacent to player
 
 };

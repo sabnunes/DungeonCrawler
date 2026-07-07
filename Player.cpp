@@ -10,7 +10,7 @@ Player::Player()
 	// player attributes
 	setIcon('P');
 	setName("Player");
-	setHealth(15);
+	setHealth(10);
 	setStrength(1);
 	setDefense(0);
 

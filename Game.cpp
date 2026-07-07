@@ -78,7 +78,7 @@ void Game::run()
 		{
 			input();
 		}
-		else if (areEnemiesAlive() && !playerTurn)
+		else if (world.areEnemiesAlive() && !playerTurn)
 		{
 			updateEnemies();
 		}
@@ -157,7 +157,7 @@ void Game::input()
 void Game::updateEnemies()
 {
 	// exit if no enemies alive
-	if (!areEnemiesAlive())
+	if (!world.areEnemiesAlive())
 	{
 		return;
 	}
@@ -169,7 +169,7 @@ void Game::updateEnemies()
 			// TO REMOVE - MOVED TO ENEMYBEHAVIOR with
 			//enemyBehavior.takeTurn(enemy, player, map);
 
-			if (isLiveEnemyAdjacentToPlayer(enemy))
+			if (world.isEnemyAdjacentToPlayer(enemy, player.getPosition()))
 			{
 				enemyAttack(enemy);
 			}
@@ -265,11 +265,11 @@ void Game::render()
 		cout << endl; // New line after each row
 	}
 
-	if (player.isAlive() && areEnemiesAlive())
+	if (player.isAlive() && world.areEnemiesAlive())
 	{
 		std::cout << (playerTurn ? "\nYour turn. Use WASD to move or Q to quit." : "\nEnemy turn.") << endl;
 
-		if (areAnyLiveEnemyAdjacentToPlayer())
+		if (world.areEnemiesAdjacentToPlayer(player.getPosition()))
 		{
 			cout << "Enemy adjacent to player." << (playerTurn ? " Use X to attack!" : "") << endl;
 		}
@@ -297,12 +297,12 @@ void Game::playerMove(int x, int y)
 	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
 
 	// check if the tile is walkable before moving and not occupied by the enemy
-	if (world.getMap().isWalkable(newPos) && !isOccupiedByEnemy(newPos))
+	if (world.getMap().isWalkable(newPos) && !world.isOccupiedByEnemy(newPos))
 	{
 		player.setPosition(Position2D{ newPos.x, newPos.y });
 		cout << "You moved " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ". " << endl;
 	}
-	else if (world.getMap().isWalkable(newPos) && isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position
+	else if (world.getMap().isWalkable(newPos) && world.isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position
 	{
 		cout << "Cannot move there. Use X to attack or WASD to move." << endl;
 	}
@@ -376,11 +376,11 @@ void Game::enemyMove(Enemy& enemy)
 	Position2D nextPos = { pos.x + x, pos.y + y };
 
 	// PROVIDE 2 ADDTL ALT POS
-	if (isOccupied(nextPos))
+	if (world.isOccupiedByEntity(nextPos, player))
 	{
 		Position2D xOnly = { pos.x + x, pos.y };
 
-		if (!isOccupied(xOnly))
+		if (!world.isOccupiedByEntity(xOnly, player))
 		{
 			nextPos = xOnly;
 		}
@@ -388,7 +388,7 @@ void Game::enemyMove(Enemy& enemy)
 		{
 			Position2D yOnly = { pos.x, pos.y + y };
 
-			if (!isOccupied(yOnly))
+			if (!world.isOccupiedByEntity(yOnly, player))
 			{
 				nextPos = yOnly;
 			}
@@ -396,7 +396,7 @@ void Game::enemyMove(Enemy& enemy)
 	}
 	 
 	// VALIDATE & MOVE TO NEXT POS
-	if (!isOccupied(nextPos))
+	if (!world.isOccupiedByEntity(nextPos, player))
 	{
 		enemy.setPosition(nextPos);
 
@@ -411,48 +411,6 @@ void Game::enemyMove(Enemy& enemy)
 	}
 }
 
-// Check if the enemy and player are in adjacent tiles (including diagonals)
-bool Game::isLiveEnemyAdjacentToPlayer(const Enemy &enemy) const
-{
-	// get player and enemy positions
-	Position2D playerPos = player.getPosition();
-
-	// Check all adjacent positions around the player for the enemy's position
-	for (int x = -1; x <= 1; x++) {
-		for (int y = -1; y <= 1; y++) 
-		{
-			if (!(x == 0 && y == 0) && enemy.isAlive() && Position2D{ playerPos.x + x, playerPos.y + y } == enemy.getPosition())
-			{
-				return true; // Enemy is adjacent to the player
-			}
-		}
-	}
-
-	return false;
-}
-
-bool Game::areAnyLiveEnemyAdjacentToPlayer() const
-{
-	for (const Enemy& enemy : world.getEnemies())
-	{
-		// get player and enemy positions
-		Position2D playerPos = player.getPosition();
-
-		// Check all adjacent positions around the player for the enemy's position
-		for (int x = -1; x <= 1; x++) {
-			for (int y = -1; y <= 1; y++)
-			{
-				if (!(x == 0 && y == 0) && enemy.isAlive() && Position2D { playerPos.x + x, playerPos.y + y } == enemy.getPosition())
-				{
-					return true; // Enemy is adjacent to the player
-				}
-			}
-		}
-	}	
-
-	return false;
-}
-
 // Player attacks enemy, enemy loses life if attack successful, check for enemy defeat
 void Game::playerAttack()
 {
@@ -461,7 +419,7 @@ void Game::playerAttack()
 
 	for (Enemy& enemy : world.getEnemies())
 	{
-		if (enemy.isAlive() && isLiveEnemyAdjacentToPlayer(enemy))
+		if (enemy.isAlive() && world.isEnemyAdjacentToPlayer(enemy, player.getPosition()))
 		{
 			combatSystem.attack(player, enemy);
 			enemy.setStunnedState(false); // reset enemy movement pattern if attacked
@@ -576,66 +534,4 @@ void Game::playerUseItem()
 		cout << "You do not have any loot." << endl;
 	}
 	cout << endl; // empty line
-}
-
-
-bool Game::isOccupied(const Position2D &pos) const
-{
-	// Map
-	if (!world.getMap().isWalkable(pos))
-	{
-		return true;
-	}
-
-	// Player
-	if (pos == player.getPosition())
-	{
-		return true;
-	}
-
-	// Enemies
-	for (const Enemy& enemy : world.getEnemies())
-	{
-		if (enemy.isAlive() && pos == enemy.getPosition())
-		{
-			return true;
-		}
-	}
-		
-	// Items
-	for (const Item& item : world.getItems())
-	{
-		if (!item.isCollected() && item.getPosition() == pos)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
-bool Game::isOccupiedByEnemy(const Position2D& pos) const
-{
-	for (const Enemy& enemy : world.getEnemies())
-	{
-		if (enemy.isAlive() && pos == enemy.getPosition())
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
-// Returns if any enemies are alive
-bool Game::areEnemiesAlive() const
-{
-	for (const Enemy& enemy : world.getEnemies())
-	{
-		if (enemy.isAlive())
-		{
-			return true;
-		}
-	}
-	return false;
 }
