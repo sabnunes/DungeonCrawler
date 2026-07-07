@@ -19,10 +19,7 @@ class GridMap
 public:
 	GridMap(); // default constructor
 
-	// create and initialize the map
 	void initialize(int level); // initialize the map with default tile types
-	void generateLevelBorders(); // initialize the map with default tile types
-	void applyLevelTheme(int level); // initialize the map with default tile types
 
 	// Getters and functions to query the map	
 	int getWidth() const; // get the width of the map
@@ -40,6 +37,9 @@ private:
 	static constexpr int START_POS_Y = 0; // minimum y-coordinate start position of the map
 	static constexpr int WIDTH = 31; // fixed width of the map (49 aligns with player stats)
 	static constexpr int HEIGHT = 11; // fixed height of the map
+
+	void generateLevelBorders(); // initialize the map with default tile types
+	void applyLevelTheme(int level); // initialize the map with default tile types
 
 	TileType tiles[WIDTH][HEIGHT]; // 2D array to hold tile data
 

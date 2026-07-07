@@ -4,13 +4,14 @@
 // Default constructor
 LevelDescription::LevelDescription() 
 {
-
 }
 
 // Parameterized constructor
 LevelDescription::LevelDescription(int levelNum) 
 	: levelNum(levelNum) 
 {
+	itemCount = levelNum == 1 ? 0 : 1 + levelNum / 2;
+
 	switch (levelNum)
 	{
 		case 1:
@@ -52,6 +53,10 @@ LevelDescription::LevelDescription(int levelNum)
 			};
 			break;
 		default:
+			name = "Unknown Level";
+			itemCount = 0;
+			enemies.clear();
+			//assert(false);
 			break;
 	}
 } // End of constructors
@@ -61,17 +66,17 @@ int LevelDescription::getLevel() const
 	return levelNum;
 }
 
-std::string LevelDescription::getName() const
+const std::string& LevelDescription::getName() const
 {
 	return name;
 }
 
-std::vector<EnemyType> LevelDescription::getEnemyTypes() const
+const std::vector<EnemyType>& LevelDescription::getEnemyTypes() const
 {
 	return enemies;
 }
 
-int LevelDescription::getItemCount(const int levelNum) const
+int LevelDescription::getItemCount() const
 {
-	return levelNum == 1 ? 0 : 1 + levelNum / 2;
+	return itemCount;
 }

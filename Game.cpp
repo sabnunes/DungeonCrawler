@@ -116,7 +116,7 @@ void Game::spawnItems()
 {
 	worldItems.clear();
 
-	int itemCount = levelDesc.getItemCount(levelDesc.getLevel());
+	int itemCount = levelDesc.getItemCount();
 
 	uniform_int_distribution<int> itemTypeRange(0, static_cast<int>(ItemType::count) - 1);
 
@@ -243,6 +243,9 @@ void Game::updateEnemies()
 	{
 		if (enemy.isAlive())
 		{
+			// TO REMOVE - MOVED TO ENEMYBEHAVIOR with
+			//enemyBehavior.takeTurn(enemy, player, map);
+
 			if (isLiveEnemyAdjacentToPlayer(enemy))
 			{
 				enemyAttack(enemy);

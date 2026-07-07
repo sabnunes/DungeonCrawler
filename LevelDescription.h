@@ -14,15 +14,15 @@ public:
     static constexpr int MAX_LEVEL = 5;
 
     int getLevel() const;
-    std::string getName() const;
-    std::vector<EnemyType> getEnemyTypes() const;
-    int getItemCount(const int levelNum) const;
+    const std::string& getName() const;
+    const std::vector<EnemyType>& getEnemyTypes() const;
+    int getItemCount() const;
 
 private:
     int levelNum = 0;
-    std::string name;
+    std::string name = "Level Name";
     std::vector<EnemyType> enemies;
-    int itemCount = getItemCount(levelNum);
+    int itemCount = 0;
 };
 
 
