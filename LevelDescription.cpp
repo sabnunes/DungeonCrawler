@@ -8,7 +8,7 @@ LevelDescription::LevelDescription()
 
 // Parameterized constructor
 LevelDescription::LevelDescription(int levelNum) 
-	: levelNum(levelNum) 
+	: levelNumber(levelNum) 
 {
 	itemCount = levelNum == 1 ? 0 : 1 + levelNum / 2;
 
@@ -61,9 +61,9 @@ LevelDescription::LevelDescription(int levelNum)
 	}
 } // End of constructors
 
-int LevelDescription::getLevel() const
+int LevelDescription::getNumber() const
 {
-	return levelNum;
+	return levelNumber;
 }
 
 const std::string& LevelDescription::getName() const

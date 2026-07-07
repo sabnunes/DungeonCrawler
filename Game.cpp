@@ -48,99 +48,22 @@ void Game::nextLevel()
 {
 	currentLevel++;
 
-	initLevel();
+	world.initializeLevel(currentLevel);
+	player.setPosition(world.getPlayerSpawnPosition());	// Sets player spawn position
+	printLevelName();
+
+	playerTurn = true;
 }
 
 // Initializes player, enemies, and items
-void Game::initLevel()
+void Game::printLevelName()
 {
-	levelDesc = LevelDescription(currentLevel);	// initializes  level parameters
-
-	map.initialize(currentLevel);	// initializes the map
-	
-	playerTurn = true;
-
 	// Print level number and name
 	cout << "\nLEVEL "
-		 << levelDesc.getLevel()
+		 << world.getLevelDescription().getNumber()
 		 << " "
-	 	 << levelDesc.getName()
+		 << world.getLevelDescription().getName()
 		 << endl << endl;
-
-	spawnPlayer();	// Spawns player
-	spawnEnemies();	// Spawns enemies
-	spawnItems();	// Spawns items
-}
-
-// Spawns player
-void Game::spawnPlayer()
-{
-	Position2D spawnPos;			// Create Position2D for player
-	spawnPos = generateSpawnPos();	// Generate spawn position for player
-	player.setPosition(spawnPos);	// Set player position to generated spawn position
-}
-
-void Game::spawnEnemies()
-{
-	enemies.clear();
-
-	for (EnemyType type : levelDesc.getEnemyTypes())
-	{
-		spawnEnemy(type);
-	}
-}
-
-void Game::spawnEnemy(EnemyType type)
-{
-	// New enemy
-	Enemy enemy(type);
-
-	// Create Position2D
-	Position2D spawnPos;
-	
-	// Generate spawn position until position not equal to player or existing enemy position
-	do
-	{
-		spawnPos = generateSpawnPos();
-	} while (isOccupied(spawnPos));
-
-	// Set item position to generated spawn position
-	enemy.setPosition(spawnPos);
-
-	// Add item to world items
-	enemies.push_back(enemy);
-}
-
-// Spawns items
-void Game::spawnItems()
-{
-	worldItems.clear();
-
-	int itemCount = levelDesc.getItemCount();
-
-	uniform_int_distribution<int> itemTypeRange(0, static_cast<int>(ItemType::count) - 1);
-
-	// Spawn all items
-	for (int i = 0; i < itemCount; i++)
-	{
-		// New item and sets item type
-		Item item(static_cast<ItemType>(itemTypeRange(m_engine)));
-
-		// Create Position2D for item
-		Position2D spawnPos;
-
-		// Generate spawn position for item until position not equal to player or enemy position
-		do
-		{
-			spawnPos = generateSpawnPos();
-		} while (isOccupied(spawnPos));
-
-		// Set item position to generated spawn position
-		item.setPosition(spawnPos);
-
-		// Add item to world items
-		worldItems.push_back(item);
-	}
 }
 
 // run the game: welcome message, process main game loop (input, update, render)
@@ -239,7 +162,7 @@ void Game::updateEnemies()
 		return;
 	}
 
-	for (Enemy& enemy : enemies)
+	for (Enemy& enemy : world.getEnemies())
 	{
 		if (enemy.isAlive())
 		{
@@ -276,7 +199,7 @@ void Game::render()
 	}
 	cout << endl;
 
-	for (const Enemy& enemy : enemies)
+	for (const Enemy& enemy : world.getEnemies())
 	{
 		if (enemy.isAlive())
 		{
@@ -289,11 +212,14 @@ void Game::render()
 	cout << endl; // empty line
 
 	// Render the grid map with the player icon
-	for (int y = 0; y < map.getHeight(); y++)
+	for (int y = 0; y < world.getMap().getHeight(); y++)
 	{
-		for (int x = 0; x < map.getWidth(); x++) {
+		for (int x = 0; x < world.getMap().getWidth(); x++) 
+		{
+			Position2D pos = Position2D{ x, y };
+
 			// PLAYER
-			if (player.getPosition() == Position2D{ x, y } && player.isAlive())
+			if (player.getPosition() == pos && player.isAlive())
 			{
 				cout << player.getIcon(); // print player icon if player is at this coordinate
 			}
@@ -302,9 +228,9 @@ void Game::render()
 			{
 				bool enemyDrawn = false;
 
-				for (const Enemy& enemy : enemies)
+				for (const Enemy& enemy : world.getEnemies())
 				{
-					if (enemy.isAlive() && enemy.getPosition() == Position2D{ x,y })
+					if (enemy.isAlive() && enemy.getPosition() == pos)
 					{
 						cout << enemy.getIcon(); // print enemy icon if enemy is at this coordinate
 						enemyDrawn = true;
@@ -317,10 +243,10 @@ void Game::render()
 				{
 					bool itemDrawn = false;
 				
-					for (const Item &item : worldItems)
+					for (const Item &item : world.getItems())
 					{
 						if (!item.isCollected() &&
-							item.getPosition() == Position2D{ x, y })
+							item.getPosition() == pos)
 						{
 							cout << item.getIcon();
 							itemDrawn = true;
@@ -331,7 +257,7 @@ void Game::render()
 					// TILE
 					if (!itemDrawn)
 					{
-						cout << map.getTileIcon(x, y);
+						cout << world.getMap().getTileIcon(pos);
 					}
 				}
 			}
@@ -348,7 +274,7 @@ void Game::render()
 			cout << "Enemy adjacent to player." << (playerTurn ? " Use X to attack!" : "") << endl;
 		}
 
-		for (const Item &item : worldItems)
+		for (const Item &item : world.getItems())
 		{
 			if (player.getPosition() == item.getPosition() && playerTurn && !item.isCollected())
 			{
@@ -364,25 +290,6 @@ void Game::render()
 	cout << endl;
 }
 
-// Generate a random walkable coordinate and assign it to the player
-Position2D Game::generateSpawnPos()
-{
-	// Define the inclusive range [] for x and y; exclude walls
-	uniform_int_distribution<int> rangeX(1, map.getWidth() - 2);
-	uniform_int_distribution<int> rangeY(1, map.getHeight() - 2);
-
-	Position2D pos; // create a structure to hold the spawn position coordinates
-
-	// Generate random x and y coordinates for the spawn position, regenerate if not walkable
-	do
-	{
-		pos.x = rangeX(m_engine);
-		pos.y = rangeY(m_engine);
-	} while (!map.isWalkable(pos));
-
-	return pos; // return the generated spawn position coordinates
-}
-
 // Move the player to a new position if it's valid and walkable, check for enemy collision
 void Game::playerMove(int x, int y)
 {
@@ -390,12 +297,12 @@ void Game::playerMove(int x, int y)
 	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
 
 	// check if the tile is walkable before moving and not occupied by the enemy
-	if (map.isWalkable(newPos) && !isOccupiedByEnemy(newPos))
+	if (world.getMap().isWalkable(newPos) && !isOccupiedByEnemy(newPos))
 	{
 		player.setPosition(Position2D{ newPos.x, newPos.y });
 		cout << "You moved " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ". " << endl;
 	}
-	else if (map.isWalkable(newPos) && isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position
+	else if (world.getMap().isWalkable(newPos) && isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position
 	{
 		cout << "Cannot move there. Use X to attack or WASD to move." << endl;
 	}
@@ -526,7 +433,7 @@ bool Game::isLiveEnemyAdjacentToPlayer(const Enemy &enemy) const
 
 bool Game::areAnyLiveEnemyAdjacentToPlayer() const
 {
-	for (const Enemy& enemy : enemies)
+	for (const Enemy& enemy : world.getEnemies())
 	{
 		// get player and enemy positions
 		Position2D playerPos = player.getPosition();
@@ -552,7 +459,7 @@ void Game::playerAttack()
 	cout << "Attack enemy." << endl;
 	bool successfulAttack = false;
 
-	for (Enemy& enemy : enemies)
+	for (Enemy& enemy : world.getEnemies())
 	{
 		if (enemy.isAlive() && isLiveEnemyAdjacentToPlayer(enemy))
 		{
@@ -610,7 +517,7 @@ void Game::playerPickUpItem()
 {
 	bool worldItemsExist = false;
 
-	for (Item& item : worldItems)
+	for (Item& item : world.getItems())
 	{
 		if (item.getPosition() == player.getPosition() && !item.isCollected())
 		{
@@ -671,10 +578,11 @@ void Game::playerUseItem()
 	cout << endl; // empty line
 }
 
+
 bool Game::isOccupied(const Position2D &pos) const
 {
 	// Map
-	if (!map.isWalkable(pos))
+	if (!world.getMap().isWalkable(pos))
 	{
 		return true;
 	}
@@ -686,7 +594,7 @@ bool Game::isOccupied(const Position2D &pos) const
 	}
 
 	// Enemies
-	for (const Enemy& enemy : enemies)
+	for (const Enemy& enemy : world.getEnemies())
 	{
 		if (enemy.isAlive() && pos == enemy.getPosition())
 		{
@@ -695,7 +603,7 @@ bool Game::isOccupied(const Position2D &pos) const
 	}
 		
 	// Items
-	for (const Item& item : worldItems)
+	for (const Item& item : world.getItems())
 	{
 		if (!item.isCollected() && item.getPosition() == pos)
 		{
@@ -708,7 +616,7 @@ bool Game::isOccupied(const Position2D &pos) const
 
 bool Game::isOccupiedByEnemy(const Position2D& pos) const
 {
-	for (const Enemy& enemy : enemies)
+	for (const Enemy& enemy : world.getEnemies())
 	{
 		if (enemy.isAlive() && pos == enemy.getPosition())
 		{
@@ -722,7 +630,7 @@ bool Game::isOccupiedByEnemy(const Position2D& pos) const
 // Returns if any enemies are alive
 bool Game::areEnemiesAlive() const
 {
-	for (const Enemy& enemy : enemies)
+	for (const Enemy& enemy : world.getEnemies())
 	{
 		if (enemy.isAlive())
 		{

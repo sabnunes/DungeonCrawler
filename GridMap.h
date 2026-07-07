@@ -25,7 +25,7 @@ public:
 	int getWidth() const; // get the width of the map
 	int getHeight() const; // get the height of the map
 	TileType getTile(int x, int y) const; // get the tile type at a specific position
-	char getTileIcon(int x, int y) const; // get the character representation of the tile at a specific position
+	char getTileIcon(const Position2D& position) const; // get the character representation of the tile at a specific position
 
 	bool isValidPosition(int x, int y) const; // check if a position is within map bounds
 	bool isWalkable(int x, int y) const; // check if a tile is walkable (e.g., not a wall)

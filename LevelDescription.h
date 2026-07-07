@@ -9,17 +9,17 @@ class LevelDescription
 {
 public:
     LevelDescription();
-    explicit LevelDescription(int levelNum);
+    explicit LevelDescription(int levelNumber);
 
     static constexpr int MAX_LEVEL = 5;
 
-    int getLevel() const;
+    int getNumber() const;
     const std::string& getName() const;
     const std::vector<EnemyType>& getEnemyTypes() const;
     int getItemCount() const;
 
 private:
-    int levelNum = 0;
+    int levelNumber = 0;
     std::string name = "Level Name";
     std::vector<EnemyType> enemies;
     int itemCount = 0;

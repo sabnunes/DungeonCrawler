@@ -12,10 +12,10 @@ GridMap::GridMap()
 } // end GridMap constructor
 
 // Initialize the map with tile types
-void GridMap::initialize(int level)
+void GridMap::initialize(int levelNumber)
 {
 	generateLevelBorders();
-	applyLevelTheme(level);
+	applyLevelTheme(levelNumber);
 }
 
 void GridMap::generateLevelBorders()
@@ -234,12 +234,6 @@ void GridMap::applyLevelTheme(int level)
 					tiles[x][y] = TileType::Tree;
 				}
 
-				//// Water
-				//if (roll == 3)
-				//{
-				//	tiles[x][y] = TileType::Water;
-				//}
-
 				// Rock
 				if (roll == 4)
 				{
@@ -364,9 +358,9 @@ TileType GridMap::getTile(int x, int y) const
 }
 
 // Get the character representation of the tile at a specific position
-char GridMap::getTileIcon(int x, int y) const
+char GridMap::getTileIcon(const Position2D& p) const
 {
-	switch (getTile(x, y))
+	switch (getTile(p.x, p.y))
 	{
 	case TileType::Wall:
 		return '#';
@@ -389,7 +383,6 @@ char GridMap::getTileIcon(int x, int y) const
 bool GridMap::isValidPosition(int x, int y) const
 {
 	return x >= 0 && x < getWidth() && y >= 0 && y < getHeight(); // currently only checks bounds
-	// may need to check for walls or other impassable tiles in the future -- test against tile type at this position ?
 }
 
 // Check if a tile is walkable (e.g., not a wall)
