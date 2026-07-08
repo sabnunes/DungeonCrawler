@@ -20,14 +20,14 @@ class Game
 	private:
 		bool running = false;	// flag to control game loop
 
-		void printLegend();
-		void printLevelName();
-
 		void nextLevel();
 
 		void input();			// get player input and process it
 		void updateEnemies();	// update game state based on input and other factors
 		void render();			// render game state to the screen
+
+		void printLegend();
+		void printLevelName();
 		
 		GameWorld world;
 		EnemyBehavior enemyBehavior;
@@ -46,9 +46,9 @@ class Game
 		void playerUseItem();			// consumes item 
 		
 		// TO REMOVE - MOVED INTO GAMEWORLD
-		std::mt19937 m_engine;	// Obtain a random seed from the hardware
 		
 		// TO REMOVE - MOVED INTO ENEMYBEHAVIOR
+		std::mt19937 m_engine;	// Obtain a random seed from the hardware
 		void enemyMove(Enemy& enemy);		// movethe player to a new position if it's valid and walkable
 		void enemyAttack(Enemy& enemy);	// process enemy attacking the player
 
