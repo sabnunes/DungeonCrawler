@@ -39,11 +39,11 @@ class Game
 		// TO REMOVE - MOVE INTO COMBATSYSTEMS
 		void playerAttack();			// process player attacking the enemy
 
-		// TO REMOVE - MOVED INTO GAMEWORLD
-		Player player;				// the player character
-		void playerMove(int x, int y);	// move the player to a new position if it's valid and walkable
-		void playerPickUpItem();		// marks item as picked up if player overlaps same position as item
-		void playerUseItem();			// consumes item 
+		// TO CLEAN UP
+		//Player player;				// the player character
+		void printPlayerMove(int x, int y);	// move the player to a new position if it's valid and walkable
+		void printPlayerPickUpItem();		// marks item as picked up if player overlaps same position as item
+		void printPlayerUseItem();			// consumes item 
 		
 		// TO REMOVE - MOVED INTO GAMEWORLD
 		

@@ -8,7 +8,7 @@ CombatSystem::CombatSystem()
 
 } // end default constructor
 
-bool CombatSystem::attack(Character& attacker, Character& defender)
+bool CombatSystem::attack(const Character& attacker, Character& defender)
 {
 	applyDamage(defender, calculateDamage(attacker, defender));
 

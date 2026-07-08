@@ -14,21 +14,83 @@ void GameWorld::initializeLevel(int levelNumber)
 	
 	map.initialize(levelDescription.getNumber());		// Initialize the map for the level
 
-	playerSpawnPosition = generateSpawnPosition();		// Generate a random spawn position for the player
+	player.setPosition(generateSpawnPosition());		// Generate a random spawn position for the player
 	
 	spawnEnemies();	// Spawn enemies for the level
 	spawnItems();	// Spawn items for the level
 
 }
 
+//newGame()
+//{
+//	player = Player();   // Reset stats to defaults
+//	initializeLevel(1);
+//}
+
 const LevelDescription& GameWorld::getLevelDescription() const
 {
 	return levelDescription;
 }
 
-const Position2D& GameWorld::getPlayerSpawnPosition() const
+Player& GameWorld::getPlayer()
 {
-	return playerSpawnPosition;
+	return player;
+}
+
+const Player& GameWorld::getPlayer() const
+{
+	return player;
+}
+
+void GameWorld::playerMove(const int x, const int y)
+{
+	// Move the player to a new position if it's valid and walkable, check for enemy collision
+	Position2D pos = player.getPosition();
+	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
+
+	// check if the tile is walkable before moving and not occupied by the enemy
+	if (map.isWalkable(newPos) && !isOccupiedByEnemy(newPos))
+	{
+		player.setPosition(Position2D{ newPos.x, newPos.y });
+	}
+}
+
+void GameWorld::playerPickUpItem()
+{
+	for (Item& item : items)
+	{
+		if (item.getPosition() == player.getPosition() && !item.isCollected())
+		{
+			item.collect();
+			player.addInventoryItem(item);
+			return;
+		}
+	}
+}
+
+void GameWorld::playerUseItem()
+{
+	if (player.getInventorySize() > 0)
+	{
+		const Item& item = player.getInventoryItem();
+
+		switch (item.getType())
+		{
+		case ItemType::HealthPotion: // give player +10 HP
+			player.setHealth(player.getHealth() + 10);
+			break;
+		case ItemType::StrengthPotion: // give player +1 STR
+			player.setStrength(player.getStrength() + 1);
+			break;
+		case ItemType::DefensePotion: // give player +1 DEF
+			player.setDefense(player.getDefense() + 1);
+			break;
+		default:
+			break;
+		}
+
+		player.useInventoryItem();
+	}
 }
 
 const GridMap& GameWorld::getMap() const
@@ -83,7 +145,7 @@ bool GameWorld::isSpawnPositionOccupied(const Position2D& pos) const
 	}
 
 	// Player
-	if (pos == getPlayerSpawnPosition()) 
+	if (pos == player.getPosition()) 
 	{
 		return true;
 	}
@@ -185,7 +247,7 @@ bool GameWorld::isOccupiedByEnemy(const Position2D& p) const
 	return false;
 }
 
-bool GameWorld::isOccupiedByEntity(const Position2D& pos, const Player& player) const
+bool GameWorld::isOccupiedByEntity(const Position2D& pos) const
 {
 	// Map
 	if (!map.isWalkable(pos))
@@ -220,14 +282,14 @@ bool GameWorld::isOccupiedByEntity(const Position2D& pos, const Player& player) 
 	return false;
 }
 
-bool GameWorld::isEnemyAdjacentToPlayer(const Enemy& enemy, const Position2D& playerPos) const
+bool GameWorld::isEnemyAdjacentToPlayer(const Enemy& enemy) const
 {
 	// Check all adjacent positions around the player for the live enemy's position
 	for (int x = -1; x <= 1; x++) 
 	{
 		for (int y = -1; y <= 1; y++)
 		{
-			Position2D adjacentPos = Position2D{ playerPos.x + x, playerPos.y + y };
+			Position2D adjacentPos = Position2D{ player.getPosition().x + x, player.getPosition().y + y};
 
 			if (!(x == 0 && y == 0) && enemy.isAlive() && adjacentPos == enemy.getPosition())
 			{
@@ -239,12 +301,12 @@ bool GameWorld::isEnemyAdjacentToPlayer(const Enemy& enemy, const Position2D& pl
 	return false;
 }
 
-bool GameWorld::areEnemiesAdjacentToPlayer(const Position2D& playerPos) const
+bool GameWorld::areEnemiesAdjacentToPlayer() const
 {
 
 	for (const Enemy& enemy : enemies)
 	{
-		if (isEnemyAdjacentToPlayer(enemy, playerPos))
+		if (isEnemyAdjacentToPlayer(enemy))
 		{
 			return true;
 		}
