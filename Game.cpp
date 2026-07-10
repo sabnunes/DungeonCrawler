@@ -15,54 +15,6 @@ Game::Game()
 	nextLevel();	
 } // end Game constructor
 
-// Prints the legend for the game, including controls, enemies, and environment obstacles
-void Game::printLegend()
-{
-	cout << "Legend\n";
-	cout << left;
-
-	auto col = [](const string& text)
-		{
-			cout << setw(12) << text;
-		};
-
-	col("CONTROLS");	col("ENEMIES");		col("LOOT");	cout << "\n";
-	col("W north");		col("s Slime");		col("H HP+10"); cout << "\n";
-	col("A west");		col("l Leopard");	col("S STR++"); cout << "\n";
-	col("S south");		col("d Doe");		col("D DEF++"); cout << "\n";
-	col("D east");		col("");			col("");        cout << "\n";
-	col("X attack");	col("");			col("");		cout << "\n";
-	col("E equip");		col("ENVIRONMENT"); col("");		cout << "\n";
-	col("U use loot");	col("^ tree");		col("~ water"); cout << "\n";
-	col("Q quit");		col(", grass");		col("* rock");	cout << "\n";
-
-	cout << endl;
-}
-
-// Increments level to next level and triggers level intialization
-void Game::nextLevel()
-{
-	currentLevel++;
-
-	world.initializeLevel(currentLevel);
-
-	printLevelName();
-
-	playerTurn = true;
-}
-
-// Initializes player, enemies, and items
-void Game::printLevelName()
-{
-	// Print level number and name
-	cout << "\n---------------------------------\n LEVEL "
-		 << world.getLevelDescription().getNumber()
-		 << " "
-		 << world.getLevelDescription().getName()
-		<< "\n---------------------------------"
-		 << endl << endl;
-}
-
 // run the game: welcome message, process main game loop (input, update, render)
 void Game::run()
 {
@@ -97,6 +49,18 @@ void Game::run()
 		}
 	}
 	cout << "Thanks for playing!" << endl;
+}
+
+// Increments level to next level and triggers level intialization
+void Game::nextLevel()
+{
+	currentLevel++;
+
+	world.initializeLevel(currentLevel);
+
+	printLevelName();
+
+	playerTurn = true;
 }
 
 // Get player input and process it, e.g., move player position, update health, etc
@@ -286,35 +250,6 @@ void Game::render()
 	cout << endl;
 }
 
-// Move the player to a new position if it's valid and walkable, check for enemy collision
-void Game::printPlayerMove(int x, int y)
-{
-	Position2D pos = world.getPlayer().getPosition();
-	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
-
-	// check if the tile is walkable before moving and not occupied by the enemy
-	if (world.getMap().isWalkable(newPos) && !world.isOccupiedByEnemy(newPos))
-	{
-		cout << "You moved " << (x > 0 ? "east" : (x < 0 ? "west" : (y > 0 ? "south" : "north"))) << ". " << endl;
-		
-		for (const Item& item : world.getItems())
-		{
-			if (newPos == item.getPosition() && !item.isCollected())
-			{
-				cout << "You found a " << item.getName() << "! Pick it up on your next turn." << endl;
-			}
-		}
-	}
-	else if (world.getMap().isWalkable(newPos) && world.isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position
-	{
-		cout << "Cannot move there. Use X to attack or WASD to move." << endl;
-	}
-	else // if the tile is not walkable, print a message indicating the player cannot move in that direction
-	{
-		cout << "Cannot move " << (x > 0 ? "east" : (x < 0 ? "west" : (y > 0 ? "south" : "north"))) << ", tile is not walkable." << endl;
-	}
-}
-
 // Player attacks enemy, enemy loses life if attack successful, check for enemy defeat
 void Game::playerAttack()
 {
@@ -347,54 +282,75 @@ void Game::playerAttack()
 			}
 		}
 	}
-	
+
 	if (!successfulAttack)
 	{
 		cout << "No enemy in range." << endl;
 	}
 }
 
-// Enemy attacks player, player loses life if attack successful, check for player defeat
-void Game::printEnemyTurnResult(Enemy& enemy, EnemyTurnResult& enemyTurnResult)
+// Prints the legend for the game, including controls, enemies, and environment obstacles
+void Game::printLegend()
 {
-	if (enemyTurnResult.attacked)
-	{
-		cout << enemy.getName() << " attacked you!" << endl;
-		
-		if (enemyTurnResult.damage > 0)
-		{
-			cout << enemy.getName() << " attack successful. You lost " << enemyTurnResult.damage << " HP." << endl;
+	cout << "Legend\n";
+	cout << left;
 
-			if (enemyTurnResult.killedPlayer)
+	auto col = [](const string& text)
+		{
+			cout << setw(12) << text;
+		};
+
+	col("CONTROLS");	col("ENEMIES");		col("LOOT");	cout << "\n";
+	col("W north");		col("s Slime");		col("H HP+10"); cout << "\n";
+	col("A west");		col("l Leopard");	col("S STR++"); cout << "\n";
+	col("S south");		col("d Doe");		col("D DEF++"); cout << "\n";
+	col("D east");		col("");			col("");        cout << "\n";
+	col("X attack");	col("");			col("");		cout << "\n";
+	col("E equip");		col("ENVIRONMENT"); col("");		cout << "\n";
+	col("U use loot");	col("^ tree");		col("~ water"); cout << "\n";
+	col("Q quit");		col(", grass");		col("* rock");	cout << "\n";
+
+	cout << endl;
+}
+
+// Initializes player, enemies, and items
+void Game::printLevelName()
+{
+	// Print level number and name
+	cout << "\n---------------------------------\n LEVEL "
+		<< world.getLevelDescription().getNumber()
+		<< " "
+		<< world.getLevelDescription().getName()
+		<< "\n---------------------------------"
+		<< endl << endl;
+}
+
+// Move the player to a new position if it's valid and walkable, check for enemy collision
+void Game::printPlayerMove(int x, int y)
+{
+	Position2D pos = world.getPlayer().getPosition();
+	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
+
+	// check if the tile is walkable before moving and not occupied by the enemy
+	if (world.getMap().isWalkable(newPos) && !world.isOccupiedByEnemy(newPos))
+	{
+		cout << "You moved " << (x > 0 ? "east" : (x < 0 ? "west" : (y > 0 ? "south" : "north"))) << ". " << endl;
+		
+		for (const Item& item : world.getItems())
+		{
+			if (newPos == item.getPosition() && !item.isCollected())
 			{
-				cout << "You died!" << endl;
+				cout << "You found a " << item.getName() << "! Pick it up on your next turn." << endl;
 			}
 		}
-		else
-		{
-			cout << enemy.getName() << " attack unsuccesful." << endl;
-		}
 	}
-	else
+	else if (world.getMap().isWalkable(newPos) && world.isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position
 	{
-		if (enemy.getStunnedState() == true)
-		{
-			cout << enemy.getName() << " gathering its senses." << endl;
-			return;
-		}
-
-		if (enemyTurnResult.moved)
-		{
-			cout << enemy.getName() << " moved "
-				 << (enemyTurnResult.deltaPos.x > 0 ? "east" 
-				  : (enemyTurnResult.deltaPos.x < 0 ? "west" 
-				  : (enemyTurnResult.deltaPos.y > 0 ? "south" : "north")))
-				 << "." << endl;
-		}
-		else
-		{
-			cout << enemy.getName() << " attempted move, but cannot move there!" << endl;
-		}
+		cout << "Cannot move there. Use X to attack or WASD to move." << endl;
+	}
+	else // if the tile is not walkable, print a message indicating the player cannot move in that direction
+	{
+		cout << "Cannot move " << (x > 0 ? "east" : (x < 0 ? "west" : (y > 0 ? "south" : "north"))) << ", tile is not walkable." << endl;
 	}
 }
 
@@ -454,5 +410,49 @@ void Game::printPlayerUseItem()
 	else
 	{
 		cout << "You do not have any loot." << endl;
+	}
+}
+
+// Enemy attacks player, player loses life if attack successful, check for player defeat
+void Game::printEnemyTurnResult(Enemy& enemy, EnemyTurnResult& enemyTurnResult)
+{
+	if (enemyTurnResult.attacked)
+	{
+		cout << enemy.getName() << " attacked you!" << endl;
+		
+		if (enemyTurnResult.damage > 0)
+		{
+			cout << enemy.getName() << " attack successful. You lost " << enemyTurnResult.damage << " HP." << endl;
+
+			if (enemyTurnResult.killedPlayer)
+			{
+				cout << "You died!" << endl;
+			}
+		}
+		else
+		{
+			cout << enemy.getName() << " attack unsuccesful." << endl;
+		}
+	}
+	else
+	{
+		if (enemy.getStunnedState() == true)
+		{
+			cout << enemy.getName() << " gathering its senses." << endl;
+			return;
+		}
+
+		if (enemyTurnResult.moved)
+		{
+			cout << enemy.getName() << " moved "
+				 << (enemyTurnResult.deltaPos.x > 0 ? "east" 
+				  : (enemyTurnResult.deltaPos.x < 0 ? "west" 
+				  : (enemyTurnResult.deltaPos.y > 0 ? "south" : "north")))
+				 << "." << endl;
+		}
+		else
+		{
+			cout << enemy.getName() << " attempted move, but cannot move there!" << endl;
+		}
 	}
 }

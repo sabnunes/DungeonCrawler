@@ -31,11 +31,15 @@ class Game
 		
 		void playerAttack();			// process player attacking the enemy
 
+
+		// TO MOVE TO RENDER SYSTEM
 		void printLegend();
 		void printLevelName();
+
 		void printPlayerMove(int x, int y);	
 		void printPlayerPickUpItem();		
-		void printPlayerUseItem();			
+		void printPlayerUseItem();		
+
 		void printEnemyTurnResult(Enemy& enemy, EnemyTurnResult& enemyTurnResult);	
 
 };

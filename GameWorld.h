@@ -17,13 +17,10 @@ public:
 	GameWorld(); // default constructor
 
     void initializeLevel(int levelNumber); // initialize the game world with a specific level
-    //void newGame() resetGame() resetGameWorld();
 
     const LevelDescription& getLevelDescription() const;
-	//const Position2D& getPlayerSpawnPosition() const;
 
     // Map
-	//GridMap& getMap();
 	const GridMap& getMap() const;
 
     // Player
@@ -39,7 +36,6 @@ public:
     bool areEnemiesAlive() const;
 
     // Items
-	//Item& getItem() const;
 	std::vector<Item>& getItems();
 	const std::vector<Item>& getItems() const;
 
@@ -60,7 +56,6 @@ private:
     Player player;
     std::vector<Enemy> enemies;
     std::vector<Item> items;
-
 
 	Position2D generateSpawnPosition(); // returns a random spawn position for the player
     

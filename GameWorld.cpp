@@ -21,12 +21,6 @@ void GameWorld::initializeLevel(int levelNumber)
 
 }
 
-//newGame()
-//{
-//	player = Player();   // Reset stats to defaults
-//	initializeLevel(1);
-//}
-
 const LevelDescription& GameWorld::getLevelDescription() const
 {
 	return levelDescription;
