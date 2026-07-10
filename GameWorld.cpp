@@ -49,16 +49,33 @@ void GameWorld::playerMove(const int x, const int y)
 	}
 }
 
-void GameWorld::playerPickUpItem()
+ItemCollected GameWorld::playerCollectItem()
 {
+	bool itemsRemaining = false;
+
 	for (Item& item : items)
 	{
-		if (item.getPosition() == player.getPosition() && !item.isCollected())
+		if (!item.isCollected())
 		{
-			item.collect();
-			player.addInventoryItem(item);
-			return;
+			itemsRemaining = true;
+
+			if (item.getPosition() == player.getPosition())
+			{
+				item.collect();
+				player.addInventoryItem(item);
+
+				return { true, &item, false };
+			}
 		}
+	}
+
+	if (itemsRemaining)
+	{
+		return { false, nullptr, true };
+	}
+	else
+	{
+		return { false, nullptr, false };
 	}
 }
 
