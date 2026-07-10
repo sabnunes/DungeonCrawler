@@ -18,16 +18,19 @@ Item::Item(ItemType t)
 	case ItemType::HealthPotion:
 		setName("Health Potion");
 		setIcon('H');
+		itemValue = 10;
 		break;
 
 	case ItemType::StrengthPotion:
 		setName("Strength Potion");
 		setIcon('S');
+		itemValue = 1;
 		break;
 
 	case ItemType::DefensePotion:
 		setName("Defense Potion");
 		setIcon('D');
+		itemValue = 1;
 		break;
 	}
 }
@@ -52,4 +55,9 @@ void Item::setType(ItemType newType)
 void Item::collect()
 {
 	collected = true;
+}
+
+int Item::getValue() const
+{
+	return itemValue;
 }

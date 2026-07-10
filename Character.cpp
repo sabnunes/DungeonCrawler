@@ -56,3 +56,18 @@ bool Character::isAlive() const
 {
 	return getHealth() > 0;
 }
+
+void Character::modifyHealth(int v)
+{
+	setHealth(getHealth() + v);
+}
+
+void Character::modifyStrength(int v)
+{
+	setStrength(getStrength() + v);
+}
+
+void Character::modifyDefense(int v)
+{
+	setDefense(getDefense() + v);
+}

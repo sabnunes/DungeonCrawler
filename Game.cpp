@@ -8,7 +8,6 @@ using namespace std;
 
 // Constructor
 Game::Game()
-	: m_engine(std::random_device{}()) // Initialize the standard Mersenne Twister engine with the seed
 {
 	cout << "Welcome to DUNGEON CRAWLER\n" << endl;
 	printLegend();
@@ -40,7 +39,7 @@ void Game::printLegend()
 	col("U use loot");	col("^ tree");		col("~ water"); cout << "\n";
 	col("Q quit");		col(", grass");		col("* rock");	cout << "\n";
 
-	cout << "\n";
+	cout << endl;
 }
 
 // Increments level to next level and triggers level intialization
@@ -74,6 +73,7 @@ void Game::run()
 	while (running)
 	{
 		render();
+
 		if (world.getPlayer().isAlive() && playerTurn)
 		{
 			input();
@@ -86,13 +86,15 @@ void Game::run()
 		{
 			if (world.getPlayer().isAlive() && currentLevel < LevelDescription::MAX_LEVEL)
 			{
-				cout << "You've defeated all enemies! NEXT LEVEL!" << endl;
+				cout << "\n";
+				cout << "You've defeated all enemies! NEXT LEVEL!\n\n";
+
 				nextLevel();
 			}
 			else
 			{
 				cout << (world.getPlayer().isAlive() ? "You've defeated all enemies! You win!" : "You are dead. Game over.") << endl;
-				running = 0;
+				running = false;
 			}
 		}
 	}
@@ -155,39 +157,26 @@ void Game::input()
 				cout << "Invalid input. Use WASD keys to move, Q to quit.\n" << endl;
 				break;
 		}
-		playerTurn = 0;
+		cout << endl;
+
+		playerTurn = false;
 	}
 }
 
 // Update game state based on input and other factors, e.g., move enemies, check for collisions, update health, etc.
 void Game::updateEnemies()
 {
-	// exit if no enemies alive
-	if (!world.areEnemiesAlive())
-	{
-		return;
-	}
-
 	for (Enemy& enemy : world.getEnemies())
 	{
 		if (enemy.isAlive())
 		{
-			// TO REMOVE - MOVED TO ENEMYBEHAVIOR with
-			//enemyBehavior.takeTurn(enemy, player, map);
-
-			if (world.isEnemyAdjacentToPlayer(enemy))
-			{
-				enemyAttack(enemy);
-			}
-			else
-			{
-				enemyMove(enemy);
-			}
+			EnemyTurnResult enemyTurnResult = enemyBehavior.takeTurn(enemy, world, combatSystem);
+			printEnemyTurnResult(enemy, enemyTurnResult);
 		}
 	}	
+	cout << endl;
 
-	cout << endl; // empty line
-	playerTurn = 1;
+	playerTurn = true;
 }
 
 // Render game state to the screen,	display player health, inventory, etc., display game world, enemies, etc.
@@ -273,24 +262,27 @@ void Game::render()
 
 	if (world.getPlayer().isAlive() && world.areEnemiesAlive())
 	{
-		std::cout << (playerTurn ? "\nYour turn. Use WASD to move or Q to quit." : "\nEnemy turn.") << endl;
+		cout << (playerTurn ? "\nYour turn. Use WASD to move or Q to quit." : "\nEnemies' turn.");
 
 		if (world.areEnemiesAdjacentToPlayer())
 		{
-			cout << "Enemy adjacent to player." << (playerTurn ? " Use X to attack!" : "") << endl;
+			cout << "\nEnemy adjacent to player." << (playerTurn ? " Use X to attack!" : "");
 		}
 
-		for (const Item &item : world.getItems())
+		if (playerTurn)
 		{
-			if (world.getPlayer().getPosition() == item.getPosition() && playerTurn && !item.isCollected())
+			for (const Item &item : world.getItems())
 			{
-				cout << "Stumbled on item: " << item.getName() << "." << " Use E to pick up." << endl;
+				if (world.getPlayer().getPosition() == item.getPosition() && playerTurn && !item.isCollected())
+				{
+					cout << "\nYou stumbled on item: " << item.getName() << "." << " Use E to pick up.";
+				}
 			}
-		}
 
-		if (world.getPlayer().getInventorySize() > 0)
-		{
-			cout << "Use U to use recently acquired loot." << endl;
+			if (world.getPlayer().getInventorySize() > 0)
+			{
+				cout << "\nUse U to use recently acquired loot.";
+			}
 		}
 	}
 	cout << endl;
@@ -306,6 +298,14 @@ void Game::printPlayerMove(int x, int y)
 	if (world.getMap().isWalkable(newPos) && !world.isOccupiedByEnemy(newPos))
 	{
 		cout << "You moved " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ". " << endl;
+		
+		for (const Item& item : world.getItems())
+		{
+			if (newPos == item.getPosition() && !item.isCollected())
+			{
+				cout << "You stumbled on item: " << item.getName() << ". Pick it up on your next turn!" << endl;
+			}
+		}
 	}
 	else if (world.getMap().isWalkable(newPos) && world.isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position
 	{
@@ -315,131 +315,36 @@ void Game::printPlayerMove(int x, int y)
 	{
 		cout << "Cannot move " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ", tile is not walkable." << endl;
 	}
-	cout << endl; // empty line
-}
-
-// Enemy movement behavior and pattern
-void Game::enemyMove(Enemy& enemy)
-{
-	// STUNED/IDLE LOGIC
-	if (enemy.getStunnedState() == true)
-	{
-		enemy.setStunnedState(false);
-		cout << enemy.getName() << " gathering its senses." << endl;
-		return;
-	}
-
-	// FIND NEXT POS
-	// x and y coordinate variables
-	int x = 0;
-	int y = 0;
-
-	std::vector<Position2D> possibleMoves =
-	{
-		{ 1,  0 },  // right
-		{-1,  0 },  // left
-		{ 0,  1 },  // down
-		{ 0, -1 },  // up
-		{ 1,  1 },  // down-right
-		{ 1, -1 },  // up-right
-		{-1,  1 },  // down-left
-		{-1, -1 }   // up-left
-	};
-
-	switch (enemy.getType())
-	{
-	case EnemyType::Slime:		// Moves randomly
-	{
-		//cout << "DEBUG: ENEMY MOVE SLIME\n";
-		uniform_int_distribution<int> range(-1, 1);
-
-		do
-		{
-			x = range(m_engine);
-			y = range(m_engine);
-		} while (x == 0 && y == 0);
-
-		break;
-	}
-	case EnemyType::Leopard:	// Moves towards player, incl. diagonals
-		//cout << "DEBUG: ENEMY MOVE LEOPARD\n";
-		x = world.getPlayer().getPosition().x > enemy.getPosition().x ? 1 : -1;
-		y = world.getPlayer().getPosition().y > enemy.getPosition().y ? 1 : -1;
-		break;
-	case EnemyType::Doe:		// Moves away from player
-	{
-		x = world.getPlayer().getPosition().x < enemy.getPosition().x ? 1 : -1;
-		y = world.getPlayer().getPosition().y < enemy.getPosition().y ? 1 : -1;
-		break;
-	}
-	default:
-		break;
-	}
-
-	// VAR TO HOLD POS AND NEXT POS
-	Position2D pos = enemy.getPosition();
-	Position2D nextPos = { pos.x + x, pos.y + y };
-
-	// PROVIDE 2 ADDTL ALT POS
-	if (world.isOccupiedByEntity(nextPos))
-	{
-		Position2D xOnly = { pos.x + x, pos.y };
-
-		if (!world.isOccupiedByEntity(xOnly))
-		{
-			nextPos = xOnly;
-		}
-		else
-		{
-			Position2D yOnly = { pos.x, pos.y + y };
-
-			if (!world.isOccupiedByEntity(yOnly))
-			{
-				nextPos = yOnly;
-			}
-		}
-	}
-	 
-	// VALIDATE & MOVE TO NEXT POS
-	if (!world.isOccupiedByEntity(nextPos))
-	{
-		enemy.setPosition(nextPos);
-
-		std::cout << enemy.getName() << " moved "
-			<< (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up")))
-			<< ".\n";
-	}
-	// FAIL MOVE
-	else
-	{
-		cout << enemy.getName() << " attempted move, but cannot move there!" << endl;
-	}
 }
 
 // Player attacks enemy, enemy loses life if attack successful, check for enemy defeat
 void Game::playerAttack()
 {
-	cout << "Attack enemy." << endl;
+	Player& player = world.getPlayer();
+
+	cout << "You attacked the enemy!" << endl;
 	bool successfulAttack = false;
 
 	for (Enemy& enemy : world.getEnemies())
 	{
 		if (enemy.isAlive() && world.isEnemyAdjacentToPlayer(enemy))
 		{
-			combatSystem.attack(world.getPlayer(), enemy);
+			CombatResult attackResult = combatSystem.attack(player, enemy);
+
 			enemy.setStunnedState(false); // reset enemy movement pattern if attacked
+
 			cout << "Attack successful. ";
+
 			successfulAttack = true;
 
-			if (!enemy.isAlive())
+			if (attackResult.killed)
 			{
 				cout << enemy.getName() << " is dead! Strength increased +1." << endl;
-				world.getPlayer().setStrength(world.getPlayer().getStrength() + 1); // increase player strength as a reward for defeating the enemy
+				player.modifyStrength(1); // increase player strength as a reward for defeating the enemy
 			}
 			else
 			{
-				cout << enemy.getName() << " lost " 
-						<< combatSystem.calculateDamage(world.getPlayer(), enemy) << " HP." << endl;
+				cout << enemy.getName() << " lost " << attackResult.damage << " HP." << endl;
 				cout << enemy.getName() << " preparing counterattack." << endl;
 			}
 		}
@@ -452,26 +357,46 @@ void Game::playerAttack()
 }
 
 // Enemy attacks player, player loses life if attack successful, check for player defeat
-void Game::enemyAttack(Enemy& enemy)
+void Game::printEnemyTurnResult(Enemy& enemy, EnemyTurnResult& enemyTurnResult)
 {
-	cout << enemy.getName() << " attacked you!" << endl;
-	int damage = combatSystem.calculateDamage(enemy, world.getPlayer());
-
-	if (damage)
+	if (enemyTurnResult.attacked)
 	{
-		// enemy attacks player
-		combatSystem.attack(enemy, world.getPlayer());
-		cout << enemy.getName() << " attack successful. You lost " 
-			 << damage << " HP." << endl;
-
-		if (!world.getPlayer().isAlive())
+		cout << enemy.getName() << " attacked you!" << endl;
+		
+		if (enemyTurnResult.damage > 0)
 		{
-			cout << "You died!" << endl;
+			cout << enemy.getName() << " attack successful. You lost " << enemyTurnResult.damage << " HP." << endl;
+
+			if (enemyTurnResult.killedPlayer)
+			{
+				cout << "You died!" << endl;
+			}
+		}
+		else
+		{
+			cout << enemy.getName() << " attack unsuccesful." << endl;
 		}
 	}
 	else
 	{
-		cout << enemy.getName() << " attack unsuccesful." << endl;
+		if (enemy.getStunnedState() == true)
+		{
+			cout << enemy.getName() << " gathering its senses." << endl;
+			return;
+		}
+
+		if (enemyTurnResult.moved)
+		{
+			cout << enemy.getName() << " moved "
+				 << (enemyTurnResult.deltaPos.x > 0 ? "right" 
+				  : (enemyTurnResult.deltaPos.x < 0 ? "left" 
+				  : (enemyTurnResult.deltaPos.y > 0 ? "down" : "up")))
+				 << "." << endl;
+		}
+		else
+		{
+			cout << enemy.getName() << " attempted move, but cannot move there!" << endl;
+		}
 	}
 }
 
@@ -496,13 +421,14 @@ void Game::printPlayerPickUpItem()
 
 	if (worldItemsExist)
 	{
-		cout << "To pick up an existing item, you must travel to its location." << endl;
+		cout << "To pick up an existing item, you must travel to its location.";
 	}
 	else
 	{
-		cout << "No items exist." << endl;
+		cout << "No items exist.";
 	}
-	cout << endl; // empty line
+
+	cout << endl;
 }
 
 void Game::printPlayerUseItem()
@@ -513,17 +439,17 @@ void Game::printPlayerUseItem()
 
 		switch (item.getType())
 		{
-		case ItemType::HealthPotion: // give player +10 HP
-			cout << "You've gained 10 HP!" << endl;
+		case ItemType::HealthPotion: // give player +HP
+			cout << "You've gained " << item.getValue() << " HP by consuming the " << item.getName() <<"!" << endl;
 			break;
-		case ItemType::StrengthPotion: // give player +1 STR
-			cout << "You've gained 1 strength point!" << endl;
+		case ItemType::StrengthPotion: // give player +STR
+			cout << "You've gained " << item.getValue() << " strength point by consuming the " << item.getName() << "!" << endl;
 			break;
 		case ItemType::DefensePotion: // give player +1 DEF
-			cout << "You've gained 1 defense point!" << endl;
+			cout << "You've gained " << item.getValue() << " defense point by consuming the " << item.getName() << "!" << endl;
 			break;
 		default:
-			cout << "unknown item used in printPlayerUserItem";
+			cout << "unknown item used in printPlayerUserItem" << endl;
 			break;
 		}
 	}
@@ -531,5 +457,4 @@ void Game::printPlayerUseItem()
 	{
 		cout << "You do not have any loot." << endl;
 	}
-	cout << endl; // empty line
 }

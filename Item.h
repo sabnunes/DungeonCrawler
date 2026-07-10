@@ -25,9 +25,13 @@ public:
 	bool isCollected() const;	// returns if item is collected
 	void collect();				// collect item
 
+	int getValue() const;
+
 private:
 	ItemType type = ItemType::HealthPotion;
 
 	bool collected = false; // boolean that represents if item is collected
+
+	int itemValue = 1;
 };
 

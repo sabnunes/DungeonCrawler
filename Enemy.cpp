@@ -21,7 +21,8 @@ Enemy::Enemy(EnemyType t)
 		type = EnemyType::Slime;
 		setHealth(3);
 		setStrength(1);
-		setDefense(0);
+		
+		(0);
 		break;
 
 	case EnemyType::Leopard:

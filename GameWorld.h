@@ -34,7 +34,6 @@ public:
     void playerUseItem();			// consumes item 
 
     // Enemies
-//    //Enemy& getEnemy() const;
     std::vector<Enemy>& getEnemies();
     const std::vector<Enemy>& getEnemies() const;
     bool areEnemiesAlive() const;

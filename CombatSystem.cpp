@@ -8,11 +8,13 @@ CombatSystem::CombatSystem()
 
 } // end default constructor
 
-bool CombatSystem::attack(const Character& attacker, Character& defender)
+CombatResult CombatSystem::attack(const Character& attacker, Character& defender)
 {
-	applyDamage(defender, calculateDamage(attacker, defender));
+	int damage = calculateDamage(attacker, defender);
 
-	return isDead(defender);
+	applyDamage(defender, damage);
+
+	return { damage, isDead(defender) };
 }
 
 int CombatSystem::calculateDamage(const Character& attacker, const Character& defender) const
@@ -22,7 +24,7 @@ int CombatSystem::calculateDamage(const Character& attacker, const Character& de
 
 void CombatSystem::applyDamage(Character& defender, int damage) const
 {
-	defender.setHealth(defender.getHealth() - damage);
+	defender.modifyHealth(-damage);
 }
 
 bool CombatSystem::isDead(Character& defender) const

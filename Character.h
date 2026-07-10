@@ -23,6 +23,10 @@ public:
 
 	bool isAlive() const; // Returns if character is alive (health > 0)
 
+    void modifyHealth(int value);
+    void modifyStrength(int value);
+    void modifyDefense(int value);
+
 private:
     int health = 10;
     int strength = 1;

@@ -76,14 +76,14 @@ void GameWorld::playerUseItem()
 
 		switch (item.getType())
 		{
-		case ItemType::HealthPotion: // give player +10 HP
-			player.setHealth(player.getHealth() + 10);
+		case ItemType::HealthPotion: // give player +HP
+			player.modifyHealth(item.getValue());
 			break;
-		case ItemType::StrengthPotion: // give player +1 STR
-			player.setStrength(player.getStrength() + 1);
+		case ItemType::StrengthPotion: // give player +STR
+			player.modifyStrength(item.getValue());
 			break;
-		case ItemType::DefensePotion: // give player +1 DEF
-			player.setDefense(player.getDefense() + 1);
+		case ItemType::DefensePotion: // give player +DEF
+			player.modifyDefense(item.getValue());
 			break;
 		default:
 			break;
