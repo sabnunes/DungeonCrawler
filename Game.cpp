@@ -27,13 +27,10 @@ void Game::printLegend()
 		};
 
 	col("CONTROLS");	col("ENEMIES");		col("LOOT");	cout << "\n";
-
-	col("W up");		col("s Slime");		col("H HP+10"); cout << "\n";
-	col("A left");		col("l Leopard");	col("S STR++"); cout << "\n";
-	col("S down");		col("d Doe");		col("D DEF++"); cout << "\n";
-
-	col("D right");		col("");			col("");        cout << "\n";
-
+	col("W north");		col("s Slime");		col("H HP+10"); cout << "\n";
+	col("A west");		col("l Leopard");	col("S STR++"); cout << "\n";
+	col("S south");		col("d Doe");		col("D DEF++"); cout << "\n";
+	col("D east");		col("");			col("");        cout << "\n";
 	col("X attack");	col("");			col("");		cout << "\n";
 	col("E equip");		col("ENVIRONMENT"); col("");		cout << "\n";
 	col("U use loot");	col("^ tree");		col("~ water"); cout << "\n";
@@ -58,10 +55,11 @@ void Game::nextLevel()
 void Game::printLevelName()
 {
 	// Print level number and name
-	cout << "\nLEVEL "
+	cout << "\n---------------------------------\n LEVEL "
 		 << world.getLevelDescription().getNumber()
 		 << " "
 		 << world.getLevelDescription().getName()
+		<< "\n---------------------------------"
 		 << endl << endl;
 }
 
@@ -262,7 +260,7 @@ void Game::render()
 
 	if (world.getPlayer().isAlive() && world.areEnemiesAlive())
 	{
-		cout << (playerTurn ? "\nYour turn. Use WASD to move or Q to quit." : "\nEnemies' turn.");
+		cout << (playerTurn ? "\n === PLAYER TURN ===\nUse WASD to move or Q to quit." : "\n=== ENEMY TURN ===");
 
 		if (world.areEnemiesAdjacentToPlayer())
 		{
@@ -275,7 +273,7 @@ void Game::render()
 			{
 				if (world.getPlayer().getPosition() == item.getPosition() && playerTurn && !item.isCollected())
 				{
-					cout << "\nYou stumbled on item: " << item.getName() << "." << " Use E to pick up.";
+					cout << "\nUse E to pick up the " << item.getName() << "!";
 				}
 			}
 
@@ -297,13 +295,13 @@ void Game::printPlayerMove(int x, int y)
 	// check if the tile is walkable before moving and not occupied by the enemy
 	if (world.getMap().isWalkable(newPos) && !world.isOccupiedByEnemy(newPos))
 	{
-		cout << "You moved " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ". " << endl;
+		cout << "You moved " << (x > 0 ? "east" : (x < 0 ? "west" : (y > 0 ? "south" : "north"))) << ". " << endl;
 		
 		for (const Item& item : world.getItems())
 		{
 			if (newPos == item.getPosition() && !item.isCollected())
 			{
-				cout << "You stumbled on item: " << item.getName() << ". Pick it up on your next turn!" << endl;
+				cout << "You found a " << item.getName() << "! Pick it up on your next turn." << endl;
 			}
 		}
 	}
@@ -313,7 +311,7 @@ void Game::printPlayerMove(int x, int y)
 	}
 	else // if the tile is not walkable, print a message indicating the player cannot move in that direction
 	{
-		cout << "Cannot move " << (x > 0 ? "right" : (x < 0 ? "left" : (y > 0 ? "down" : "up"))) << ", tile is not walkable." << endl;
+		cout << "Cannot move " << (x > 0 ? "east" : (x < 0 ? "west" : (y > 0 ? "south" : "north"))) << ", tile is not walkable." << endl;
 	}
 }
 
@@ -322,7 +320,7 @@ void Game::playerAttack()
 {
 	Player& player = world.getPlayer();
 
-	cout << "You attacked the enemy!" << endl;
+	cout << "You attempt an attack on the enemy." << endl;
 	bool successfulAttack = false;
 
 	for (Enemy& enemy : world.getEnemies())
@@ -333,7 +331,7 @@ void Game::playerAttack()
 
 			enemy.setStunnedState(false); // reset enemy movement pattern if attacked
 
-			cout << "Attack successful. ";
+			cout << "You slash the " << enemy.getName() << "!";
 
 			successfulAttack = true;
 
@@ -344,7 +342,7 @@ void Game::playerAttack()
 			}
 			else
 			{
-				cout << enemy.getName() << " lost " << attackResult.damage << " HP." << endl;
+				cout << attackResult.damage << " damage dealt." << endl;
 				cout << enemy.getName() << " preparing counterattack." << endl;
 			}
 		}
@@ -388,9 +386,9 @@ void Game::printEnemyTurnResult(Enemy& enemy, EnemyTurnResult& enemyTurnResult)
 		if (enemyTurnResult.moved)
 		{
 			cout << enemy.getName() << " moved "
-				 << (enemyTurnResult.deltaPos.x > 0 ? "right" 
-				  : (enemyTurnResult.deltaPos.x < 0 ? "left" 
-				  : (enemyTurnResult.deltaPos.y > 0 ? "down" : "up")))
+				 << (enemyTurnResult.deltaPos.x > 0 ? "east" 
+				  : (enemyTurnResult.deltaPos.x < 0 ? "west" 
+				  : (enemyTurnResult.deltaPos.y > 0 ? "south" : "north")))
 				 << "." << endl;
 		}
 		else
@@ -409,7 +407,7 @@ void Game::printPlayerPickUpItem()
 	{
 		if (item.getPosition() == world.getPlayer().getPosition() && !item.isCollected())
 		{
-			cout << item.getName() << " acquired!" << endl;
+			cout << item.getName() << " added to inventory!" << endl;
 			return;
 		}
 
@@ -421,7 +419,7 @@ void Game::printPlayerPickUpItem()
 
 	if (worldItemsExist)
 	{
-		cout << "To pick up an existing item, you must travel to its location.";
+		cout << "To pick up an item, you must travel to its location.";
 	}
 	else
 	{
