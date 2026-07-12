@@ -11,11 +11,12 @@ public:
 	Player(); // default constructor
 
 	// Inventory management functions
+	const std::vector<Item>& getInventory() const;
+	const Item& getInventoryItem() const;
 	int getInventorySize() const;
-	Item getInventoryItem() const;
+
 	void addInventoryItem(const Item &item);
 	void useInventoryItem();
-	void printInventory() const;
 
 private:
 	std::vector<Item> inventory; // inventory storage

@@ -1,5 +1,6 @@
 // Render system class declaration
 #pragma once
+#include "Direction.h"
 #include "GameWorld.h"
 #include "LevelDescription.h"
 #include "EnemyBehavior.h"
@@ -18,7 +19,7 @@ public:
 
 	void printInvalidInput() const;
 
-	void printPlayerMove(const GameWorld& world, int dx, int dy) const;
+	void printPlayerMove(const GameWorld& world, const bool moved) const;
 	void printPlayerAttack(const Enemy* enemy, const CombatResult& result, const bool successfulAttack) const;
 	void printPlayerCollectItem(const ItemCollected& itemCollected) const;
 	void printPlayerUseItem(const Item* item) const;

@@ -20,7 +20,6 @@ public:
 	explicit Item(ItemType t);	// constructor with item type
 
 	ItemType getType() const;		// get item type
-	void setType(ItemType newType); // set item type
 
 	bool isCollected() const;	// returns if item is collected
 	void collect();				// collect item

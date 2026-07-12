@@ -1,6 +1,15 @@
 // Member function definitions for EnemyBehavior class
 
 #include "EnemyBehavior.h"
+#include "Direction.h"
+
+namespace
+{
+	constexpr int sign(int value)
+	{
+		return (value > 0) - (value < 0);
+	}
+}
 
 // Default constructor
 EnemyBehavior::EnemyBehavior()
@@ -10,27 +19,28 @@ EnemyBehavior::EnemyBehavior()
 
 EnemyTurnResult EnemyBehavior::takeTurn(Enemy& enemy, GameWorld& world, CombatSystem& combatSystem)
 {
-	EnemyTurnResult result = { 0, 0, 0, 0, Position2D { 0, 0 } };
+	EnemyTurnResult enemyTurnResult;
+	MoveResult moveResult;
 	
 	if (world.isEnemyAdjacentToPlayer(enemy))
 	{
 		CombatResult attackResult = attack(enemy, world, combatSystem);
 
-		result = { 1, attackResult.damage, attackResult.killed };
+		enemyTurnResult = { 1, attackResult.damage, attackResult.killed, moveResult };
 	}
 	else
 	{
-		MoveResult moveResult = move(enemy, world);
+		moveResult = move(enemy, world);
 
-		result = { 0, 0, 0, moveResult.moved, moveResult.deltaPos };
+		enemyTurnResult = { 0, 0, 0, moveResult };
 	}
 
-	return result;
+	return enemyTurnResult;
 }
 
 MoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 {
-	MoveResult moveResult = { 0, 0, 0 };
+	MoveResult moveResult;
 
 	// STUNED/IDLE LOGIC
 	if (enemy.getStunnedState() == true)
@@ -39,58 +49,39 @@ MoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 		return moveResult;
 	}
 
-	// FIND NEXT POS
-	int x = 0;
-	int y = 0;
-
-	std::vector<Position2D> possibleMoves =
-	{
-		{ 1,  0 },  // right
-		{-1,  0 },  // left
-		{ 0,  1 },  // down
-		{ 0, -1 },  // up
-		{ 1,  1 },  // down-right
-		{ 1, -1 },  // up-right
-		{-1,  1 },  // down-left
-		{-1, -1 }   // up-left
-	};
-
+	// VAR TO HOLD POS
+	Position2D posEnemy = enemy.getPosition();
+	Position2D posPlayer = world.getPlayer().getPosition();
+	Position2D nextPos = Position2D{ 0, 0 };
+	Position2D movement = Position2D{ 0, 0 };
+	
 	switch (enemy.getType())
 	{
 	case EnemyType::Slime:		// Moves randomly
 	{
-		std::uniform_int_distribution<int> range(-1, 1);
-
-		do
-		{
-			x = range(m_engine);
-			y = range(m_engine);
-		} while (x == 0 && y == 0);
-
+		std::uniform_int_distribution<size_t> range(0, directions.size() - 1);
+		const Direction& dir = directions[range(m_engine)];
+		movement = dir.delta;
 		break;
 	}
 	case EnemyType::Leopard:	// Moves towards player, incl. diagonals
-		x = world.getPlayer().getPosition().x > enemy.getPosition().x ? 1 : -1;
-		y = world.getPlayer().getPosition().y > enemy.getPosition().y ? 1 : -1;
+		movement = Position2D{ sign(posPlayer.x - posEnemy.x), sign(posPlayer.y - posEnemy.y) };
 		break;
 	case EnemyType::Doe:		// Moves away from player
 	{
-		x = world.getPlayer().getPosition().x < enemy.getPosition().x ? 1 : -1;
-		y = world.getPlayer().getPosition().y < enemy.getPosition().y ? 1 : -1;
+		movement = Position2D{ -sign(posPlayer.x - posEnemy.x), -sign(posPlayer.y - posEnemy.y) };
 		break;
 	}
 	default:
 		break;
 	}
 
-	// VAR TO HOLD POS AND NEXT POS
-	Position2D pos = enemy.getPosition();
-	Position2D nextPos = { pos.x + x, pos.y + y };
-
-	// PROVIDE 2 ADDTL ALT POS
+	nextPos = { posEnemy.x + movement.x, posEnemy.y + movement.y };
+	
+	// PROVIDE 2 ALT POS
 	if (world.isOccupiedByEntity(nextPos))
 	{
-		Position2D xOnly = { pos.x + x, pos.y };
+		Position2D xOnly = { posEnemy.x + movement.x, posEnemy.y };
 
 		if (!world.isOccupiedByEntity(xOnly))
 		{
@@ -98,7 +89,7 @@ MoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 		}
 		else
 		{
-			Position2D yOnly = { pos.x, pos.y + y };
+			Position2D yOnly = { posEnemy.x, posEnemy.y + movement.y };
 
 			if (!world.isOccupiedByEntity(yOnly))
 			{
@@ -111,7 +102,9 @@ MoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 	if (!world.isOccupiedByEntity(nextPos))
 	{
 		enemy.setPosition(nextPos);
-		moveResult = { 1, Position2D { x, y } };
+		const Position2D deltaPos{ nextPos.x - posEnemy.x, nextPos.y - posEnemy.y }; // calculating change in position
+		
+		moveResult = { 1, deltaPos };
 	}
 
 	return moveResult;

@@ -36,8 +36,10 @@ const Player& GameWorld::getPlayer() const
 	return player;
 }
 
-void GameWorld::playerMove(const int x, const int y)
+bool GameWorld::playerMove(const int x, const int y)
 {
+	int moved = false;
+
 	// Move the player to a new position if it's valid and walkable, check for enemy collision
 	Position2D pos = player.getPosition();
 	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
@@ -46,7 +48,10 @@ void GameWorld::playerMove(const int x, const int y)
 	if (map.isWalkable(newPos) && !isOccupiedByEnemy(newPos))
 	{
 		player.setPosition(Position2D{ newPos.x, newPos.y });
+		moved = true;
 	}
+
+	return moved;
 }
 
 ItemCollected GameWorld::playerCollectItem()
@@ -81,27 +86,23 @@ ItemCollected GameWorld::playerCollectItem()
 
 void GameWorld::playerUseItem()
 {
-	if (player.getInventorySize() > 0)
+	const Item& item = player.getInventoryItem();
+
+	switch (item.getType())
 	{
-		const Item& item = player.getInventoryItem();
-
-		switch (item.getType())
-		{
-		case ItemType::HealthPotion: // give player +HP
-			player.modifyHealth(item.getValue());
-			break;
-		case ItemType::StrengthPotion: // give player +STR
-			player.modifyStrength(item.getValue());
-			break;
-		case ItemType::DefensePotion: // give player +DEF
-			player.modifyDefense(item.getValue());
-			break;
-		default:
-			break;
-		}
-
-		player.useInventoryItem();
+	case ItemType::HealthPotion: // give player +HP
+		player.modifyHealth(item.getValue());
+		break;
+	case ItemType::StrengthPotion: // give player +STR
+		player.modifyStrength(item.getValue());
+		break;
+	case ItemType::DefensePotion: // give player +DEF
+		player.modifyDefense(item.getValue());
+		break;
+	default:
+		break;
 	}
+	player.useInventoryItem();
 }
 
 const GridMap& GameWorld::getMap() const
@@ -273,12 +274,9 @@ bool GameWorld::isOccupiedByEntity(const Position2D& pos) const
 	}
 
 	// Enemies
-	for (const Enemy& enemy : enemies)
+	if (isOccupiedByEnemy(pos))
 	{
-		if (isOccupiedByEnemy(pos))
-		{
-			return true;
-		}
+		return true;
 	}
 
 	// Items

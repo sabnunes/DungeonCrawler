@@ -19,7 +19,7 @@ CombatResult CombatSystem::attack(const Character& attacker, Character& defender
 
 int CombatSystem::calculateDamage(const Character& attacker, const Character& defender) const
 {
-	return std::max(attacker.getMinDamage(), attacker.getStrength() - attacker.getDefense());
+	return std::max(attacker.getMinDamage(), attacker.getStrength() - defender.getDefense());
 }
 
 void CombatSystem::applyDamage(Character& defender, int damage) const

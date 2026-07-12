@@ -16,28 +16,15 @@ Player::Player()
 
 } // end Player constructor
 
+const std::vector<Item>& Player::getInventory() const
+{
+	return inventory;
+}
+
 // Returns player inventory size
 int Player::getInventorySize() const
 {
 	return (int) inventory.size();
-}
-
-// Prints player's inventory items
-void Player::printInventory() const
-{
-	if (inventory.size() > 0)
-	{
-		for (size_t i = 0; i < inventory.size() -1; i++)
-		{
-			cout << inventory[i].getName() << ", ";
-		}
-
-		cout << inventory[inventory.size()-1].getName();
-	}
-	else
-	{
-		cout << "none";
-	}
 }
 
 // Adds item to player inventory
@@ -47,7 +34,7 @@ void Player::addInventoryItem(const Item &item)
 }
 
 // Returns last item in player inventory
-Item Player::getInventoryItem() const
+const Item& Player::getInventoryItem() const
 {
 	return inventory.back();
 }

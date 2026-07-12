@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include "RenderSystem.h"
+#include "Direction.h"
 
 using namespace std;
 
@@ -68,31 +69,26 @@ void RenderSystem::printInvalidInput() const
 	cout << "Invalid input. Use WASD keys to move, Q to quit.\n" << endl;
 }
 
-void RenderSystem::printPlayerMove(const GameWorld& world, int x, int y) const
+void RenderSystem::printPlayerMove(const GameWorld& world, const bool moved) const
 {
 	Position2D pos = world.getPlayer().getPosition();
-	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
 
 	// check if the tile is walkable before moving and not occupied by the enemy
-	if (world.getMap().isWalkable(newPos) && !world.isOccupiedByEnemy(newPos))
+	if (moved)
 	{
-		cout << "You moved " << (x > 0 ? "east" : (x < 0 ? "west" : (y > 0 ? "south" : "north"))) << ". " << endl;
+		cout << "You moved to position " << pos.x << ", " << pos.y << ".\n";
 
 		for (const Item& item : world.getItems())
 		{
-			if (newPos == item.getPosition() && !item.isCollected())
+			if (pos == item.getPosition() && !item.isCollected())
 			{
 				cout << "You found a " << item.getName() << "! Pick it up on your next turn." << endl;
 			}
 		}
 	}
-	else if (world.getMap().isWalkable(newPos) && world.isOccupiedByEnemy(newPos)) // don't move if player is trying to move to enemy position
+	else if (!moved) // don't move if player is trying to move to enemy position
 	{
-		cout << "Cannot move there. Use X to attack or WASD to move." << endl;
-	}
-	else // if the tile is not walkable, print a message indicating the player cannot move in that direction
-	{
-		cout << "Cannot move " << (x > 0 ? "east" : (x < 0 ? "west" : (y > 0 ? "south" : "north"))) << ", tile is not walkable." << endl;
+		cout << "You cannot move there!" << endl;
 	}
 }
 
@@ -199,13 +195,13 @@ void RenderSystem::printEnemyTurn(const Enemy& enemy, const EnemyTurnResult& ene
 			cout << enemy.getName() << " gathering its senses." << endl;
 			return;
 		}
-
-		if (enemyTurnResult.moved)
+		
+		if (enemyTurnResult.moveResult.moved)
 		{
+			Position2D deltaMove = enemyTurnResult.moveResult.deltaPos;
+
 			cout << enemy.getName() << " moved "
-				<< (enemyTurnResult.deltaPos.x > 0 ? "east"
-					: (enemyTurnResult.deltaPos.x < 0 ? "west"
-						: (enemyTurnResult.deltaPos.y > 0 ? "south" : "north")))
+				<< directionName(deltaMove)
 				<< "." << endl;
 		}
 		else
@@ -233,7 +229,7 @@ void RenderSystem::renderStats(const GameWorld& world, const bool playerTurn) co
 		<< setw(2) << world.getPlayer().getStrength() << " STR  "
 		<< setw(2) << world.getPlayer().getDefense() << " DEF";
 	
-	renderPlayerInventory(world, playerTurn);
+	renderPlayerInventory(world);
 
 	for (const Enemy& enemy : world.getEnemies())
 	{
@@ -254,7 +250,14 @@ void RenderSystem::renderPlayerInventory(const GameWorld& world) const
 	if (world.getPlayer().getInventorySize() > 0)
 	{
 		cout << "  LOOT ";
-		world.getPlayer().printInventory();
+		const vector<Item>& inventory = world.getPlayer().getInventory();
+
+		for (size_t i = 0; i < inventory.size() - 1; i++)
+		{
+			cout << inventory[i].getName() << ", ";
+		}
+
+		cout << inventory[inventory.size() - 1].getName();
 	}
 	cout << endl;
 }

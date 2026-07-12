@@ -2,24 +2,24 @@
 
 #pragma once
 #include <random>
+#include <string>
 #include "Enemy.h"
 #include "GameWorld.h"
 #include "CombatSystem.h"
 
-struct EnemyTurnResult
-{
-	bool attacked;
-	int damage;
-	bool killedPlayer;
-
-	bool moved;
-	Position2D deltaPos;
-};
-
 struct MoveResult
 {
-	bool moved;
-	Position2D deltaPos;
+	bool moved = false;
+	Position2D deltaPos = Position2D{ 0, 0 };
+};
+
+struct EnemyTurnResult
+{
+	bool attacked = false;
+	int damage = 0;
+	bool killedPlayer = false;
+
+	MoveResult moveResult;
 };
 
 class EnemyBehavior
@@ -31,13 +31,10 @@ public:
 
 private:
 	std::mt19937 m_engine;	// Obtain a random seed from the hardware
-
+	
 	MoveResult move(Enemy& enemy, GameWorld& world);
 	CombatResult attack(Enemy& enemy, GameWorld& world, CombatSystem& combatSystem);
 
-	//void chooseDirection();
-	//void findNextPosition();
-	//void findAlternativePosition();
 	//bool isStunned();
 };
 

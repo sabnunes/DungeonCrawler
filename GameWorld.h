@@ -32,7 +32,7 @@ public:
     // Player
     Player& getPlayer();
     const Player& getPlayer() const;
-    void playerMove(const int x, const int y);	// move the player to a new position if it's valid and walkable
+    bool playerMove(const int x, const int y);	// move the player to a new position if it's valid and walkable
     ItemCollected playerCollectItem();		// player collects item, marks item as collected if positions overlap, returns true if item collected
     void playerUseItem();			// consumes item 
 

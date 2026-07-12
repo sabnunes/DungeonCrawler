@@ -46,11 +46,6 @@ bool Item::isCollected() const
 	return collected;
 }
 
-void Item::setType(ItemType newType)
-{
-	type = newType;
-}
-
 // Sets collected item to true
 void Item::collect()
 {

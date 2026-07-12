@@ -77,41 +77,43 @@ void Game::input()
 		// Process and verify input for movement and quitting
 		switch(input)
 		{
-		case 'w':
-			// Move player up y--
-			renderSystem.printPlayerMove(world, 0, -1);
-			world.playerMove(0, -1);
+		case 'w': // Move player up y--
+		{
+			bool moved = world.playerMove(0, -1);
+			renderSystem.printPlayerMove(world, moved);
 			break;
-		case 'a':
-			// Move player left x--
-			renderSystem.printPlayerMove(world, -1, 0);
-			world.playerMove(-1, 0);
+		}
+		case 'a': // Move player left x--
+		{
+			bool moved = world.playerMove(-1, 0);
+			renderSystem.printPlayerMove(world, moved);
 			break;
-		case 's':
-			// Move player down y++
-			renderSystem.printPlayerMove(world, 0, 1);
-			world.playerMove(0, 1);
+		}
+		case 's': // Move player down y++
+		{
+			bool moved = world.playerMove(0, 1);
+			renderSystem.printPlayerMove(world, moved);
 			break;
-		case 'd':
-			// Move player right x++
-			renderSystem.printPlayerMove(world, 1, 0);
-			world.playerMove(1, 0);
+		}
+		case 'd': // Move player right x++
+		{
+			bool moved = world.playerMove(1, 0);
+			renderSystem.printPlayerMove(world, moved);
 			break;
-		case 'x':
-			// Attack the enemy if they are in an adjacent tile (check for enemy position relative to player position)
+		}
+		case 'x': // Attack the enemy if adjacent
 			playerAttack();
 			break;
-		case 'q':
-			// Quit the game
+		case 'q': // Quit the game
 			running = false;
 			break;
-		case 'e':
+		case 'e': // Collect item
 		{
 			ItemCollected itemCollected = world.playerCollectItem();
 			renderSystem.printPlayerCollectItem(itemCollected);
 			break;
 		}
-		case 'u':
+		case 'u': // Use Item
 		{
 			if (world.getPlayer().getInventorySize() > 0)
 			{
@@ -124,6 +126,7 @@ void Game::input()
 			{
 				renderSystem.printPlayerUseItem(nullptr);
 			}
+			break;
 		}
 		default:
 			renderSystem.printInvalidInput();
@@ -144,6 +147,10 @@ void Game::updateEnemies()
 		{
 			EnemyTurnResult enemyTurnResult = enemyBehavior.takeTurn(enemy, world, combatSystem);
 			renderSystem.printEnemyTurn(enemy, enemyTurnResult);
+			if (!world.getPlayer().isAlive())
+			{
+				break;
+			}
 		}
 	}	
 	cout << endl;
@@ -173,6 +180,7 @@ void Game::playerAttack()
 			{
 				player.modifyStrength(1); // increase player strength as a reward for defeating the enemy
 			}
+			break;
 		}
 	}
 
