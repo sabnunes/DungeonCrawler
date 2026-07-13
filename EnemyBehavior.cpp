@@ -20,33 +20,32 @@ EnemyBehavior::EnemyBehavior()
 EnemyTurnResult EnemyBehavior::takeTurn(Enemy& enemy, GameWorld& world, CombatSystem& combatSystem)
 {
 	EnemyTurnResult enemyTurnResult;
-	MoveResult moveResult;
+	EnemyMoveResult moveResult;
 	
 	if (world.isEnemyAdjacentToPlayer(enemy))
 	{
 		CombatResult attackResult = attack(enemy, world, combatSystem);
-
-		enemyTurnResult = { 1, attackResult.damage, attackResult.killed, moveResult };
+		enemyTurnResult = { true, attackResult.damage, attackResult.killed, moveResult };
 	}
 	else
 	{
 		moveResult = move(enemy, world);
-
-		enemyTurnResult = { 0, 0, 0, moveResult };
+		enemyTurnResult.moveResult = moveResult;
 	}
 
 	return enemyTurnResult;
 }
 
-MoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
+EnemyMoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 {
-	MoveResult moveResult;
+	EnemyMoveResult enemyMoveResult;
 
 	// STUNED/IDLE LOGIC
-	if (enemy.getStunnedState() == true)
+	if (enemy.getStunnedState())
 	{
 		enemy.setStunnedState(false);
-		return moveResult;
+		enemyMoveResult.wasStunned = true;
+		return enemyMoveResult;
 	}
 
 	// VAR TO HOLD POS
@@ -104,10 +103,10 @@ MoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 		enemy.setPosition(nextPos);
 		const Position2D deltaPos{ nextPos.x - posEnemy.x, nextPos.y - posEnemy.y }; // calculating change in position
 		
-		moveResult = { 1, deltaPos };
+		enemyMoveResult = { true, deltaPos };
 	}
 
-	return moveResult;
+	return enemyMoveResult;
 }
 
 CombatResult EnemyBehavior::attack(Enemy& enemy, GameWorld& world, CombatSystem& combatSystem)

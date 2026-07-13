@@ -25,6 +25,6 @@ private:
 	// enemy representation on the map
 	EnemyType type = EnemyType::Slime;		// enemy type
 
-	bool isStunned = true;
+	bool stunned = true;
 
 };

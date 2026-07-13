@@ -1,0 +1,22 @@
+Steps to Enable Warnings-as-Errors in C++
+1. Right-click your C++ project in the Solution Explorer and select Properties.
+2. At the top of the properties window, set Configuration to All Configurations (so it applies to both Debug and Release modes).
+3. In the left sidebar, expand Configuration Properties.
+4. Expand C/C++ and select General.
+5. Look at the right-hand pane for Treat Warnings As Errors.
+6. Click the dropdown next to it and select Yes (/WX).Click Apply and then OK.
+
+Optional: Treat Linker Warnings as Errors
+Compiler warnings cover syntax and code issues, but you can also catch linker issues (like missing implementations) by doing this: 
+1. In the same Properties window, expand Linker on the left.
+2. Select General.
+3. Find Treat Linker Warnings as Errors on the right.
+4. Set it to Yes (/WX).
+
+Rebuild
+
+Your Warning Level is set too low
+The Fix: Go to Project Properties > Configuration Properties > C/C++ > General. Look for Warning Level and ensure it is set to at least Level3 (/W3) or Level4 (/W4).
+
+An "SDL Checks" conflict
+The Fix: In Properties > C/C++ > General, look at SDL checks. If it is enabled and you are getting unhandled bypass alerts, try toggling it to see if your /WX rule takes full precedence over the project.

@@ -21,8 +21,7 @@ Enemy::Enemy(EnemyType t)
 		type = EnemyType::Slime;
 		setHealth(3);
 		setStrength(1);
-		
-		(0);
+		setDefense(0);
 		break;
 
 	case EnemyType::Leopard:
@@ -54,10 +53,10 @@ EnemyType Enemy::getType() const
 
 void Enemy::setStunnedState(bool state)
 {
-	isStunned = state;
+	stunned = state;
 }
 
 bool Enemy::getStunnedState() const
 {
-	return isStunned;
+	return stunned;
 }

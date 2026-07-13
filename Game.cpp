@@ -65,12 +65,12 @@ void Game::nextLevel()
 void Game::input()
 {
 	// Prompt the user for input
-	char input;
+	char playerInput;
 	cout << "Enter input: ";
-	cin >> input;
+	cin >> playerInput;
 
 	// Convert input to lowercase for case-insensitive processing
-	input = tolower(input);
+	int input = tolower(playerInput);
 
 	if (playerTurn)
 	{
@@ -79,26 +79,26 @@ void Game::input()
 		{
 		case 'w': // Move player up y--
 		{
-			bool moved = world.playerMove(0, -1);
-			renderSystem.printPlayerMove(world, moved);
+			PlayerMoveResult moveResult = world.playerMove(0, -1);
+			renderSystem.printPlayerMove(world, moveResult);
 			break;
 		}
 		case 'a': // Move player left x--
 		{
-			bool moved = world.playerMove(-1, 0);
-			renderSystem.printPlayerMove(world, moved);
+			PlayerMoveResult moveResult = world.playerMove(-1, 0);
+			renderSystem.printPlayerMove(world, moveResult);
 			break;
 		}
 		case 's': // Move player down y++
 		{
-			bool moved = world.playerMove(0, 1);
-			renderSystem.printPlayerMove(world, moved);
+			PlayerMoveResult moveResult = world.playerMove(0, 1);
+			renderSystem.printPlayerMove(world, moveResult);
 			break;
 		}
 		case 'd': // Move player right x++
 		{
-			bool moved = world.playerMove(1, 0);
-			renderSystem.printPlayerMove(world, moved);
+			PlayerMoveResult moveResult = world.playerMove(1, 0);
+			renderSystem.printPlayerMove(world, moveResult);
 			break;
 		}
 		case 'x': // Attack the enemy if adjacent
@@ -109,7 +109,7 @@ void Game::input()
 			break;
 		case 'e': // Collect item
 		{
-			ItemCollected itemCollected = world.playerCollectItem();
+			PlayerCollectedItem itemCollected = world.playerCollectItem();
 			renderSystem.printPlayerCollectItem(itemCollected);
 			break;
 		}

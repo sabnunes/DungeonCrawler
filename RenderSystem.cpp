@@ -15,7 +15,7 @@ RenderSystem::RenderSystem()
 
 void RenderSystem::render(const GameWorld& world, bool playerTurn) const
 {
-	renderStats(world, playerTurn);
+	renderStats(world);
 	renderMap(world);
 
 	renderStatusMessages(world, playerTurn);
@@ -69,14 +69,16 @@ void RenderSystem::printInvalidInput() const
 	cout << "Invalid input. Use WASD keys to move, Q to quit.\n" << endl;
 }
 
-void RenderSystem::printPlayerMove(const GameWorld& world, const bool moved) const
+void RenderSystem::printPlayerMove(const GameWorld& world, const PlayerMoveResult& moveResult) const
 {
 	Position2D pos = world.getPlayer().getPosition();
 
 	// check if the tile is walkable before moving and not occupied by the enemy
-	if (moved)
+	if (moveResult.moved)
 	{
-		cout << "You moved to position " << pos.x << ", " << pos.y << ".\n";
+		cout << "You moved "
+			<< directionName(moveResult.deltaPos)
+			<< "." << endl;
 
 		for (const Item& item : world.getItems())
 		{
@@ -86,7 +88,11 @@ void RenderSystem::printPlayerMove(const GameWorld& world, const bool moved) con
 			}
 		}
 	}
-	else if (!moved) // don't move if player is trying to move to enemy position
+	else if (moveResult.occupiedByEnemy)
+	{
+		cout << "You cannot move there! An enemy lies in your path." << endl;
+	}
+	else
 	{
 		cout << "You cannot move there!" << endl;
 	}
@@ -119,7 +125,7 @@ void RenderSystem::printPlayerAttack(const Enemy* enemy, const CombatResult& res
 	}
 }
 
-void RenderSystem::printPlayerCollectItem(const ItemCollected& itemCollected) const
+void RenderSystem::printPlayerCollectItem(const PlayerCollectedItem& itemCollected) const
 {
 	if (itemCollected.collected)
 	{
@@ -190,7 +196,7 @@ void RenderSystem::printEnemyTurn(const Enemy& enemy, const EnemyTurnResult& ene
 	}
 	else
 	{
-		if (enemy.getStunnedState() == true)
+		if (enemyTurnResult.moveResult.wasStunned)
 		{
 			cout << enemy.getName() << " gathering its senses." << endl;
 			return;
@@ -213,7 +219,7 @@ void RenderSystem::printEnemyTurn(const Enemy& enemy, const EnemyTurnResult& ene
 
 void RenderSystem::printGameEnd(const bool won) const
 {
-	cout << (won ? "You've defeated all enemies! You win!" : "You are dead. Game over.");
+	cout << (won ? "You've defeated all enemies! You win!" : "You are dead. Game over.") << endl;
 }
 
 void RenderSystem::printGoodbye() const
@@ -221,7 +227,7 @@ void RenderSystem::printGoodbye() const
 	cout << "Thanks for playing!" << endl;
 }
 
-void RenderSystem::renderStats(const GameWorld& world, const bool playerTurn) const
+void RenderSystem::renderStats(const GameWorld& world) const
 {
 	// Print player and enemy stats
 	cout << left << setw(8) << "Player"

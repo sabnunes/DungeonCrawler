@@ -103,6 +103,10 @@ Game
         ├── Enemies
         └── Items
 
+Domain objects provide state.
+Systems transform state.
+Presentation formats results.
+Input translates external input into commands.
 
 Future work
 I did not spend a lot of time thinking of the game design itself outside of attempting to make sure to cover ground around possible bugs encountered since will work with designers though I understand engineering may give opportunity for easy or difficult implementation of future design decisions. There is room for improvement around "fun" or "challenge" or even how the game is displayed within the console

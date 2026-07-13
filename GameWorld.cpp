@@ -36,25 +36,32 @@ const Player& GameWorld::getPlayer() const
 	return player;
 }
 
-bool GameWorld::playerMove(const int x, const int y)
+PlayerMoveResult GameWorld::playerMove(const int x, const int y)
 {
-	int moved = false;
+	PlayerMoveResult moveResult;
 
 	// Move the player to a new position if it's valid and walkable, check for enemy collision
-	Position2D pos = player.getPosition();
-	Position2D newPos = Position2D{ pos.x + x, pos.y + y };
+	Position2D posPlayer = player.getPosition();
+	Position2D nextPos = Position2D{ posPlayer.x + x, posPlayer.y + y };
 
-	// check if the tile is walkable before moving and not occupied by the enemy
-	if (map.isWalkable(newPos) && !isOccupiedByEnemy(newPos))
+	if (isOccupiedByEnemy(nextPos))
 	{
-		player.setPosition(Position2D{ newPos.x, newPos.y });
-		moved = true;
+		moveResult.occupiedByEnemy = true;
+		return moveResult;
 	}
 
-	return moved;
+	// check if the tile is walkable before moving and not occupied by the enemy
+	if (map.isWalkable(nextPos))
+	{
+		player.setPosition(Position2D{ nextPos.x, nextPos.y });
+		moveResult.moved = true;
+		moveResult.deltaPos = Position2D{ nextPos.x - posPlayer.x, nextPos.y - posPlayer.y }; // calculating change in position
+	}
+
+	return moveResult;
 }
 
-ItemCollected GameWorld::playerCollectItem()
+PlayerCollectedItem GameWorld::playerCollectItem()
 {
 	bool itemsRemaining = false;
 

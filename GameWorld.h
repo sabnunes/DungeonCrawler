@@ -10,11 +10,18 @@
 #include "Enemy.h"
 #include "Item.h"
 
-struct ItemCollected
+struct PlayerMoveResult
 {
-    bool collected;
+    bool moved = false;
+    bool occupiedByEnemy = false;
+    Position2D deltaPos = Position2D{ 0, 0 };
+};
+
+struct PlayerCollectedItem
+{
+    bool collected = false;
     const Item* item = nullptr;
-    bool noItemHereButItemExists;
+    bool noItemHereButItemExists = false;
 };
 
 class GameWorld
@@ -32,8 +39,8 @@ public:
     // Player
     Player& getPlayer();
     const Player& getPlayer() const;
-    bool playerMove(const int x, const int y);	// move the player to a new position if it's valid and walkable
-    ItemCollected playerCollectItem();		// player collects item, marks item as collected if positions overlap, returns true if item collected
+    PlayerMoveResult playerMove(const int x, const int y);	// move the player to a new position if it's valid and walkable
+    PlayerCollectedItem playerCollectItem();		// player collects item, marks item as collected if positions overlap, returns true if item collected
     void playerUseItem();			// consumes item 
 
     // Enemies

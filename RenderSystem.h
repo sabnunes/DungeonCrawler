@@ -19,9 +19,9 @@ public:
 
 	void printInvalidInput() const;
 
-	void printPlayerMove(const GameWorld& world, const bool moved) const;
+	void printPlayerMove(const GameWorld& world, const PlayerMoveResult& moveResult) const;
 	void printPlayerAttack(const Enemy* enemy, const CombatResult& result, const bool successfulAttack) const;
-	void printPlayerCollectItem(const ItemCollected& itemCollected) const;
+	void printPlayerCollectItem(const PlayerCollectedItem& itemCollected) const;
 	void printPlayerUseItem(const Item* item) const;
 
 	void printEnemyTurn(const Enemy& enemy, const EnemyTurnResult& result) const;
@@ -31,7 +31,7 @@ public:
 	//void printGameOver() const;
 
 private:
-	void renderStats(const GameWorld& world, const bool playerTurn) const;
+	void renderStats(const GameWorld& world) const;
 	void renderPlayerInventory(const GameWorld& world) const;
 	void renderMap(const GameWorld& world) const;
 	//void renderEnemies(const GameWorld& world) const;
