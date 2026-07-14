@@ -10,15 +10,23 @@ using namespace std;
 Game::Game()
 	: random() , world(random), enemyBehavior(random)
 {
-	renderSystem.printHeader();
-	renderSystem.printLegend();
+	nextLevel();	
+} 
 
+Game::Game(unsigned int seed)
+	: random(seed) , world(random), enemyBehavior(random)
+{
 	nextLevel();	
 } 
 
 // run the game: welcome message, process main game loop (input, update, render)
 void Game::run()
 {
+	renderSystem.printHeader();
+	renderSystem.printLegend();
+	renderSystem.printSeed(random.getSeed());
+	renderSystem.printLevel(world.getLevelDescription());
+
 	running = true; 
 
 	while (running)
@@ -39,6 +47,7 @@ void Game::run()
 			{
 				renderSystem.printNextLevel();
 				nextLevel();
+				renderSystem.printLevel(world.getLevelDescription());
 			}
 			else
 			{
@@ -56,8 +65,6 @@ void Game::nextLevel()
 	currentLevel++;
 
 	world.initializeLevel(currentLevel);
-
-	renderSystem.printLevel(world.getLevelDescription());
 
 	playerTurn = true;
 }
@@ -129,6 +136,9 @@ void Game::input()
 			}
 			break;
 		}
+		case 'p': // prints seed
+			renderSystem.printSeed(random.getSeed());
+			break;
 		default:
 			renderSystem.printInvalidInput();
 			break;

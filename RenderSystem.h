@@ -14,6 +14,7 @@ public:
 	
 	void printHeader() const;
 	void printLegend() const; // Prints the legend for the game, including controls, enemies, obstacles
+	void printSeed(unsigned seed) const;
 	void printLevel(const LevelDescription& level) const; 	// Print level number and name
 	void printNextLevel() const;
 

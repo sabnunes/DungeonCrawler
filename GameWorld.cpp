@@ -244,11 +244,16 @@ void GameWorld::spawnItems()
 	}
 }
 
-bool GameWorld::isOccupiedByEnemy(const Position2D& p) const
+bool GameWorld::isOccupiedByPlayer(const Position2D& position) const
+{
+	return position == player.getPosition();
+}
+
+bool GameWorld::isOccupiedByEnemy(const Position2D& position) const
 {
 	for (const Enemy& enemy : enemies)
 	{
-		if (enemy.isAlive() && p == enemy.getPosition())
+		if (enemy.isAlive() && position == enemy.getPosition())
 		{
 			return true;
 		}
@@ -257,33 +262,43 @@ bool GameWorld::isOccupiedByEnemy(const Position2D& p) const
 	return false;
 }
 
-bool GameWorld::isOccupiedByEntity(const Position2D& pos) const
+bool GameWorld::isOccupiedByItem(const Position2D& position) const
+{
+	for (const Item& item : items)
+	{
+		if (!item.isCollected() && item.getPosition() == position)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool GameWorld::isOccupiedByEntity(const Position2D& position) const
 {
 	// Map
-	if (!map.isWalkable(pos))
+	if (!map.isWalkable(position))
 	{
 		return true;
 	}
 
 	// Player
-	if (pos == player.getPosition())
+	if (isOccupiedByPlayer(player.getPosition()))
 	{
 		return true;
 	}
 
 	// Enemies
-	if (isOccupiedByEnemy(pos))
+	if (isOccupiedByEnemy(position))
 	{
 		return true;
 	}
 
 	// Items
-	for (const Item& item : items)
+	if (isOccupiedByItem(position))
 	{
-		if (!item.isCollected() && item.getPosition() == pos)
-		{
-			return true;
-		}
+		return true;
 	}
 
 	return false;

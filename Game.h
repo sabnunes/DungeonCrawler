@@ -13,6 +13,7 @@ class Game
 {
 	public:
 		Game();	// default constructor
+		explicit Game(unsigned int seed); 
 
 		void run();	// runs the game
 

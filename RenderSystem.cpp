@@ -46,7 +46,12 @@ void RenderSystem::printLegend() const
 	col("U use loot");	col("^ tree");		col("~ water"); cout << "\n";
 	col("Q quit");		col(", grass");		col("* rock");	cout << "\n";
 
-	cout << "---------------------------------\n" << endl;
+	cout << "---------------------------------" << endl;
+}
+
+void RenderSystem::printSeed(unsigned seed) const
+{
+	cout << "GAME SEED " << seed << endl << endl;
 }
 
 void RenderSystem::printLevel(const LevelDescription& level) const

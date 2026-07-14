@@ -76,27 +76,27 @@ EnemyMoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 	nextPos = { posEnemy.x + movement.x, posEnemy.y + movement.y };
 	
 	// PROVIDE 2 ALT POS
-	if (world.isOccupiedByEntity(nextPos))
+	if (world.isOccupiedByPlayer(nextPos) || !world.getMap().isWalkable(nextPos))
 	{
-		Position2D xOnly = { posEnemy.x + movement.x, posEnemy.y };
+		Position2D xOnlyPos = { posEnemy.x + movement.x, posEnemy.y };
 
-		if (!world.isOccupiedByEntity(xOnly))
+		if (!world.isOccupiedByPlayer(xOnlyPos) && world.getMap().isWalkable(xOnlyPos))
 		{
-			nextPos = xOnly;
+			nextPos = xOnlyPos;
 		}
 		else
 		{
-			Position2D yOnly = { posEnemy.x, posEnemy.y + movement.y };
+			Position2D yOnlyPos = { posEnemy.x, posEnemy.y + movement.y };
 
-			if (!world.isOccupiedByEntity(yOnly))
+			if (!world.isOccupiedByPlayer(yOnlyPos) && world.getMap().isWalkable(yOnlyPos))
 			{
-				nextPos = yOnly;
+				nextPos = yOnlyPos;
 			}
 		}
 	}
 
 	// VALIDATE & MOVE TO NEXT POS
-	if (!world.isOccupiedByEntity(nextPos))
+	if (!world.isOccupiedByPlayer(nextPos) && world.getMap().isWalkable(nextPos))
 	{
 		enemy.setPosition(nextPos);
 		const Position2D deltaPos{ nextPos.x - posEnemy.x, nextPos.y - posEnemy.y }; // calculating change in position

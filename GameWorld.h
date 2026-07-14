@@ -52,7 +52,9 @@ public:
 	const std::vector<Item>& getItems() const;
 
     // Occupancy functions
+	bool isOccupiedByPlayer(const Position2D& position) const;   // returns if position is occupied by enemy
 	bool isOccupiedByEnemy(const Position2D& position) const;   // returns if position is occupied by enemy
+	bool isOccupiedByItem(const Position2D& position) const;   // returns if position is occupied by enemy
 	bool isOccupiedByEntity(const Position2D& position) const;    // returns if position occupied by player, enemy, or item
 
     // Adjacency functions
