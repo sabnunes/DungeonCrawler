@@ -1,10 +1,9 @@
 // GameWorld class declaration
-
 #pragma once
 #include <vector>
-#include <random>
-#include "GridMap.h"
+#include "Random.h"
 #include "Position2D.h"
+#include "GridMap.h"
 #include "LevelDescription.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -27,7 +26,7 @@ struct PlayerCollectedItem
 class GameWorld
 {
 public:
-	GameWorld(); // default constructor
+	explicit GameWorld(Random& random); // constructor
 
     void initializeLevel(int levelNumber); // initialize the game world with a specific level
 
@@ -62,7 +61,7 @@ public:
 
 
 private:
-    std::mt19937 m_engine;	// Obtain a random seed from the hardware
+    Random& m_random;
 
     LevelDescription levelDescription; // definition for the current level
 	GridMap map; // the game map

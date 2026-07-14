@@ -1,11 +1,12 @@
 // EnemyBehavior class declaration
 
 #pragma once
-#include <random>
 #include <string>
 #include "Enemy.h"
 #include "GameWorld.h"
 #include "CombatSystem.h"
+
+class Random; // forward declaration since only storing a reference
 
 struct EnemyMoveResult
 {
@@ -26,13 +27,13 @@ struct EnemyTurnResult
 class EnemyBehavior
 {
 public:
-	EnemyBehavior();
+	explicit EnemyBehavior(Random& random);
 
 	EnemyTurnResult takeTurn(Enemy& enemy, GameWorld& world, CombatSystem& combatSystem);
 
 private:
-	std::mt19937 m_engine;	// Obtain a random seed from the hardware
-	
+	Random& m_random;
+
 	EnemyMoveResult move(Enemy& enemy, GameWorld& world);
 	CombatResult attack(Enemy& enemy, GameWorld& world, CombatSystem& combatSystem);
 

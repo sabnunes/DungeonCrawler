@@ -7,10 +7,10 @@ public:
     Random();
     explicit Random(unsigned int seed);
 
-    //int nextInt(int min, int max);
-    //bool chance(int percent);
+    int nextInt(int min, int max);
+    bool chance(int percent);
 
 private:
-    std::mt19937 engine;
+    std::mt19937 m_engine;
 
 };

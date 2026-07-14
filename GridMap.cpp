@@ -1,15 +1,14 @@
 // Member function definitions for GridMap class
 #include <iostream>
 #include "GridMap.h"
-#include <random>
-
 using namespace std;
 
 // Constructor
-GridMap::GridMap()
-	: m_engine(std::random_device{}()) // Initialize the standard Mersenne Twister engine with the seed
+GridMap::GridMap(Random& random)
+	: m_random(random), // Initialize the standard Mersenne Twister engine
+	tiles{}
 {
-} // end GridMap constructor
+} 
 
 // Initialize the map with tile types
 void GridMap::initialize(int levelNumber)
@@ -40,8 +39,6 @@ void GridMap::generateLevelBorders()
 
 void GridMap::applyLevelTheme(int level)
 {
-	std::uniform_int_distribution<int> dist(1, 100);
-
 	switch (level)
 	{
 	case 1: // Simple forest
@@ -49,22 +46,20 @@ void GridMap::applyLevelTheme(int level)
 		{
 			for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
 			{
-				int roll = dist(m_engine);
+				int roll = m_random.nextInt(1, 100);
 
 				// Grass seed
 				if (roll == 1)
 				{
 					tiles[x][y] = TileType::Grass;
 				}
-
 				// Tree
-				if (roll == 2 || roll == 3)
+				else if (roll <= 3)
 				{
 					tiles[x][y] = TileType::Tree;
 				}
-
 				// Rock
-				if (roll == 4)
+				else if (roll == 4)
 				{
 					tiles[x][y] = TileType::Rock;
 				}
@@ -79,16 +74,15 @@ void GridMap::applyLevelTheme(int level)
 		{
 			for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
 			{
-				int roll = dist(m_engine);
+				int roll = m_random.nextInt(1, 100);
 
 				// Grass seed
 				if (roll == 1) 
 				{
 					tiles[x][y] = TileType::Grass;
 				}
-
 				// Rock
-				if (roll >= 3 && roll <=12) 
+				else if (roll <=11) 
 				{
 					tiles[x][y] = TileType::Rock; 
 				}
@@ -197,7 +191,7 @@ void GridMap::applyLevelTheme(int level)
 		{
 			for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
 			{
-				int roll = dist(m_engine);
+				int roll = m_random.nextInt(1, 100);
 				
 				// Tree
 				if (roll == 1 && tiles[x][y] != TileType::Water)
@@ -220,7 +214,7 @@ void GridMap::applyLevelTheme(int level)
 		{
 			for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
 			{
-				int roll = dist(m_engine);
+				int roll = m_random.nextInt(1, 100);
 
 				// Grass
 				if (roll == 1 || roll >= 90)
@@ -278,8 +272,6 @@ void GridMap::spreadTile(int percentChance, TileType tileType)
 	// Copy current map to temp newTiles variable
 	copyTiles(tiles, newTiles);
 
-	std::uniform_int_distribution<int> dist(1, 100);
-
 	// Ignore borders as walls
 	for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
 	{
@@ -309,9 +301,7 @@ void GridMap::spreadTile(int percentChance, TileType tileType)
 						if (tiles[newX][newY] == TileType::Floor)
 						{
 							// Random chance to spread the tile type to adjacent floor tiles
-							int rollGrow = dist(m_engine);
-
-							if (rollGrow <= percentChance) // chance to spread tile based on percentage chance
+							if (m_random.chance(percentChance))
 							{
 								newTiles[newX][newY] = tileType;
 							}

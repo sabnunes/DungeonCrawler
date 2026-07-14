@@ -11,9 +11,8 @@ namespace
 	}
 }
 
-// Default constructor
-EnemyBehavior::EnemyBehavior()
-	: m_engine(std::random_device{}()) // Initialize the standard Mersenne Twister engine with the seed
+EnemyBehavior::EnemyBehavior(Random& random)
+	: m_random(random) // Initialize the standard Mersenne Twister engine
 {
 }
 
@@ -58,9 +57,8 @@ EnemyMoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 	{
 	case EnemyType::Slime:		// Moves randomly
 	{
-		std::uniform_int_distribution<size_t> range(0, directions.size() - 1);
-		const Direction& dir = directions[range(m_engine)];
-		movement = dir.delta;
+		const Direction& direction = directions[m_random.nextInt(0, (int) directions.size() - 1)];
+		movement = direction.delta;
 		break;
 	}
 	case EnemyType::Leopard:	// Moves towards player, incl. diagonals

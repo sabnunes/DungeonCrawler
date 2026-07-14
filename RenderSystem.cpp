@@ -163,10 +163,10 @@ void RenderSystem::printPlayerUseItem(const Item* item) const
 		cout << "You've gained +" << itemValue << " HP by consuming the " << itemName << "!" << endl;
 		break;
 	case ItemType::StrengthPotion: // give player +STR
-		cout << "You've gained +" << itemValue << " strength point by consuming the " << itemName << "!" << endl;
+		cout << "You've gained +" << itemValue << " strength by consuming the " << itemName << "!" << endl;
 		break;
 	case ItemType::DefensePotion: // give player +1 DEF
-		cout << "You've gained +" << itemValue << " defense point by consuming the " << itemName << "!" << endl;
+		cout << "You've gained +" << itemValue << " defense by consuming the " << itemName << "!" << endl;
 		break;
 	default:
 		cout << "Unknown loot." << endl;

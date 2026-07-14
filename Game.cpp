@@ -8,12 +8,13 @@ using namespace std;
 
 // Constructor
 Game::Game()
+	: random() , world(random), enemyBehavior(random)
 {
 	renderSystem.printHeader();
 	renderSystem.printLegend();
 
 	nextLevel();	
-} // end Game constructor
+} 
 
 // run the game: welcome message, process main game loop (input, update, render)
 void Game::run()

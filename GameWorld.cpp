@@ -2,20 +2,17 @@
 
 #include "GameWorld.h"
 
-// Default constructor
-GameWorld::GameWorld()
-	: m_engine(std::random_device{}()) // Initialize the standard Mersenne Twister engine with the seed
+// Constructor
+GameWorld::GameWorld(Random& random)
+	: m_random(random), map(random)
 {
 }
 
 void GameWorld::initializeLevel(int levelNumber)
 {
 	levelDescription = LevelDescription(levelNumber);	// Define level description for the current level
-	
 	map.initialize(levelDescription.getNumber());		// Initialize the map for the level
-
 	player.setPosition(generateSpawnPosition());		// Generate a random spawn position for the player
-	
 	spawnEnemies();	// Spawn enemies for the level
 	spawnItems();	// Spawn items for the level
 
@@ -138,17 +135,13 @@ const std::vector<Item>& GameWorld::getItems() const
 
 Position2D GameWorld::generateSpawnPosition()
 {
-	// Define the inclusive range [] for x and y; exclude walls
-	std::uniform_int_distribution<int> rangeX(1, map.getWidth() - 1);
-	std::uniform_int_distribution<int> rangeY(1, map.getHeight() - 1);
-
 	Position2D pos; // create a structure to hold the spawn position coordinates
 
 	// Generate random x and y coordinates for the spawn position, regenerate if not walkable
 	do
 	{
-		pos.x = rangeX(m_engine);
-		pos.y = rangeY(m_engine);
+		pos.x = m_random.nextInt(1, map.getWidth() - 1);
+		pos.y = m_random.nextInt(1, map.getWidth() - 1);
 	} while (!map.isWalkable(pos));
 
 	return pos; // return the generated spawn position coordinates
@@ -228,13 +221,11 @@ void GameWorld::spawnItems()
 
 	int itemCount = getLevelDescription().getItemCount();
 
-	std::uniform_int_distribution<int> itemTypeRange(0, static_cast<int>(ItemType::count) - 1);
-
 	// Spawn all items
 	for (int i = 0; i < itemCount; i++)
 	{
 		// New item and sets item type
-		Item item(static_cast<ItemType>(itemTypeRange(m_engine)));
+		Item item(static_cast<ItemType>(m_random.nextInt(0, static_cast<int>(ItemType::count) - 1)));
 
 		// Create Position2D for item
 		Position2D spawnPos;
