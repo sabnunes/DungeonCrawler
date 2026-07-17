@@ -23,7 +23,7 @@ void RenderSystem::render(const GameWorld& world, bool playerTurn) const
 
 void RenderSystem::printHeader() const
 {
-	cout << "=================================\n   Welcome to DUNGEON CRAWLER\n=================================\n" << endl;
+	cout << "=================================\n      DUNGEON CRAWLER v1.0		\n=================================\n" << endl;
 }
 
 void RenderSystem::printLegend() const
@@ -36,15 +36,15 @@ void RenderSystem::printLegend() const
 			cout << setw(12) << text;
 		};
 
-	col("CONTROLS");	col("ENEMIES");		col("LOOT");	cout << "\n";
-	col("W north");		col("s Slime");		col("H HP+10"); cout << "\n";
-	col("A west");		col("l Leopard");	col("S STR++"); cout << "\n";
-	col("S south");		col("d Doe");		col("D DEF++"); cout << "\n";
-	col("D east");		col("");			col("");        cout << "\n";
-	col("X attack");	col("");			col("");		cout << "\n";
-	col("E equip");		col("ENVIRONMENT"); col("");		cout << "\n";
-	col("U use loot");	col("^ tree");		col("~ water"); cout << "\n";
-	col("Q quit");		col(", grass");		col("* rock");	cout << "\n";
+	col("CONTROLS");	col("ENEMIES");		col("TERRAIN");	cout << "\n";
+	col("W north");		col("s Slime");		col("^ tree");		cout << "\n";
+	col("A west");		col("l Leopard");	col(", grass");		cout << "\n";
+	col("S south");		col("d Doe");		col("~ water");		cout << "\n";
+	col("D east");		col("");			col("* rock");      cout << "\n";
+	col("X attack");	col("LOOT");		col("");			cout << "\n";
+	col("E equip");		col("H HP+10");		col("");			cout << "\n";
+	col("U use loot");	col("S STR++");		col("HERO");		cout << "\n";
+	col("Q quit");		col("D DEF++");		col("P Player");	cout << "\n";
 
 	cout << "---------------------------------" << endl;
 }
