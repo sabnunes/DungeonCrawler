@@ -73,8 +73,8 @@ EnemyMoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 		break;
 	}
 
-	nextPos = { posEnemy.x + movement.x, posEnemy.y + movement.y };
-	
+	nextPos = posEnemy + movement;
+
 	// PROVIDE 2 ALT POS
 	if (world.isOccupiedByPlayer(nextPos) || !world.getMap().isWalkable(nextPos))
 	{
@@ -99,8 +99,8 @@ EnemyMoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 	if (!world.isOccupiedByPlayer(nextPos) && world.getMap().isWalkable(nextPos))
 	{
 		enemy.setPosition(nextPos);
-		const Position2D deltaPos{ nextPos.x - posEnemy.x, nextPos.y - posEnemy.y }; // calculating change in position
-		
+		const Position2D deltaPos = nextPos - posEnemy; // calculating change in position
+
 		enemyMoveResult = { true, deltaPos };
 	}
 

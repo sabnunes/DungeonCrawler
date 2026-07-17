@@ -12,4 +12,16 @@ struct Position2D
     {
         return x == other.x && y == other.y;
     }
+
+	// Summation operator to add two Position2D objects
+    Position2D operator+(const Position2D& other) const
+    {
+        return Position2D{ x + other.x, y + other.y };
+    }
+
+	// Subtraction operator to subtract two Position2D objects
+    Position2D operator-(const Position2D& other) const
+    {
+        return Position2D{ x - other.x, y - other.y };
+    }
 };

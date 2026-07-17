@@ -39,7 +39,7 @@ PlayerMoveResult GameWorld::playerMove(const int x, const int y)
 
 	// Move the player to a new position if it's valid and walkable, check for enemy collision
 	Position2D posPlayer = player.getPosition();
-	Position2D nextPos = Position2D{ posPlayer.x + x, posPlayer.y + y };
+	Position2D nextPos = posPlayer + Position2D{ x, y };
 
 	if (isOccupiedByEnemy(nextPos))
 	{
@@ -52,7 +52,7 @@ PlayerMoveResult GameWorld::playerMove(const int x, const int y)
 	{
 		player.setPosition(Position2D{ nextPos.x, nextPos.y });
 		moveResult.moved = true;
-		moveResult.deltaPos = Position2D{ nextPos.x - posPlayer.x, nextPos.y - posPlayer.y }; // calculating change in position
+		moveResult.deltaPos = nextPos - posPlayer; // calculating change in position
 	}
 
 	return moveResult;
@@ -118,16 +118,17 @@ std::vector<Enemy>& GameWorld::getEnemies()
 {
 	return enemies;
 }
+
 const std::vector<Enemy>& GameWorld::getEnemies() const
 {
 	return enemies;
 }
 
-
 std::vector<Item>& GameWorld::getItems()
 {
 	return items;
 }
+
 const std::vector<Item>& GameWorld::getItems() const
 {
 	return items;
