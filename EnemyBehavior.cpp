@@ -76,11 +76,11 @@ EnemyMoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 	nextPos = posEnemy + movement;
 
 	// PROVIDE 2 ALT POS
-	if (world.isOccupiedByPlayer(nextPos) || !world.getMap().isWalkable(nextPos))
+	if (world.isOccupiedByPlayer(nextPos) || !world.getMap().isWalkable(nextPos) || world.isOccupiedByEnemy(nextPos))
 	{
 		Position2D xOnlyPos = { posEnemy.x + movement.x, posEnemy.y };
 
-		if (!world.isOccupiedByPlayer(xOnlyPos) && world.getMap().isWalkable(xOnlyPos))
+		if (!world.isOccupiedByPlayer(xOnlyPos) && world.getMap().isWalkable(xOnlyPos) && !world.isOccupiedByEnemy(nextPos))
 		{
 			nextPos = xOnlyPos;
 		}
@@ -88,19 +88,19 @@ EnemyMoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 		{
 			Position2D yOnlyPos = { posEnemy.x, posEnemy.y + movement.y };
 
-			if (!world.isOccupiedByPlayer(yOnlyPos) && world.getMap().isWalkable(yOnlyPos))
+			if (!world.isOccupiedByPlayer(yOnlyPos) && world.getMap().isWalkable(yOnlyPos) && !world.isOccupiedByEnemy(nextPos))
 			{
 				nextPos = yOnlyPos;
 			}
 		}
 	}
 
+	const Position2D deltaPos = nextPos - posEnemy; // calculating change in position
+	
 	// VALIDATE & MOVE TO NEXT POS
-	if (!world.isOccupiedByPlayer(nextPos) && world.getMap().isWalkable(nextPos))
+	if (deltaPos != Position2D{ 0, 0 } && !world.isOccupiedByPlayer(nextPos) && world.getMap().isWalkable(nextPos) && !world.isOccupiedByEnemy(nextPos))
 	{
 		enemy.setPosition(nextPos);
-		const Position2D deltaPos = nextPos - posEnemy; // calculating change in position
-
 		enemyMoveResult = { true, deltaPos };
 	}
 
