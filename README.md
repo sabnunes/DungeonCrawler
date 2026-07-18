@@ -95,9 +95,11 @@ If necessary, configure the project using:
 - Additional enemy types and abilities
 - Expanded item variety
 - Equipment, and armor system
+- Attack missed/failed %
 - Save and load functionality
 - Main menu and game restart
 
 ### Known Issues
 - Certain random map seeds can generate inaccessible areas, preventing the player from reaching every enemy and completing the level.
 - The legend may eventually scroll off the console after extended gameplay due to console output limitations.
+- A Doe may remain in corner of the map.
