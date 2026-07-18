@@ -17,6 +17,62 @@ void GridMap::initialize(int levelNumber)
 	applyLevelTheme(levelNumber);
 }
 
+int GridMap::getWidth() const
+{
+	return WIDTH - START_POS_X;
+}
+
+int GridMap::getHeight() const
+{
+	return HEIGHT - START_POS_Y;
+}
+
+TileType GridMap::getTile(int x, int y) const
+{
+	return tiles[x][y];
+}
+
+char GridMap::getTileIcon(const Position2D& p) const
+{
+	switch (getTile(p.x, p.y))
+	{
+	case TileType::Wall:
+		return '#';
+	case TileType::Floor:
+		return ' '; 
+	case TileType::Water:
+		return '~';
+	case TileType::Tree:
+		return '^';
+	case TileType::Grass:
+		return ',';
+	case TileType::Rock:
+		return '*';
+	default:
+		return '?'; // print unknown symbol for unhandled tile types
+	}
+}
+
+bool GridMap::isValidPosition(int x, int y) const
+{
+	return x >= 0 && x < getWidth() && y >= 0 && y < getHeight(); // currently only checks bounds
+}
+
+bool GridMap::isWalkable(int x, int y) const
+{
+	return isValidPosition(x, y) 
+		&& getTile(x, y) != TileType::Wall 
+		&& getTile(x, y) != TileType::Water
+		&& getTile(x, y) != TileType::Tree
+		&& getTile(x, y) != TileType::Rock;
+	// grass remains intentionally traversible, used as decor
+}
+
+bool GridMap::isWalkable(const Position2D& pos) const
+{
+	return isWalkable(pos.x, pos.y);
+}
+
 void GridMap::generateLevelBorders()
 {
 	for (int x = START_POS_X; x < WIDTH; x++)
@@ -35,7 +91,6 @@ void GridMap::generateLevelBorders()
 		}
 	}
 }
-
 
 void GridMap::applyLevelTheme(int level)
 {
@@ -266,6 +321,18 @@ void GridMap::applyLevelTheme(int level)
 	}
 }
 
+// Copy tiles from source to destination
+void GridMap::copyTiles(TileType  sourceTiles[WIDTH][HEIGHT], TileType  destTiles[WIDTH][HEIGHT])
+{
+	for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
+	{
+		for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
+		{
+			destTiles[x][y] = sourceTiles[x][y];
+		}
+	}
+}
+
 void GridMap::spreadTile(int percentChance, TileType tileType)
 {
 	TileType newTiles[WIDTH][HEIGHT];
@@ -315,73 +382,4 @@ void GridMap::spreadTile(int percentChance, TileType tileType)
 
 	// Copy new tiles back to the original map; avoids modifying the map while iterating/causing a chain reactions
 	copyTiles(newTiles, tiles);
-}
-
-// Copy tiles from source to destination
-void GridMap::copyTiles(TileType  sourceTiles[WIDTH][HEIGHT], TileType  destTiles[WIDTH][HEIGHT])
-{
-	for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
-	{
-		for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
-		{
-			destTiles[x][y] = sourceTiles[x][y];
-		}
-	}
-}
-
-
-int GridMap::getWidth() const
-{
-	return WIDTH - START_POS_X;
-}
-
-int GridMap::getHeight() const
-{
-	return HEIGHT - START_POS_Y;
-}
-
-TileType GridMap::getTile(int x, int y) const
-{
-	return tiles[x][y];
-}
-
-char GridMap::getTileIcon(const Position2D& p) const
-{
-	switch (getTile(p.x, p.y))
-	{
-	case TileType::Wall:
-		return '#';
-	case TileType::Floor:
-		return ' '; 
-	case TileType::Water:
-		return '~';
-	case TileType::Tree:
-		return '^';
-	case TileType::Grass:
-		return ',';
-	case TileType::Rock:
-		return '*';
-	default:
-		return '?'; // print unknown symbol for unhandled tile types
-	}
-}
-
-bool GridMap::isValidPosition(int x, int y) const
-{
-	return x >= 0 && x < getWidth() && y >= 0 && y < getHeight(); // currently only checks bounds
-}
-
-bool GridMap::isWalkable(int x, int y) const
-{
-	return isValidPosition(x, y) 
-		&& getTile(x, y) != TileType::Wall 
-		&& getTile(x, y) != TileType::Water
-		&& getTile(x, y) != TileType::Tree
-		&& getTile(x, y) != TileType::Rock;
-	// grass remains intentionally traversible, used as decor
-}
-
-bool GridMap::isWalkable(const Position2D& pos) const
-{
-	return isWalkable(pos.x, pos.y);
 }

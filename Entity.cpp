@@ -7,6 +7,16 @@ Entity::Entity()
 
 }
 
+char Entity::getIcon() const
+{
+	return icon;
+}
+
+void Entity::setIcon(char i)
+{
+	icon = i;
+}
+
 std::string Entity::getName() const
 {
 	return name;
@@ -25,14 +35,4 @@ Position2D Entity::getPosition() const
 void Entity::setPosition(Position2D p)
 {
 	position = p;
-}
-
-char Entity::getIcon() const
-{
-	return icon;
-}
-
-void Entity::setIcon(char i)
-{
-	icon = i;
 }

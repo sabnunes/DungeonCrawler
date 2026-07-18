@@ -21,16 +21,14 @@ const std::vector<Item>& Player::getInventory() const
 	return inventory;
 }
 
-// Returns player inventory size
-int Player::getInventorySize() const
-{
-	return (int) inventory.size();
-}
-
-// Adds item to player inventory
 void Player::addInventoryItem(const Item &item)
 {
 	inventory.push_back(item);
+}
+
+int Player::getInventorySize() const
+{
+	return (int) inventory.size();
 }
 
 // Returns last item in player inventory

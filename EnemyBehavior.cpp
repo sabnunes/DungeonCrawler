@@ -36,6 +36,11 @@ EnemyTurnResult EnemyBehavior::takeTurn(Enemy& enemy, GameWorld& world, CombatSy
 	return enemyTurnResult;
 }
 
+CombatResult EnemyBehavior::attack(Enemy& enemy, GameWorld& world, CombatSystem& combatSystem)
+{
+	return combatSystem.attack(enemy, world.getPlayer());
+}
+
 EnemyMoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 {
 	EnemyMoveResult enemyMoveResult;
@@ -106,9 +111,4 @@ EnemyMoveResult EnemyBehavior::move(Enemy& enemy, GameWorld& world)
 	}
 
 	return enemyMoveResult;
-}
-
-CombatResult EnemyBehavior::attack(Enemy& enemy, GameWorld& world, CombatSystem& combatSystem)
-{
-	return combatSystem.attack(enemy, world.getPlayer());
 }

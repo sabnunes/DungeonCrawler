@@ -23,6 +23,11 @@ const LevelDescription& GameWorld::getLevelDescription() const
 	return levelDescription;
 }
 
+const GridMap& GameWorld::getMap() const
+{
+	return map;
+}
+
 Player& GameWorld::getPlayer()
 {
 	return player;
@@ -109,11 +114,6 @@ void GameWorld::playerUseItem()
 	player.useInventoryItem();
 }
 
-const GridMap& GameWorld::getMap() const
-{
-	return map;
-}
-
 std::vector<Enemy>& GameWorld::getEnemies()
 {
 	return enemies;
@@ -124,58 +124,11 @@ const std::vector<Enemy>& GameWorld::getEnemies() const
 	return enemies;
 }
 
-std::vector<Item>& GameWorld::getItems()
+bool GameWorld::areEnemiesAlive() const
 {
-	return items;
-}
-
-const std::vector<Item>& GameWorld::getItems() const
-{
-	return items;
-}
-
-Position2D GameWorld::generateSpawnPosition()
-{
-	Position2D pos; // create a structure to hold the spawn position coordinates
-
-	// Generate random x and y coordinates for the spawn position, regenerate if not walkable
-	do
-	{
-		pos.x = m_random.nextInt(1, map.getWidth() - 1);
-		pos.y = m_random.nextInt(1, map.getWidth() - 1);
-	} while (!map.isWalkable(pos));
-
-	return pos; // return the generated spawn position coordinates
-}
-
-// Returns true if the spawn position is occupied by player, enemy, or item
-bool GameWorld::isSpawnPositionOccupied(const Position2D& pos) const
-{
-	// Map
-	if (!map.isWalkable(pos))
-	{
-		return true;
-	}
-
-	// Player
-	if (pos == player.getPosition()) 
-	{
-		return true;
-	}
-
-	// Enemies
 	for (const Enemy& enemy : enemies)
 	{
-		if (enemy.isAlive() && pos == enemy.getPosition())
-		{
-			return true;
-		}
-	}
-
-	// Items
-	for (const Item& item : items)
-	{
-		if (!item.isCollected() && item.getPosition() == pos)
+		if (enemy.isAlive())
 		{
 			return true;
 		}
@@ -184,65 +137,14 @@ bool GameWorld::isSpawnPositionOccupied(const Position2D& pos) const
 	return false;
 }
 
-void GameWorld::spawnEnemies()
+std::vector<Item>& GameWorld::getItems()
 {
-	enemies.clear();
-
-	for (EnemyType type : getLevelDescription().getEnemyTypes())
-	{
-		spawnEnemy(type);
-	}
+	return items;
 }
 
-void GameWorld::spawnEnemy(EnemyType type)
+const std::vector<Item>& GameWorld::getItems() const
 {
-	// New enemy
-	Enemy enemy(type);
-
-	// Create Position2D
-	Position2D spawnPos;
-
-	// Generate spawn position until position not equal to player or existing enemy position
-	do
-	{
-		spawnPos = generateSpawnPosition();
-	} while (isSpawnPositionOccupied(spawnPos));
-
-	// Set item position to generated spawn position
-	enemy.setPosition(spawnPos);
-
-	// Add item to world items
-	enemies.push_back(enemy);
-}
-
-// Spawns items
-void GameWorld::spawnItems()
-{
-	items.clear();
-
-	int itemCount = getLevelDescription().getItemCount();
-
-	// Spawn all items
-	for (int i = 0; i < itemCount; i++)
-	{
-		// New item and sets item type
-		Item item(static_cast<ItemType>(m_random.nextInt(0, static_cast<int>(ItemType::count) - 1)));
-
-		// Create Position2D for item
-		Position2D spawnPos;
-
-		// Generate spawn position for item until position not equal to player or enemy position
-		do
-		{
-			spawnPos = generateSpawnPosition();
-		} while (isSpawnPositionOccupied(spawnPos));
-
-		// Set item position to generated spawn position
-		item.setPosition(spawnPos);
-
-		// Add item to world items
-		items.push_back(item);
-	}
+	return items;
 }
 
 bool GameWorld::isOccupiedByPlayer(const Position2D& position) const
@@ -338,15 +240,112 @@ bool GameWorld::areEnemiesAdjacentToPlayer() const
 	return false;
 }
 
-bool GameWorld::areEnemiesAlive() const
+Position2D GameWorld::generateSpawnPosition()
 {
+	Position2D pos; // create a structure to hold the spawn position coordinates
+
+	// Generate random x and y coordinates for the spawn position, regenerate if not walkable
+	do
+	{
+		pos.x = m_random.nextInt(1, map.getWidth() - 1);
+		pos.y = m_random.nextInt(1, map.getWidth() - 1);
+	} while (!map.isWalkable(pos));
+
+	return pos; // return the generated spawn position coordinates
+}
+
+// Returns true if the spawn position is occupied by player, enemy, or item
+bool GameWorld::isSpawnPositionOccupied(const Position2D& pos) const
+{
+	// Map
+	if (!map.isWalkable(pos))
+	{
+		return true;
+	}
+
+	// Player
+	if (pos == player.getPosition()) 
+	{
+		return true;
+	}
+
+	// Enemies
 	for (const Enemy& enemy : enemies)
 	{
-		if (enemy.isAlive())
+		if (enemy.isAlive() && pos == enemy.getPosition())
+		{
+			return true;
+		}
+	}
+
+	// Items
+	for (const Item& item : items)
+	{
+		if (!item.isCollected() && item.getPosition() == pos)
 		{
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void GameWorld::spawnEnemies()
+{
+	enemies.clear();
+
+	for (EnemyType type : getLevelDescription().getEnemyTypes())
+	{
+		spawnEnemy(type);
+	}
+}
+
+void GameWorld::spawnEnemy(EnemyType type)
+{
+	// New enemy
+	Enemy enemy(type);
+
+	// Create Position2D
+	Position2D spawnPos;
+
+	// Generate spawn position until position not equal to player or existing enemy position
+	do
+	{
+		spawnPos = generateSpawnPosition();
+	} while (isSpawnPositionOccupied(spawnPos));
+
+	// Set item position to generated spawn position
+	enemy.setPosition(spawnPos);
+
+	// Add item to world items
+	enemies.push_back(enemy);
+}
+
+void GameWorld::spawnItems()
+{
+	items.clear();
+
+	int itemCount = getLevelDescription().getItemCount();
+
+	// Spawn all items
+	for (int i = 0; i < itemCount; i++)
+	{
+		// New item and sets item type
+		Item item(static_cast<ItemType>(m_random.nextInt(0, static_cast<int>(ItemType::count) - 1)));
+
+		// Create Position2D for item
+		Position2D spawnPos;
+
+		// Generate spawn position for item until position not equal to player or enemy position
+		do
+		{
+			spawnPos = generateSpawnPosition();
+		} while (isSpawnPositionOccupied(spawnPos));
+
+		// Set item position to generated spawn position
+		item.setPosition(spawnPos);
+
+		// Add item to world items
+		items.push_back(item);
+	}
 }

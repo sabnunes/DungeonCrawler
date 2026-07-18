@@ -45,7 +45,6 @@ Enemy::Enemy(EnemyType t)
 	}
 } // end Enemy constructors	
 
-
 EnemyType Enemy::getType() const
 {
 	return type;
