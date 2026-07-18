@@ -56,7 +56,6 @@ LevelDescription::LevelDescription(int levelNum)
 			name = "Unknown Level";
 			itemCount = 0;
 			enemies.clear();
-			//assert(false);
 			break;
 	}
 } // End of constructors

@@ -1,3 +1,5 @@
+// Member-function definitions for the Random class
+
 #include "Random.h"
 
 Random::Random()

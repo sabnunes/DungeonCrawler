@@ -5,7 +5,7 @@ using namespace std;
 
 // Constructor
 GridMap::GridMap(Random& random)
-	: m_random(random), // Initialize the standard Mersenne Twister engine
+	: m_random(random),
 	tiles{}
 {
 } 
@@ -23,7 +23,7 @@ void GridMap::generateLevelBorders()
 	{
 		for (int y = START_POS_Y; y < HEIGHT; y++)
 		{
-			// Set borders as walls and inner area as level tile type and floor
+			// Set borders as walls and inner area as floor
 			if (y == START_POS_Y || y == HEIGHT - 1 || x == START_POS_X || x == WIDTH - 1)
 			{
 				tiles[x][y] = TileType::Wall; // Set borders as walls
@@ -137,10 +137,11 @@ void GridMap::applyLevelTheme(int level)
 	case 4: // Riverlands
 	{
 		// Create a river flowing through the map
+		// river parameters
 		int interval = 0;
 		int riverOffset = 1;
 		const int riverTranslation= 3;
-		const int riverWidth = 6; // Width of the river
+		const int riverWidth = 6;
 
 		for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
 		{
@@ -272,7 +273,7 @@ void GridMap::spreadTile(int percentChance, TileType tileType)
 	// Copy current map to temp newTiles variable
 	copyTiles(tiles, newTiles);
 
-	// Ignore borders as walls
+	// Ignore border walls
 	for (int x = START_POS_X + 1; x < WIDTH - 1; x++)
 	{
 		for (int y = START_POS_Y + 1; y < HEIGHT - 1; y++)
@@ -329,25 +330,21 @@ void GridMap::copyTiles(TileType  sourceTiles[WIDTH][HEIGHT], TileType  destTile
 }
 
 
-// Get the height of the map
 int GridMap::getWidth() const
 {
 	return WIDTH - START_POS_X;
 }
 
-// Get the height of the map
 int GridMap::getHeight() const
 {
 	return HEIGHT - START_POS_Y;
 }
 
-// Get the tile type at a specific position
 TileType GridMap::getTile(int x, int y) const
 {
 	return tiles[x][y];
 }
 
-// Get the character representation of the tile at a specific position
 char GridMap::getTileIcon(const Position2D& p) const
 {
 	switch (getTile(p.x, p.y))
@@ -369,13 +366,11 @@ char GridMap::getTileIcon(const Position2D& p) const
 	}
 }
 
-// Check if a position is within map bounds and not a wall or other impassable tile
 bool GridMap::isValidPosition(int x, int y) const
 {
 	return x >= 0 && x < getWidth() && y >= 0 && y < getHeight(); // currently only checks bounds
 }
 
-// Check if a tile is walkable (e.g., not a wall)
 bool GridMap::isWalkable(int x, int y) const
 {
 	return isValidPosition(x, y) 
@@ -383,6 +378,7 @@ bool GridMap::isWalkable(int x, int y) const
 		&& getTile(x, y) != TileType::Water
 		&& getTile(x, y) != TileType::Tree
 		&& getTile(x, y) != TileType::Rock;
+	// grass remains intentionally traversible, used as decor
 }
 
 bool GridMap::isWalkable(const Position2D& pos) const

@@ -3,6 +3,7 @@
 #pragma once
 #include "Entity.h"
 
+// item types that exist in game
 enum class ItemType
 {
 	HealthPotion,
@@ -16,21 +17,21 @@ enum class ItemType
 class Item : public Entity
 {
 public:
-	Item();						// default constructor
+	Item();	
 	explicit Item(ItemType t);	// constructor with item type
 
-	ItemType getType() const;		// get item type
+	ItemType getType() const;	// get item type
 
 	bool isCollected() const;	// returns if item is collected
 	void collect();				// collect item
 
-	int getValue() const;
+	int getValue() const;		// gets upgrade value of item
 
 private:
 	ItemType type = ItemType::HealthPotion;
 
-	bool collected = false; // boolean that represents if item is collected
+	bool collected = false;		// returns if item is collected
 
-	int itemValue = 1;
+	int itemValue = 1;			// default item upgrade value
 };
 

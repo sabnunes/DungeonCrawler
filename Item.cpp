@@ -40,13 +40,11 @@ ItemType Item::getType() const
 	return type;
 }
 
-// Returns if item is collected
 bool Item::isCollected() const
 {
 	return collected;
 }
 
-// Sets collected item to true
 void Item::collect()
 {
 	collected = true;

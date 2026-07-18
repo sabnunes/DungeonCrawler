@@ -1,12 +1,11 @@
 ﻿// Member function definitions for Game class
+
 #include <iostream>
-#include <random>
-#include <iomanip>
 #include "Game.h"
 
 using namespace std;
 
-// Constructor
+// Constructors
 Game::Game()
 	: random() , world(random), enemyBehavior(random)
 {
@@ -19,7 +18,7 @@ Game::Game(unsigned int seed)
 	nextLevel();	
 } 
 
-// run the game: welcome message, process main game loop (input, update, render)
+// run the game: prints intro, process main game loop (input, update, render)
 void Game::run()
 {
 	renderSystem.printHeader();
@@ -40,6 +39,7 @@ void Game::run()
 		else if (world.areEnemiesAlive() && !playerTurn)
 		{
 			updateEnemies();
+			playerTurn = true;
 		}
 		else
 		{
@@ -69,10 +69,10 @@ void Game::nextLevel()
 	playerTurn = true;
 }
 
-// Get player input and process it, e.g., move player position, update health, etc
+// Get player input and process it, e.g., move player position, pick up item, etc
 void Game::input()
 {
-	// Prompt the user for input
+	// Prompt user for input
 	char playerInput;
 	cout << "Enter input: ";
 	cin >> playerInput;
@@ -82,7 +82,6 @@ void Game::input()
 
 	if (playerTurn)
 	{
-		// Process and verify input for movement and quitting
 		switch(input)
 		{
 		case 'w': // Move player up y--
@@ -149,7 +148,7 @@ void Game::input()
 	}
 }
 
-// Update game state based on input and other factors, e.g., move enemies, check for collisions, update health, etc.
+// Update game state based on enemy turn outcome e.g., move enemies, update health, etc. 
 void Game::updateEnemies()
 {
 	for (Enemy& enemy : world.getEnemies())
@@ -165,8 +164,6 @@ void Game::updateEnemies()
 		}
 	}	
 	cout << endl;
-
-	playerTurn = true;
 }
 
 // Player attacks enemy, enemy loses life if attack successful, check for enemy defeat
@@ -183,7 +180,7 @@ void Game::playerAttack()
 		if (enemy.isAlive() && world.isEnemyAdjacentToPlayer(enemy))
 		{
 			combatResult = combatSystem.attack(player, enemy);
-			enemy.setStunnedState(false); // reset enemy movement pattern if attacked
+			enemy.setStunnedState(false); // reset enemy movement pattern if attacked; does not prevent enemy from attacking, only moving
 			attackedEnemy = &enemy;
 			successfulAttack = true;
 

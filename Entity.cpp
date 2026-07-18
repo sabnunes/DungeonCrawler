@@ -4,8 +4,8 @@
 
 Entity::Entity()
 {
-	// default constructor
-} // end of default constructor
+
+}
 
 std::string Entity::getName() const
 {

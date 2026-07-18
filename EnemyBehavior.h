@@ -1,13 +1,13 @@
 // EnemyBehavior class declaration
 
 #pragma once
-#include <string>
 #include "Enemy.h"
 #include "GameWorld.h"
 #include "CombatSystem.h"
 
 class Random; // forward declaration since only storing a reference
 
+// Structure that represents enemy move result variables
 struct EnemyMoveResult
 {
 	bool moved = false;
@@ -15,6 +15,7 @@ struct EnemyMoveResult
 	bool wasStunned = false;
 };
 
+// Structure that represents enemy turn result variables
 struct EnemyTurnResult
 {
 	bool attacked = false;
@@ -27,16 +28,18 @@ struct EnemyTurnResult
 class EnemyBehavior
 {
 public:
-	explicit EnemyBehavior(Random& random);
+	explicit EnemyBehavior(Random& random);					// parameterized constructor
 
-	EnemyTurnResult takeTurn(Enemy& enemy, GameWorld& world, CombatSystem& combatSystem);
+	EnemyTurnResult takeTurn(Enemy& enemy, GameWorld& world, 
+		CombatSystem& combatSystem);						// processes enemy turn and returns enemy turn result
 
 private:
-	Random& m_random;
+	Random& m_random;										// reference to random created in game class
 
-	EnemyMoveResult move(Enemy& enemy, GameWorld& world);
-	CombatResult attack(Enemy& enemy, GameWorld& world, CombatSystem& combatSystem);
+	CombatResult attack(Enemy& enemy, GameWorld& world, 
+		CombatSystem& combatSystem);						// processes enemy attack and returns combat result
+	EnemyMoveResult move(Enemy& enemy, GameWorld& world);	// processes enemy move and resturns enemy move result
 
-	//bool isStunned();
+	//bool isStunned(); // returns if enemy is stunned
 };
 

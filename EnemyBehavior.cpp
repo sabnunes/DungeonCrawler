@@ -5,6 +5,7 @@
 
 namespace
 {
+	// returns the sign of an integer: -1, 0, or +1, the movement direction (-1, 0, or +1) along a single axis
 	constexpr int sign(int value)
 	{
 		return (value > 0) - (value < 0);
@@ -12,7 +13,7 @@ namespace
 }
 
 EnemyBehavior::EnemyBehavior(Random& random)
-	: m_random(random) // Initialize the standard Mersenne Twister engine
+	: m_random(random)
 {
 }
 

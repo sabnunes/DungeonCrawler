@@ -78,7 +78,6 @@ void RenderSystem::printPlayerMove(const GameWorld& world, const PlayerMoveResul
 {
 	Position2D pos = world.getPlayer().getPosition();
 
-	// check if the tile is walkable before moving and not occupied by the enemy
 	if (moveResult.moved)
 	{
 		cout << "You moved "
@@ -164,13 +163,13 @@ void RenderSystem::printPlayerUseItem(const Item* item) const
 	
 	switch (item->getType())
 	{
-	case ItemType::HealthPotion: // give player +HP
+	case ItemType::HealthPotion: 
 		cout << "You've gained +" << itemValue << " HP by consuming the " << itemName << "!" << endl;
 		break;
-	case ItemType::StrengthPotion: // give player +STR
+	case ItemType::StrengthPotion:
 		cout << "You've gained +" << itemValue << " strength by consuming the " << itemName << "!" << endl;
 		break;
-	case ItemType::DefensePotion: // give player +1 DEF
+	case ItemType::DefensePotion:
 		cout << "You've gained +" << itemValue << " defense by consuming the " << itemName << "!" << endl;
 		break;
 	default:
@@ -234,14 +233,16 @@ void RenderSystem::printGoodbye() const
 
 void RenderSystem::renderStats(const GameWorld& world) const
 {
-	// Print player and enemy stats
+	// print player stats
 	cout << left << setw(8) << "Player"
 		<< right << setw(3) << world.getPlayer().getHealth() << " HP  "
 		<< setw(2) << world.getPlayer().getStrength() << " STR  "
 		<< setw(2) << world.getPlayer().getDefense() << " DEF";
 	
+	// print inventory
 	renderPlayerInventory(world);
 
+	// print enemy stats
 	for (const Enemy& enemy : world.getEnemies())
 	{
 		if (enemy.isAlive())
@@ -275,7 +276,7 @@ void RenderSystem::renderPlayerInventory(const GameWorld& world) const
 
 void RenderSystem::renderMap(const GameWorld& world) const
 {
-	// Render the grid map with the player icon
+	// Render the grid map 
 	for (int y = 0; y < world.getMap().getHeight(); y++)
 	{
 		for (int x = 0; x < world.getMap().getWidth(); x++)
@@ -285,7 +286,7 @@ void RenderSystem::renderMap(const GameWorld& world) const
 			// PLAYER
 			if (world.getPlayer().getPosition() == pos && world.getPlayer().isAlive())
 			{
-				cout << world.getPlayer().getIcon(); // print player icon if player is at this coordinate
+				cout << world.getPlayer().getIcon(); // print player icon if player is at coordinate
 			}
 			// ENEMY
 			else
@@ -296,13 +297,13 @@ void RenderSystem::renderMap(const GameWorld& world) const
 				{
 					if (enemy.isAlive() && enemy.getPosition() == pos)
 					{
-						cout << enemy.getIcon(); // print enemy icon if enemy is at this coordinate
+						cout << enemy.getIcon(); // print enemy icon if enemy is at coordinate
 						enemyDrawn = true;
 						break;
 					}
 				}
 
-				// ITEM SEARCH
+				// ITEMS
 				if (!enemyDrawn)
 				{
 					bool itemDrawn = false;
@@ -318,7 +319,7 @@ void RenderSystem::renderMap(const GameWorld& world) const
 						}
 					}
 
-					// TILE
+					// TERRAIN
 					if (!itemDrawn)
 					{
 						cout << world.getMap().getTileIcon(pos);
@@ -326,7 +327,7 @@ void RenderSystem::renderMap(const GameWorld& world) const
 				}
 			}
 		}
-		cout << endl; // New line after each row
+		cout << endl;
 	}
 }
 

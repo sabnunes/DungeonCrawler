@@ -18,14 +18,14 @@ public:
     int getDefense() const;
     void setDefense(int defense);
 
-	int getMinDamage() const;
-	void setMinDamage(int damage);
+	int getMinDamage() const;       // returns minimum damage character can do
+	void setMinDamage(int damage);  // sets minimum damage character can do
 
-	bool isAlive() const; // Returns if character is alive (health > 0)
+	bool isAlive() const;           // returns if character is alive (health > 0)
 
-    void modifyHealth(int value);
-    void modifyStrength(int value);
-    void modifyDefense(int value);
+    void modifyHealth(int value);   // modifies health parameter by value
+    void modifyStrength(int value); // modifies strength parameter by value
+    void modifyDefense(int value);  // modifies defense parameter by value
 
 private:
     int health = 10;

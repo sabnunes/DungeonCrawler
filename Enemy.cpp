@@ -9,7 +9,7 @@ Enemy::Enemy()
 {
 } 
 
-// Constructor
+// Parameterized constructor
 Enemy::Enemy(EnemyType t)
 	: type(t)
 {
