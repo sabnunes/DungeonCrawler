@@ -20,7 +20,7 @@ Explore each dungeon level, defeat every enemy to progress, and survive long eno
 - Use X to attack adjacent enemies
 - Use E when standing on loot to add it to your inventory
 - Use U to consume the most recently collected potions
-- Use Q to quit.
+- Use Q to quit
 
 P represents the player's position on the map.
 
@@ -85,7 +85,7 @@ If necessary, configure the project using:
 
 ## My Learnings
 - Each game feature quickly increased the complexity of associated systems.
-- Interconnected systems often require changes across multiple classes when adding new functionality..
+- Interconnected systems often require changes across multiple classes when adding new functionality.
 - Separating responsibilities into focused classes greatly improves readability and maintainability.
 - Incremental refactoring proved safer and easier to debug than large-scale refactoring changes.
 - Frequent testing helped catch regressions sooner than later when complexity increased.
