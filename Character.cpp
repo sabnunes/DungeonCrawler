@@ -30,6 +30,11 @@ int Character::getStrength() const
 void Character::setStrength(int s)
 {
 	strength = s;
+
+	if (strength < 0)
+	{
+		strength = 0;
+	}
 }
 
 int Character::getDefense() const
@@ -40,6 +45,11 @@ int Character::getDefense() const
 void Character::setDefense(int d)
 {
 	defense = d;
+
+	if (defense < 0)
+	{
+		defense = 0;
+	}
 }
 
 int Character::getMinDamage() const
