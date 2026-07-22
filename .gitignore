@@ -44,3 +44,4 @@
 *.sln
 *.vcxproj*
 *.github
+*x64*
