@@ -31,6 +31,8 @@
 *.exe
 *.out
 *.app
+
+# Custom
 *.pdb
 *.tlog
 *.json
@@ -38,8 +40,7 @@
 *.ipch
 *.json
 *.db
-/.vs
-/Dungeon_01
+*.vs
 *.sln
 *.vcxproj*
-/.github
+*.github
